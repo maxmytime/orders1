@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <!-- <base href="/"> -->
+
+    <title>Заказы</title>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+
+    <!-- Template Basic Images Start -->
+    <meta property="og:image" content="path/to/image.jpg">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
+    <!-- Template Basic Images End -->
+
+    <!-- Custom Browsers Color Start -->
+    <meta name="theme-color" content="#000">
+    <!-- Custom Browsers Color End -->
+
+    <link rel="stylesheet" href="css/main.min.css">
+
+</head>
+
+<body>
+
+
+    <div class="is-full-fullhd js-app">
+        <!-- Верхняя панель -->
+        <div class="top-bar is-flex is-align-items-center is-justify-content-space-between js-type-order-container">
+
+            <div class="type-order-container">
+
+            </div>
+
+            <div class="status-buh-container">
+
+
+
+            </div>
+
+
+
+            <div class="buttons js-check-button">
+                <a class="button is-info is-uppercase js-delete-order is-hidden btn-orders btn-brand btn-brand-red">
+                    Удалить
+                </a>
+                <a class="button is-info  is-uppercase js-cancel-order is-hidden  btn-orders btn-brand">
+                    Отмена
+                </a>
+                <a class="button is-info  is-uppercase js-copy-order is-hidden  btn-orders btn-brand">
+                    Копировать
+                </a>
+                <a class="button is-info  is-uppercase js-create-order is-hidden  btn-orders btn-brand">
+                    Создать
+                </a>
+                <a class="button is-info  is-uppercase js-save-order is-hidden  btn-orders js-modal-trigger btn-brand"
+                    data-target="renew-docs" aria-haspopup="true">
+                    Сохранить
+                </a>
+
+                <div id="renew-docs" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title"></p>
+                            <button class="delete" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>Требуется переоформление документов?</p>
+                        </section>
+                        <footer class="modal-card-foot is-justify-content-end">
+                            <button
+                                class="button is-info has-text-white is-uppercase js-save-order-renew-docs-true has-text-weight-bold btn-orders">Да</button>
+                            <button
+                                class="button is-info has-text-white is-uppercase js-save-order-renew-docs-false has-text-weight-bold btn-orders">Нет</button>
+                        </footer>
+                    </div>
+                </div>
+
+
+
+                <a class="button js-close-button-menu is-hidden">
+                    <span class="icon ">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="buttons js-open-button-menu is-hidden">
+                <a class="button is-info">
+                    <span class="icon ">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+    <template id="order">
+        <form data-date="${obj.date}" data-time="${obj.time}" data-number="${obj.number}" data-author="${obj.author}"
+            data-type="${obj.type_order}" data-archieved="${obj.archieved}" data-status-buh="${obj.status_buh}"
+            data-status-logistic="${obj.status_logistic}" data-kind-order="${obj.kind_order}" class="order">
+
+
+        </form>
+    </template>
+
+    <template id="client">
+
+        <!-- <div class="client order-disabled"> -->
+        <div class="client">
+            <div class="columns is-mobile is-gapless is-multiline client-panel">
+                <div class="buttons btn-slider-container">
+                    <a class="btn-slider is-info has-text-white is-uppercase btn-prev ml-5 btn-orders">
+                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                    </a>
+                    <div class="slider-dots">
+
+                    </div>
+                    <a class="btn-slider is-info has-text-white is-uppercase btn-next btn-orders">
+                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="columns is-mobile is-gapless is-multiline order-header">
+                    <div class="column is-12 mb-5 unlock">
+                        <div class="status-archive is-hidden">
+                            <span class="badge has-text-white">Заявка в архиве</span>
+                        </div>
+                        <p class="control has-text-right js-unlock is-hidden">
+                            <a class="button is-white js-btn-unlock">
+                                <span class="icon is-small">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="column is-8-tablet is-12-mobile mb-5">
+                        <div class="field mr-2">
+                            <label class="label">Дата</label>
+                            <div class="control">
+                                <input type="date" name="order-client-date"
+                                    class="input js-type-date-is-range input-order"
+                                    data-start-date="${obj.date_order.date_start}"
+                                    data-end-date="${obj.date_order.date_end}" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-4-tablet is-12-mobile mb-5">
+                        <div class="field">
+                            <label class="label">Статус логистический</label>
+                            <div class="control">
+                                <div class="select width-100">
+                                    <select name="order-client-status-logistic" class="width-100 input-order">
+                                        <option value="1">Не отгружена</option>
+                                        <option value="2">Отгружена</option>
+                                        <option value="3">Отменен</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-6">
+                        <div class="field mr-2 mb-5">
+                            <label class="label">База</label>
+                            <div class="control">
+                                <div class="droplist-wrapper-partner">
+                                    <input type="text" name="order-client-name" class="input input-order"
+                                        data-code-client="" autocomplete="off">
+                                    <div class="droplist is-hidden">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="column is-2">
+                            <div class="field mr-2">
+                                <label class="label">Тип</label>
+                                <div class="control">
+                                    <input type="text" name="order-client-type" value="${obj.client.type_client}" class="input input-order">
+                                </div>
+                            </div>
+                        </div> -->
+
+                    <div class="column is-6">
+                        <div class="field">
+                            <label class="label">Тип отгрузки</label>
+                            <div class="control">
+                                <div class="select width-100">
+                                    <select name="order-client-type-shipment" class="width-100 input input-order">
+                                        <option value="0">-</option>
+                                        <option value="2">Самовывоз</option>
+                                        <option value="4">Самовывоз СК</option>
+                                        <option value="3">Доставка</option>
+                                        <option value="5">С доставкой</option>
+                                        <option value="1">Перемещение</option>
+                                        <option value="6">ЖД</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="column is-6 is-6-mobile">
+                            <div class="field mr-2 mb-5">
+                                <label class="label">Документы</label>
+                                <p class="control">
+                                    <div class="select width-100">
+                                        <select name="order-client-document" class="width-100 input input-order">
+                                            <option value="0">-</option>
+                                            <option value="1">Документы</option>
+                                            <option value="2">Документы + счет</option>
+                                            <option value="3">Счет</option>
+                                            <option value="4">Без документов</option>
+                                            <option value="">${obj.documents.type_docs}</option>
+                                        </select>
+                                    </div>
+                                </p>
+                            </div>
+
+                        </div> -->
+
+                    <!-- <div class="column is-6 is-6-mobile js-order-basis-urgency-container">
+
+                            <div class="field">
+                                <label class="label">Срочность</label>
+                                <p class="control">
+                                    <span class="select width-100">
+                                        <select name="order-client-urgency" class="width-100 js-order-basis-urgency input-order">
+                                            <option value="0">-</option>
+                                            <option value="1">Крайне срочно</option>
+                                            <option value="2">Срочно в течение</option>
+                                            <option value="3">До</option>
+                                            <option value="4">В течение дня</option>
+                                        </select>
+                                    </span>
+                                </p>
+                            </div>
+
+                        </div> -->
+
+                    <!-- <div class="column is-6 is-4-mobile js-order-client-term">
+                            <label class="label">Срок</label>
+                            <div class="field mr-2">
+                                <p class="control">
+                                    <span class="select width-100">
+                                        <select name="order-client-term" class="width-100 input-order">
+                                            <option value="0">-</option>
+                                            <option value="1">30 минут</option>
+                                            <option value="2">Час</option>
+                                            <option value="3">2 часа</option>
+                                            <option value="4">До конца рабочего дня</option>
+                                            <option value="5">Утром следующего дня</option>
+                                            <option value="">${obj.documents.urgency_in_due_docs}</option>
+                                        </select>
+                                    </span>
+                                </p>
+                            </div>
+
+                        </div> -->
+
+                    <!-- <div class="column is-12 is-4-mobile js-order-doc-datetime">
+                            <label class="label">До</label>
+                            <div class="is-flex is-justify-content-space-between">
+                                <div class="field has-addons width-100 pr-4px">
+                                    <p class="control width-100">
+                                        <input type="date" name="order-client-doc-date" data-start-date="" class="input input-order">
+                                    </p>
+                                </div>
+                                <div class="field width-100 pl-4px">
+                                    <p class="control width-100">
+                                        <input type="time" name="order-client-doc-time" data-start-time="" class="input input-order">
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div> -->
+
+                    <div class="column is-12">
+                        <!-- Комментарий -->
+                        <div class="field">
+                            <label class="label mt-2">Комментарий</label>
+                            <div class="control width-100 is-widescreen">
+                                <textarea name="order-client-comment" class="textarea input-order"
+                                    rows="2">${obj.commentary}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+            <div class="address-container">
+
+            </div>
+        </div>
+
+
+
+        <a class="is-hidden button is-info is-uppercase has-text-weight-bold btn-orders js-modal-trigger btn-schedule-open ml-1 mt-1"
+            data-target="payment-schedule" aria-haspopup="true">Условия оплаты</a>
+
+        <div class="column is-5 p-0 mb-100px">
+
+            <div id="payment-schedule" class="mb-6" style="max-width: 500px;">
+                <!--  <div class="modal-background"></div> -->
+                <div class="">
+
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">Условия оплаты</p>
+                        <div class="tags are-medium">
+                            <span class="tag is-danger is-hidden make-changes">Внесите изменения</span>
+                        </div>
+                    </header>
+
+                    <section class="modal-card-body">
+
+
+                    </section>
+
+                    <footer class="modal-card-foot is-justify-content-flex-end mb-50px is-hidden">
+                        <a
+                            class="button is-info has-text-white is-uppercase has-text-weight-bold btn-schedule-cancel btn-orders">Отмена</a>
+                        <a
+                            class="button is-info has-text-white is-uppercase has-text-weight-bold btn-schedule-close btn-orders">Сохранить</a>
+                    </footer>
+
+                </div>
+            </div>
+
+        </div>
+        </div>
+        </form>
+    </template>
+
+    <template id="address">
+        <div class="address">
+            <!-- Кнопки добавить удалить адрес -->
+            <div class="field has-addons position-r5-t0">
+                <p class="control mr-3">
+                    <!-- Кнопка удалить адрес -->
+                    <a class="button is-white js-del-address">
+                        <span class="icon js-del-address">
+                            <i class="fa fa-minus-square-o fa-lg js-del-address" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                </p>
+                <p class="control">
+                    <!-- Кнопка добавить адрес -->
+                    <a class="button is-white js-add-new-address">
+                        <!-- <span class="js-add-new-address">Адрес</span> -->
+                        <span class="icon is-small js-add-new-address">
+                            <i class="fa fa-plus-square-o js-add-new-address" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                </p>
+            </div>
+
+            <div class="field px-15px border-box">
+                <label class="label">Адрес</label>
+
+                <div class="control address-select">
+
+                    <input type="text" name="order-address-select" value="${obj.product.name_product}"
+                        class="input width-100 input-order" data-product="${obj.product.code_product}"
+                        autocomplete="off">
+                </div>
+
+            </div>
+
+            <!-- Базис контейнер -->
+            <div class="basis-container">
+
+                <!-- Базис -->
+
+
+            </div>
+
+            <!-- Модальное окно добавить новый адрес -->
+            <div id="add-new-addres" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">Добавить новый адрес</p>
+                        <!-- <button class="delete" aria-label="close"></button> -->
+                    </header>
+                    <section class="modal-card-body">
+                        <div class="columns is-mobile is-gapless is-multiline">
+                            <div class="column is-12">
+                                <div class="field has-addons is-align-items-end">
+                                    <p class="control width-100">
+                                        <input name="new-address" value="" type="text"
+                                            class="input input-ordert input-new-address">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <footer class="modal-card-foot is-justify-content-end">
+                        <a
+                            class="button is-info has-text-white is-uppercase has-text-weight-bold btn-orders btn-new-address">Добавить</a>
+                        <a
+                            class="button is-info has-text-white is-uppercase has-text-weight-bold btn-orders js-close">Закрыть</a>
+                    </footer>
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+    <template id="basis">
+        <div id="" class="basis">
+
+            <!-- Шаблон базис начало -->
+            <div class="field basis-panel">
+                <label class="label">Базис</label>
+                <div class="control is-flex is-justify-content-space-between">
+                    <div class="droplist-wrapper">
+                        <input type="text" name="order-basis" class="input" autocomplete="off"
+                            value="${obj.basis.name_basis}">
+                        <div class="droplist is-hidden">
+                        </div>
+                    </div>
+                    <div class="field is-flex">
+                        <p class="control ml-3">
+                            <!-- Кнопка удалить адрес -->
+                            <a class="button is-lite-gray js-btn-basis-del">
+                                <span class="icon js-btn-basis-del">
+                                    <i class="fa fa-minus-square-o fa-lg js-btn-basis-del" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </p>
+                        <p class="control ml-3">
+                            <!-- Кнопка добавить адрес -->
+                            <a class="button is-lite-gray js-add-new-basis">
+                                <!-- <span class="js-add-new-basis">Базис</span> -->
+                                <span class="icon is-small js-add-new-basis">
+                                    <i class="fa fa-plus-square-o js-add-new-basis" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns is-mobile is-variable is-1 is-multiline">
+
+                <div class="column is-12 js-basis-date-container">
+                    <!-- Дата базиса -->
+                    <label class="label">Дата базиса</label>
+                    <label class="checkbox is-flex mb-3">
+                        <input type="checkbox" class="mr-2 js-basis-date-checkbox" name="">
+                        Использовать в спецификации
+                    </label>
+                    <div class="field is-align-items-end js-basis-date-range">
+                        <p class="control width-100">
+                            <input type="date" name="basis-date-range" class="input input-order">
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="column is-6 is-6-mobile">
+                    <!-- Поле продукт -->
+                    <div class="field">
+                        <label class="label">Продукт</label>
+                        <div class="control">
+                            <div class="droplist-wrapper-product">
+                                <input type="text" name="order-product" value="${obj.product.name_product}"
+                                    class="input input-order" data-product="${obj.product.code_product}"
+                                    autocomplete="off">
+                                <div class="droplist is-hidden">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="column is-6 is-6-mobile">
+                    <!-- Поле номенклатура -->
+                    <label class="label">Номенклатура</label>
+                    <div class="field">
+                        <div class="control">
+                            <div class="droplist-wrapper-nomenclature">
+                                <input type="text" name="order-nomenclature"
+                                    value="${obj.nomenclature.name_nomenclature}" class="input input-order"
+                                    data-nomenclature="${obj.nomenclature.code_nomenclature}" autocomplete="off">
+                                <div class="droplist is-hidden">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-6 js-volum">
+                    <!-- Поле объем -->
+                    <label class="label">Объем</label>
+                    <label class="checkbox is-flex mb-3">
+                        <input type="checkbox" name="order-volume-range" value="" class="mr-2 js-volume-checkbox"
+                            checked="">
+                        Диапазон
+                    </label>
+                    <div class="field has-addons is-align-items-end">
+                        <p class="control width-100 js-volume-min">
+                            <input type="text" name="order-start-volume" value="${obj.volume.start_volume}"
+                                class="input js-order-basis-volume-min input-order" placeholder="-">
+                        </p>
+                        <p class="control width-100 js-volume-max">
+                            <input type="text" name="order-end-volume" value="${obj.volume.end_volume}"
+                                class="input js-order-basis-volume-max input-order" placeholder="-">
+                        </p>
+                        <p class="control">
+                            <a class="button is-static js-button-volume">
+                                Литр
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="column is-6 is-6-mobile">
+                    <!-- Поле доставка -->
+                    <label class="label">Доставка</label>
+                    <div class="control mb-2 js-order-address-basis-nds order-nds">
+                        <label class="radio">
+                            <input type="radio" class="nds-true" name="test">
+                            С НДС
+                        </label>
+                        <label class="radio">
+                            <input type="radio" class="nds-false" name="test">
+                            Без НДС
+                        </label>
+                    </div>
+                    <div class="field has-addons">
+                        <p class="control width-100">
+                            <input type="text" name="order-cost-delivery" class="input input-order"
+                                value="${obj.delivery.cost_delivery}">
+                        </p>
+                        <p class="control">
+                            <span class="select">
+                                <select name="order-cost-delivery-unit"
+                                    class="input-order ${obj.delivery.cost_type_delivery}">
+                                    <option value="1">руб/л</option>
+                                    <option value="2">руб/т</option>
+                                    <option value="3">руб</option>
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <!-- Шаблон базис конец -->
+
+            <!-- ЮЛ контейнер -->
+            <div class="legal-entity-container">
+
+                <!-- Кнопка добавить Юр. лицо -->
+                <!-- <a class="button is-white js-add-new-legal-entity position-r0-b-10">
+                    <span class="js-add-new-legal-entity">Юр. лицо</span>
+                    <span class="icon is-small js-add-new-legal-entity">
+                        <i class="fa fa-plus-square-o js-add-new-legal-entity" aria-hidden="true"></i>
+                    </span>
+                </a> -->
+
+                <!-- Юридическое лицо -->
+
+            </div>
+
+            <div class="column is-12">
+                <!-- Комментарий -->
+                <div class="field">
+                    <label class="label mt-2">Комментарий</label>
+                    <div class="control width-100 is-widescreen">
+                        <textarea name="order-basis-comment" rows="2"
+                            class="textarea input-order">${obj.commentary}</textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+    <template id="legal-entity">
+        <div class="legal-entity">
+
+            <!-- Шаблон ЮЛ начало -->
+            <hr>
+
+            <div class="field">
+                <label class="label">Юридическое лицо</label>
+                <div class="control is-flex">
+                    <span class="select width-100">
+                        <select name="order-counteragent" class="width-100 input-order">
+                            <option value="-">-</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Удалить ЮЛ -->
+            <a class="button is-white position-r0-t10 js-btn-le-del">
+                <span class="icon js-btn-le-del">
+                    <i class="fa fa-minus-square-o fa-lg js-btn-le-del" aria-hidden="true"></i>
+                </span>
+            </a>
+
+            <div class="columns is-mobile is-multiline is-variable is-1 mt-4">
+
+                <div class="column is-6-mobile is-3-tablet">
+                    <label class="label">Объем, л.</label>
+                    <div class="field has-addons">
+                        <p class="control width-100">
+                            <input type="text" name="order-dael-volume" value="${obj.volume}"
+                                class="input input-order js-order-dael-volume">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="column is-6-mobile is-2-tablet">
+                    <label class="label">Вес, тн.</label>
+                    <div class="field has-addons">
+                        <p class="control width-100">
+                            <input type="text" name="order-dael-wt" value="${obj.weight}" class="input input-order">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="column is-6-mobile is-3-tablet">
+                    <label class="label">Плотность</label>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <a class="button is-lite-gray js-btn-calculate-density btn-orders">
+                                <i class="fa fa-arrow-left js-btn-calculate-density" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="control">
+                            <input class="input order-dael-density input-order" type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-6-mobile is-4-tablet">
+
+                    <label class="label">Цена</label>
+                    <div class="field has-addons">
+                        <p class="control width-100">
+                            <input type="text" name="order-dael-price" value="${obj.cost}" class="input input-order">
+                        </p>
+                        <p class="control">
+                            <span class="select">
+                                <select name="order-dael-unit" class="input-order ${obj.type_cost}">
+                                    <option value="1">руб/л</option>
+                                    <option value="2">руб/т</option>
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Шаблон ЮЛ Конец -->
+        </div>`;
+    </template>
+
+    <template id="type-order">
+        <div data-type-order="${obj.type_order}"
+            class="buttons has-addons is-align-items-center js-type-order type-order">
+            <a class="button is-info is-uppercase has-text-weight-bold btn-orders js-order btn-brand">
+                Приход
+            </a>
+            <a
+                class="button is-info is-uppercase has-text-weight-bold btn-orders js-reservation btn-brand is-outlined-brand">
+                Бронь
+            </a>
+        </div>
+    </template>
+
+    <template id="status-buh">
+        <div class="field is-horizontal is-flex is-align-items-center mb-0 status-buh">
+            <label class="label mb-0 mr-3">Статус</label>
+            <div class="control">
+                <div class="select js-status-buh">
+                    <select name="staus-buh" class="width-100 input-order">
+                        <option value="1">Ожидает</option>
+                        <option value="2">Согласован</option>
+                        <option value="3">Отправлен</option>
+                        <option value="4">Подписан</option>
+                        <option value="5">Отмена</option>
+                        <option value="6">Не согласована</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/bulma-calendar.min.js"></script>
+
+    <script type="module" src="js/ordergoods.js"></script>
+    <!-- <script src="js/bulma-modal.js"></script> -->
+
+</body>
+
+</html>

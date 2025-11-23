@@ -1,0 +1,104 @@
+.basis
+    margin-bottom: 40px
+
+.client-panel
+    position: relative
+
+.btn-slider-container
+    position: absolute
+    right: 15px
+    bottom: 0
+    z-index: 10
+
+.slider-dots
+    display: flex
+    margin-right: 5px
+    margin-bottom: 5px
+    .slider-dot
+        width: 15px
+        height: 15px
+        border: solid 2px #f4f4f4
+        border-radius: 100%
+        margin: 0 2px
+        background-color: #f4f4f4
+        transition: 0.3s
+        &-active
+            border-color: #3e8ed0
+
+.btn-slider
+    -moz-appearance: none
+    -webkit-appearance: none
+    align-items: center
+    border: 1px solid transparent
+    border-radius: 4px
+    box-shadow: none
+    display: inline-flex
+    font-size: 1rem
+    height: 2.5em
+    justify-content: flex-start
+    line-height: 1.5
+    padding-bottom: calc(0.5em - 1px)
+    padding-left: calc(0.75em - 1px)
+    padding-right: calc(0.75em - 1px)
+    padding-top: calc(0.5em - 1px)
+    position: relative
+    vertical-align: top
+
+.btn-slider
+    background-color: #fff
+    border-color: #dbdbdb
+    border-width: 1px
+    color: #353535
+    cursor: pointer
+    justify-content: center
+    padding-bottom: calc(0.5em - 1px)
+    padding-left: 1em
+    padding-right: 1em
+    padding-top: calc(0.5em - 1px)
+    text-align: center
+    white-space: nowrap
+
+.buttons .btn-slider:not(:last-child):not(.is-fullwidth)
+    margin-right: 0.5rem
+
+.buttons .btn-slider
+    margin-bottom: 0.5rem
+
+.btn-slider.is-info
+    background-color: #3e8ed0
+    border-color: transparent
+    color: #fff
+
+.btn-slider
+    -webkit-touch-callout: none
+    -webkit-user-select: none
+    -moz-user-select: none
+    user-select: none
+
+.disabled
+    .icon
+        .fa:before
+            color: #c9c9c9
+
+.btn-slider.is-info.disabled
+    background-color: #eeeff3
+    border-color: #eeeff3
+    box-shadow: none
+
+
+@media (max-width: 940px)
+    .client-panel
+        position: static
+
+    .btn-slider-container
+        width: 100%
+        background-color: #fff
+        justify-content: space-between
+        right: 0
+        padding: 15px 15px 10px 0
+        position: fixed
+        box-shadow: 0 -1px 5px #dbdbdb
+
+    .buttons:not(:last-child).btn-slider-container
+        margin-bottom: 0
+

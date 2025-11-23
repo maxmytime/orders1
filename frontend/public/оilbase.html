@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <!-- <base href="/"> -->
+
+    <title>Учет нефтебаз</title>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+
+    <!-- Template Basic Images Start -->
+    <meta property="og:image" content="path/to/image.jpg">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
+    <!-- Template Basic Images End -->
+
+    <!-- Custom Browsers Color Start -->
+    <meta name="theme-color" content="#000">
+    <!-- Custom Browsers Color End -->
+
+    <link rel="stylesheet" href="css/main.min.css">
+
+
+
+</head>
+
+<body class="color-bg body-min-heigh">
+
+    <div class="app-oilbase">
+
+
+
+        <div class="preloader is-fixed is-flex width-100 height-100v is-hidden">
+            <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> -->
+            <div class="fire">
+                <div class="fire-left">
+                    <div class="main-fire"></div>
+                    <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                    <div class="main-fire"></div>
+                    <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                    <div class="main-fire"></div>
+                    <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                    <div class="main-fire"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Шаблон навигационной панели -->
+    <template id="nav-bar">
+        <div
+            class="nav-bar is-flex is-flex-direction-column has-background-white fixed-navbar is-justify-content-space-between">
+
+            <div>
+                <div class="add-container">
+                    <a href="#"
+                        class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand bnt-add-container mb-3">
+                        <i class="fa fa-lg fa-plus-square bnt-add-container" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="">
+                    <a href="#"
+                        class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-open-archive">
+                        <i class="fa fa-lg fa-archive btn-open-archive" aria-hidden="true"></i>
+                        <i class="fa fa-times btn-open-archive is-hidden" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <a href="#"
+                    class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand bnt-oilbase-exit">
+                    <i class="fa fa-sign-out bnt-oilbase-exit" aria-hidden="true"></i>
+                </a>
+            </div>
+
+
+
+        </div>
+    </template>
+
+    <!-- Шаблон архива -->
+    <template id="archive">
+        <div class="archive p-3">
+            <div class="columns table-nav">
+                <div class="column is-3">
+                    <nav class="navbar color-bg" role="navigation" aria-label="main navigation">
+                        <div class="navbar-brand">
+                            <div class="navbar-item pl-0">
+                                <h2 class="title is-2 basis-name">Архив</h2>
+                            </div>
+
+                            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                                data-target="navbarBasicExample">
+                                <span aria-hidden="true"></span>
+                                <span aria-hidden="true"></span>
+                                <span aria-hidden="true"></span>
+                            </a>
+                        </div>
+
+                        <div id="navbarBasicExample" class="navbar-menu">
+                            <div class="navbar-start">
+
+                            </div>
+
+                            <div class="navbar-end">
+                                <div class="navbar-item pr-0">
+                                    <div class="buttons">
+                                        <!-- <a
+                                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand bnt-add-container">Емкость+</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="column is-3">
+                    <div class="field has-addons">
+
+                        <div class="control width-100">
+                            <label class="label">Базис</label>
+                            <div class="droplist-wrapper">
+                                <input type="text" name="basisArchive" class="input input-order" value=""
+                                    autocomplete="off">
+                                <div class="droplist is-hidden"></div>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <label class="label has-text-white">Базис</label>
+                            <a class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-clear">
+                                <i class="fa fa-times btn-clear" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="field">
+                        <label class="label">Емкость</label>
+                        <div class="control">
+                            <div class="select width-100">
+                                <select name="tankNameHistory" class="width-100 input-order js-type" disabled>
+                                    <option value="-">-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="columns is-multiline table-row has-background-white color-border-t is-clickable table-stayle mb-5">
+                <div class="column is-12 subtable">
+                    <!-- has-background-white -->
+                    <div class="columns is-multiline ">
+
+                        <div class="column is-12 subtable-head color-border-b is-uppercase">
+                            <div class="columns is-multiline">
+                                <div class="column is-1">Дата</div>
+                                <div class="column is-1">Время</div>
+                                <div class="column is-1">Базис</div>
+                                <div class="column is-1">Емкость</div>
+                                <div class="column is-1">Действие</div>
+                                <div class="column is-1">Масса</div>
+                                <div class="column is-1">Объем</div>
+                                <div class="column is-1">УПР СС</div>
+                                <div class="column">Комментарий</div>
+                                <div class="column">Автор</div>
+                            </div>
+                        </div>
+
+                        <!-- Блок для вставки не распределенных заявок -->
+                        <div class="column is-12 subtable-rows is-italic container-tank">
+                            <div class="column is-12 subtable-head color-border-b">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-12 is-flex is-justify-content-center">
+                    <a href="#"
+                        class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-upload-more">Показать
+                        еще</a>
+                </div>
+            </div>
+
+
+        </div>
+    </template>
+
+    <!-- Шаблон архива точка -->
+    <template id="tank-history-point">
+        <div class="columns tank-history-point">
+            <div class="column is-1 date"></div>
+            <div class="column is-1 time"></div>
+            <div class="column is-1 text_basis"></div>
+            <div class="column is-1 text_tank"></div>
+            <div class="column is-1 text_action"></div>
+            <div class="column is-1 text_weight"></div>
+            <div class="column is-1 text_volume"></div>
+            <div class="column is-1 text_cost_management"></div>
+            <div class="column text_description"></div>
+            <div class="column text_user"></div>
+        </div>
+    </template>
+
+    <!-- Шаблон архива контейнер -->
+    <template id="tank-container">
+        <div class="columns is-multiline tank-container">
+            <!-- <div class="column is-2 tank-name has-text-weight-bold">Емкость 20/10</div> -->
+            <div class="column tank-history">
+
+            </div>
+        </div>
+    </template>
+
+    <!-- Шаблон модального окна емкости -->
+    <template id="modal-tank">
+        <div class="modal modal-tank">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title has-text-weight-bold"></p>
+                    <button class="delete close-modal" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="columns is-multiline">
+                        <!-- Имя емкости -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Имя</label>
+                                <div class="control">
+                                    <input type="text" name="nameTank" class="input input-order" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Имя базиса -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Базис</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="basis" class="input input-order" value=""
+                                            autocomplete="off">
+                                        <div class="droplist is-hidden"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Вид создаваемой емкости -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Вид</label>
+                                <div class="control">
+                                    <!-- <div class="select width-100"> -->
+                                    <!-- <select name="type" class="width-100 input-order js-type">
+                                            <option value="1">Емкость</option>
+                                            <option value="2">Спецификация</option>
+                                        </select> -->
+                                    <input type="text" name="type" class="input input-order" value="" autocomplete="off"
+                                        disabled>
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Продукт</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="product" class="input input-order" value=""
+                                            autocomplete="off">
+                                        <div class="droplist is-hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Масса -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Масса (т)</label>
+                                <div class="control">
+                                    <input type="text" name="weight" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Обьем-->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Обьем (л)</label>
+                                <div class="control">
+                                    <input type="text" name="volume" class="input input-order" value=""
+                                        autocomplete="off" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Продукт -->
+
+                        <!-- Плотность -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Плотность<br> <span class="is-invisible">123</span></label>
+                                <div class="control">
+                                    <input type="text" name="density" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Управленчиская себестоимость в тоннах -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Управленческая себестоимость (руб./т.)</label>
+                                <div class="control">
+                                    <input type="text" name="cost_management_tonn" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Прайсовая себестоимость (т.) -->
+                        <div class="column is-4">
+                            <label class="label">Прайсовая <br>себестоимость (руб./т.)</label>
+                            <div class="field has-addons">
+                                <div class="control width-100">
+                                    <input type="text" name="cost_price_tonn" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- пустое поле -->
+                        <div class="column is-4">
+                            <!-- <div class="field">
+                                <label class="label">Плотность</label>
+                                <div class="control">
+                                    <input type="text" name="density" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div> -->
+                        </div>
+                        <!-- Управленчиская себестоимость в литрах -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Управленческая себестоимость (руб./л.)</label>
+                                <div class="control">
+                                    <input type="text" name="cost_management_litr" class="input input-order" value=""
+                                        autocomplete="off" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Прайсовая себестоимость (т.) -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Прайсовая <br>себестоимость (руб./л.)</label>
+                                <div class="control width-100">
+                                    <input type="text" name="cost_price_litr" class="input input-order" value=""
+                                        autocomplete="off" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- ---------------------------------------- -->
+                        <!-- Поставщик -->
+                        <div class="column is-4 js-provider is-invisible">
+                            <div class="field">
+                                <label class="label">Поставщик</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="provider" class="input input-order" value=""
+                                            autocomplete="off">
+                                        <div class="droplist droplist-modal-tank is-hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Выкупленный объем -->
+                        <div class="column is-4 js-redeemed-volume is-invisible is-hidden">
+                            <label class="label">Выкуп-й объем</label>
+                            <div class="field has-addons">
+                                <div class="control width-100">
+                                    <input type="text" name="redeemed-volume" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                                <p class="control">
+                                    <a class="button is-static">м3</a>
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Сроки выборки -->
+                        <div class="column is-6 js-date is-invisible">
+                            <div class="field">
+                                <label class="label">Сроки выборки</label>
+                                <div class="control is-flex is-flex-direction-row">
+                                    <input type="date" name="date" class="input input-order mr-2" value=""
+                                        autocomplete="off">
+                                    <div class="is-flex is-align-items-center"><span>-</span></div>
+                                    <input type="date" name="" class="input input-order ml-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot is-justify-content-end">
+                    <div class="buttons">
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-tank">Сохранить</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </template>
+
+    <!-- Шаблон модального окна части заявки -->
+    <template id="modal-part">
+        <div class="modal modal-part">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title has-text-weight-bold">Отгрузка/Загрузка</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="columns is-multiline card-part">
+                        <!-- Базис -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Базис</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="basis" class="input input-order" value=""
+                                            autocomplete="off">
+                                        <div class="droplist is-hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Емкость -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Емкость</label>
+                                <div class="control">
+                                    <div class="select width-100">
+                                        <select name="tankName" class="width-100 input-order js-type">
+                                            <option value="1">Емкость 1</option>
+                                            <option value="2">Емкость 2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Дата загрузки/дата прихода -->
+                        <div class="column is-3">
+                            <div class="field">
+                                <label class="label">Загрузка/Приход</label>
+                                <div class="control">
+                                    <input type="date" name="date_dispatch" class="input input-order">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Дата отгрузки -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Дата отгрузки</label>
+                                <div class="control is-flex is-flex-direction-row">
+                                    <input type="date" name="basisDateStart" class="input input-order mr-2" disabled>
+                                    <div class="is-flex is-align-items-center"><span>-</span></div>
+                                    <input type="date" name="basisDateEnd" class="input input-order ml-2" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Партнер -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Партнер</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="nameClient" class="input input-order" value=""
+                                            autocomplete="off" disabled>
+                                        <div class="droplist is-hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Продукт -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Продукт</label>
+                                <div class="control">
+                                    <div class="droplist-wrapper">
+                                        <input type="text" name="product" class="input input-order" value=""
+                                            autocomplete="off">
+                                        <div class="droplist is-hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Количество -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Объем (л)</label>
+                                <div class="control">
+                                    <input type="text" name="startVolume" class="input input-order">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Масса -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Масса (т)</label>
+                                <div class="control">
+                                    <input type="text" name="weight" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Плотность -->
+                        <div class="column is-4">
+                            <div class="field">
+                                <label class="label">Плотность</label>
+                                <div class="control">
+                                    <input type="text" name="density" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Остаток -->
+                        <!-- <div class="column is-2">
+                            <div class="field">
+                                <label class="label">Остаток</label>
+                                <div class="control">
+                                    <input type="number" name="" class="input input-order" disabled>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- Комментарий -->
+                        <div class="column is-12">
+                            <div class="field">
+                                <label class="label">Комментарий</label>
+                                <div class="control">
+                                    <textarea name="comment" class="textarea input-order" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="columns is-multiline card-ship is-hidden">
+                        <!-- Объем факт (л) -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Объем факт (л)</label>
+                                <div class="control">
+                                    <input type="text" name="volume_fact" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Масса факт (т) -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Масса факт (т)</label>
+                                <div class="control">
+                                    <input type="text" name="weight_fact" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Плотность факт -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Плотность факт</label>
+                                <div class="control">
+                                    <input type="text" name="density_fact" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Температура -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="label">Температура</label>
+                                <div class="control">
+                                    <input type="text" name="temperature" class="input input-order" value=""
+                                        autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Принята полная масса -->
+                        <div class="column is-6">
+                            <div class="field">
+                                <label class="checkbox is-flex mb-3">
+                                    <input type="checkbox" class="mr-2" name="acquiered_full">
+                                    Принята полная масса
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot ">
+                    <div class="buttons width-100 is-justify-content-space-between">
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-ship-part">Отгрузить</button>
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-cancellation-part is-hidden">Отмена</button>
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-save-part">Сохранить</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </template>
+
+    <!-- Шаблон модального окна уведомления -->
+    <template id="modal-notification">
+        <div class="modal modal-notification">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title has-text-weight-bold">Уведомление</p>
+                    <!-- <button class="delete" aria-label="close"></button> -->
+                </header>
+                <section class="modal-card-body">
+                    <p>Вы действительно хотите удалить емкость?</p>
+                </section>
+                <footer class="modal-card-foot ">
+                    <div class="buttons width-100 is-justify-content-space-between">
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand cancellation">Отмена</button>
+                        <button
+                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand tank-del">Удалить</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </template>
+
+    <template id="table-item">
+        <div class="table-item">
+
+            <div class="columns is-multiline table-row has-background-white color-border-t is-clickable">
+
+                <div class="column is-12">
+                    <div class="columns table-content">
+                        <div class="column is-2">
+                            <div class="columns">
+                                <div class="column is-2 is-flex is-align-items-center">
+                                    <i class="fa fa-list fa-lg toggle-subtable is-clickable" aria-hidden="true"></i>
+                                </div>
+                                <div class="column">
+                                    <span>Сибирьспецтранс_АЗС Кубовая (хранитель)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-1">АИ 95</div>
+                        <div class="column is-1">АИ-95 ГПН</div>
+                        <div class="column is-1">АИ-95</div>
+                        <div class="column is-1">760,000 12.02.2025</div>
+                        <div class="column is-1">45,70 60131,081</div>
+                        <div class="column is-1">45,70 60131,081</div>
+                        <div class="column is-1">38,746</div>
+                        <div class="column is-1">50,982 / 500,000</div>
+                        <div class="column is-1">50,982 / 500,000</div>
+                        <div class="column is-1">
+                            <a class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">Архив</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-12 subtable is-hidden">
+                    <div class="columns is-multiline has-background-white">
+
+                        <div class="column is-12 subtable-head color-border-b">
+                            <div class="columns is-multiline has-text-weight-bold">
+                                <div class="column is-1 pl-5">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <span>#</span>
+                                        </div>
+                                        <div class="column">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-2">Дата загрузки/дата прихода</div>
+                                <div class="column">Дата отгрузки</div>
+                                <div class="column">Партнер</div>
+                                <div class="column">Продукт</div>
+                                <div class="column">Количество</div>
+                                <div class="column">Остаток, плановый</div>
+                                <div class="column is-3">Комментарий</div>
+                            </div>
+                        </div>
+
+                        <div class="column is-12 subtable-rows">
+                            <div class="columns color-border-b subtable-row" draggable="true">
+                                <div class="column is-1 pl-5">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <span>1</span>
+                                        </div>
+                                        <div class="column">
+                                            <i class="fa fa-external-link icon-hover subtable-row-edit is-clickable"
+                                                aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-2">
+                                    <div class="date">
+                                        <span class="date-subtable">25.04.2025</span>
+                                        <div class="field date-input is-hidden is-relative">
+                                            <div class="control">
+                                                <input type="date" name="date-subtable" class="input input-order">
+                                            </div>
+                                            <button class="delete" aria-label="close"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column">7.05-8.05</div>
+                                <div class="column">ООО АЗС</div>
+                                <div class="column">ДТе</div>
+                                <div class="column">
+                                    <div class="quantity">
+                                        <span class="quantity-subtable">32,398</span>
+                                        <div class="field quantity-input is-relative is-hidden">
+                                            <div class="control">
+                                                <input type="number" class="input input-order">
+                                            </div>
+                                            <button class="delete" aria-label="close"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column">75,905</div>
+                                <div class="column is-3">Lorem ipsum dolor sit amet.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </template>
+
+    <!-- Шаблон не распределенной заявки -->
+    <template id="undistributed">
+        <!-- draggable="true" -->
+        <div class="columns color-border-b subtable-row undistributed">
+            <div class="column is-1 pl-5">
+                <div class="columns">
+                    <div class="column">
+                        <span class="part-number has-text-centered">1</span>
+                    </div>
+                    <div class="column">
+                        <i class="fa fa-lg fa-external-link icon-hover subtable-row-edit is-clickable open-modal"
+                            aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="column date_dispatch"></div>
+            <div class="column date-of-shipment"></div>
+            <div class="column name-client" data-code=""></div>
+            <div class="column name-product"></div>
+            <div class="column volume"></div>
+            <div class="column is-hidden"></div>
+            <div class="column is-3 comment"></div>
+        </div>
+    </template>
+
+    <!-- Шаблон распределенной заявки -->
+    <template id="distributed">
+        <!-- draggable="true" -->
+        <div class="columns color-border-b-dark subtable-row distributed is-flex-wrap-wrap" draggable="true">
+            <div class="column is-1 pl-5">
+                <div class="columns">
+                    <div class="column">
+                        <span class="part-number has-text-centered">1</span>
+                    </div>
+                    <div class="column">
+                        <i class="fa fa-lg fa-external-link icon-hover subtable-row-edit is-clickable open-modal"
+                            aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-2">
+                <div class="date">
+                    <span class="date_dispatch">25.04.2025</span>
+                    <div class="field date-input is-hidden is-relative">
+                        <div class="control">
+                            <input type="date" name="date-subtable" class="input input-order">
+                        </div>
+                        <button class="delete" aria-label="close"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="column date-of-shipment">7.05-8.05</div>
+            <div class="column name-client">ООО АЗС</div>
+            <div class="column name-product">ДТе</div>
+            <div class="column">
+                <div class="quantity">
+                    <span class="quantity-subtable volume">32,398</span>
+                    <div class="field quantity-input is-relative is-hidden">
+                        <div class="control">
+                            <input type="number" class="input input-order">
+                        </div>
+                        <button class="delete" aria-label="close"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="column current-balance">-</div>
+            <div class="column is-3 comment">Lorem ipsum dolor sit amet.</div>
+        </div>
+    </template>
+
+    <!-- Шаблон емкости -->
+    <template id="tank">
+        <!-- Емкость -->
+        <div class="column is-12 tank mb-0 pb-0">
+            <div class="columns table-content mb-0 is-flex is-align-items-center tank-text-fs-14 has-text-weight-bold">
+                <div class="column is-1 is-flex is-align-items-center">
+                    <div class="columns height-100 ">
+                        <div class="column is-5 pl-5 is-flex-js">
+                            <i class="fa fa-angle-right fa-lg toggle-subtable is-clickable has-text-centered"
+                                aria-hidden="true"></i>
+                        </div>
+                        <!-- <div class="column">
+                            <span class="provider">Поле не передается</span>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="column">
+                    <span class="name-tank"></span>
+                    <span class="ml-3 tank-alert is-hidden"><i class="fa fa-exclamation-circle fa-lg" style="color: red"
+                            aria-hidden="true"></i></span>
+                </div>
+                <div class="column is-1 product"></div>
+                <!-- <div class="column is-1 nomenclature">АИ-95</div> -->
+                <div class="column is-1 density"></div>
+                <div class="column is-1">
+                    <span class="management-сost"></span><br>
+                    <span class="management-сost-l"></span>
+                </div>
+                <div class="column is-1">
+                    <span class="price-offer"></span><br>
+                    <span class="price-offer-l"></span>
+                </div>
+                <div class="column is-1 weight"></div>
+                <div class="column is-1 current-balance"></div>
+                <div class="column is-1 planned-balance"></div>
+                <div class="column is-1 has-text-centered">
+                    <!-- <a class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">Архив</a> -->
+                    <i class="fa fa-lg fa-trash delete-tank is-clickable" aria-hidden="true"></i>
+                </div>
+            </div>
+            <!-- Контейнер для распределенных заявок -->
+            <div class="column is-10 is-offset-1 subtable is-hidden">
+                <!-- table-stayle-subtable -->
+                <div class="columns is-multiline ">
+
+                    <div class="column is-12 subtable-head color-border-top color-border-b-dark">
+                        <div class="columns is-multiline">
+                            <div class="column is-1 pl-5">
+                                <div class="columns">
+                                    <div class="column">
+                                        <span></span>
+                                    </div>
+                                    <div class="column">
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-2">Дата загрузки/дата прихода</div>
+                            <div class="column">Дата отгрузки</div>
+                            <div class="column">Партнер</div>
+                            <div class="column">Продукт</div>
+                            <div class="column">Количество</div>
+                            <div class="column">Остаток, плановый</div>
+                            <div class="column is-3">Комментарий</div>
+                        </div>
+                    </div>
+
+                    <!-- Блок для вставки распределенных заявок -->
+                    <div class="column is-12 subtable-rows">
+                        <!-- Экземпляр распределенной заявки можно использовать как шаблон -->
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </template>
+
+    <!-- Шаблон базиса -->
+    <template id="oilbasis">
+        <div data-id="" class="is-full-fullhd oilbasis">
+
+            <div class="columns is-gapless mb-0 table-nav">
+                <div class="column p-0">
+                    <nav class="navbar" role="navigation" aria-label="main navigation">
+                        <div class="navbar-brand">
+                            <div class="navbar-item pl-0">
+                                <h3 class="title is-2 basis-name px-4 py-3"></h3>
+                            </div>
+
+                            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                                data-target="navbarBasicExample">
+                                <span aria-hidden="true"></span>
+                                <span aria-hidden="true"></span>
+                                <span aria-hidden="true"></span>
+                            </a>
+                        </div>
+
+                        <div id="navbarBasicExample" class="navbar-menu">
+                            <div class="navbar-start">
+
+                            </div>
+
+                            <div class="navbar-end">
+                                <div class="navbar-item pr-0">
+                                    <div class="buttons">
+                                        <!-- <a
+                                            class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand bnt-add-container">Емкость+</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="oilbasis-body">
+                <!-- Не распределенные заявки -->
+
+                <div class="columns is-multiline table-row has-background-white is-clickable table-stayle m-0">
+                    <div class="column is-12 subtable">
+                        <!-- has-background-white -->
+                        <div class="columns is-multiline ">
+
+                            <!-- <div class="column is-12 subtable-head color-border-b is-uppercase has-text-weight-bold">
+                                <div class="columns is-multiline">
+                                    <div class="column is-1 pl-5">#</div>
+                                    <div class="column">Дата загрузки/дата прихода</div>
+                                    <div class="column">Дата отгрузки</div>
+                                    <div class="column">Партнер</div>
+                                    <div class="column">Продукт</div>
+                                    <div class="column">Количество</div>
+                                    <div class="column is-hidden">Остаток, плановый</div>
+                                    <div class="column is-3">Комментарий</div>
+                                </div>
+                            </div> -->
+
+                            <!-- Блок для вставки не распределенных заявок -->
+                            <div class="column is-12 subtable-rows container-undistributed">
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Распределенные заявки -->
+
+                <div class="columns is-gapless is-flex-direction-column table-basis has-background-white table-stayle">
+                    <h5 class="title is-3 mt-4 ml-4 title-distributed">Емкости</h5>
+                    <div class="table-item">
+                        <div class="columns table-head is-uppercase">
+                            <div class="column is-1 "></div>
+                            <div class="column"></div>
+                            <div class="column is-1 ">Продукт</div>
+                            <!-- <div class="column is-1 ">Продукт</div> -->
+                            <div class="column is-1 ">Плотность</div>
+                            <div class="column is-1 ">УПР СС (руб./т.)<br>УПР СС (руб./л.)</div>
+                            <div class="column is-1 ">Прайс СС (руб./т.)<br>Прайс СС (руб./л.)</div>
+                            <div class="column is-1 ">Масса, текущая</div>
+                            <div class="column is-1 ">Объем, текущий</div>
+                            <div class="column is-1 ">Объем, плановый</div>
+                            <div class="column is-1  has-text-centered"></div>
+                        </div>
+                        <!-- Блок для вставки емкастей -->
+                        <div
+                            class="columns is-gapless is-multiline table-row color-border-t is-clickable tank-container">
+                            <!-- <div class="column is-12">
+                                <div class="notification has-background-grey-light">
+                                    <div class="content is-medium">
+                                        Нет емкостей.
+                                    </div>
+                                </div>
+                            </div> -->
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+    </template>
+
+    <script src="js/bulma-calendar.min.js"></script>
+    <script type="module" src="js/oilbase/index.js"></script>
+</body>
+
+</html>

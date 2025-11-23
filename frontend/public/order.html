@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <!-- <base href="/"> -->
+
+    <title>Заказы</title>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+
+    <!-- Template Basic Images Start -->
+    <meta property="og:image" content="path/to/image.jpg">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
+    <!-- Template Basic Images End -->
+
+    <!-- Custom Browsers Color Start -->
+    <meta name="theme-color" content="#000">
+    <!-- Custom Browsers Color End -->
+
+    <link rel="stylesheet" href="css/main.min.css">
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+
+
+
+
+</head>
+
+<body>
+
+    <div class="is-full-fullhd js-app">
+        <!-- Верхняя панель -->
+        <div class="top-bar is-flex is-align-items-center is-justify-content-space-between js-type-order-container">
+
+            <div class="field is-horizontal is-flex is-align-items-center mb-0">
+                <label class="label mb-0 mr-3">Статус</label>
+                <div class="control">
+                    <div class="select js-status-buh">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons js-check-button">
+                <a class="button is-info is-uppercase js-delete-order is-hidden btn-orders btn-brand btn-brand-red">
+                    Удалить
+                </a>
+                <a class="button is-info  is-uppercase js-cancel-order is-hidden  btn-orders btn-brand">
+                    Отмена
+                </a>
+                <a class="button is-info  is-uppercase js-copy-order is-hidden  btn-orders btn-brand">
+                    Копировать
+                </a>
+                <a class="button is-info  is-uppercase js-create-order is-hidden  btn-orders btn-brand">
+                    Создать
+                </a>
+                <a class="button is-info  is-uppercase js-save-order is-hidden btn-orders btn-brand">
+                    Сохранить
+                </a>
+
+                <!-- Модальное окно переоформить документы? -->
+                <div class="modal renew-docs">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title"></p>
+                            <button class="delete" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>Требуется переоформление документов?</p>
+                        </section>
+                        <footer class="modal-card-foot is-justify-content-end">
+                            <button class="button is-info has-text-white is-uppercase js-save-order-renew-docs-true has-text-weight-bold btn-orders">Да</button>
+                            <button class="button is-info has-text-white is-uppercase js-save-order-renew-docs-false has-text-weight-bold btn-orders">Нет</button>
+                        </footer>
+                    </div>
+                </div>
+
+                <!-- Оставить предыдущие документы? -->
+                <div class="modal old-docs">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title"></p>
+                            <button class="delete" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>Нужно переоформить Документы?</p>
+                        </section>
+                        <footer class="modal-card-foot is-justify-content-end">
+                            <button class="button is-info has-text-white is-uppercase old-docs-false has-text-weight-bold btn-orders">Нужно</button>
+                            <button class="button is-info has-text-white is-uppercase old-docs-true has-text-weight-bold btn-orders">Не нужно</button>
+                        </footer>
+                    </div>
+                </div>
+
+                <!-- Модальное окно добавить новый адрес -->
+                <div id="add-new-addres" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card modal-card-new-address">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Добавить новый адрес</p>
+                            <!-- <button class="delete" aria-label="close"></button> -->
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="columns is-mobile is-gapless is-multiline">
+                                <div class="column is-12">
+                                    <div class="field has-addons has-addons-centered">
+                                        <p class="control">
+                                            <div class="droplist-wrapper">
+                                                <input name="new-address" value="" type="text" class="input input-ordert input-new-address">
+                                                <div class="droplist droplist-new-address is-hidden"></div>
+                                            </div>
+                                        </p>
+                                        <div class="control">
+                                            <button type="submit" class="button is-info has-text-white droplist-close">X</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot is-justify-content-end">
+                            <a class="button is-info has-text-white is-uppercase has-text-weight-bold btn-orders btn-new-address">Добавить</a>
+                            <button class="button is-info has-text-white is-uppercase has-text-weight-bold btn-orders">Закрыть</button>
+                        </footer>
+                    </div>
+                </div>
+
+                <a class="button js-close-button-menu is-hidden">
+                    <span class="icon ">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="buttons js-open-button-menu is-hidden">
+                <a class="button is-info">
+                    <span class="icon ">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="preloader is-fixed is-flex width-100 height-100v">
+        <!-- <h3 class="title is-3 text-center">Загрузка</h3> -->
+        <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> -->
+        <div class="fire">
+            <div class="fire-left">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-center">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-right">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-bottom">
+                <div class="main-fire"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bulma-calendar.min.js"></script>
+
+    <script type="module" src="js/order.js"></script>
+    <script src="js/bulma-modal.js"></script>
+
+</body>
+
+</html>

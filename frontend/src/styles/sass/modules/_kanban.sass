@@ -1,0 +1,68 @@
+.kanban
+    background-color: rgba(238, 239, 243, 1)
+    border-top-right-radius: 10px
+    border-top-left-radius: 10px
+    &-inner
+        display: flex
+        justify-content: space-between
+
+
+.kanban.kanban-mobile
+    overflow-y: hidden
+    overflow-x: scroll
+
+
+
+.orders-day-head
+    display: flex
+    align-items: center
+    height: 41px
+    border-top-right-radius: 10px
+    border-top-left-radius: 10px
+    color: #4d4d4d
+    .orders-day-date
+        margin-left: 10px
+
+.kanban-overdue-deliveries, .kanban-future-deliveries
+    background-color: transparent
+    .orders-day-head
+        background-color: #d2d5df
+
+.kanban-future-deliveries
+    background-color: transparent
+
+.kanban-overdue-deliveries
+    background-color: transparent
+    .orders-day-head
+        margin-right: 0
+        margin-left: 0
+
+.orders-day-body
+    touch-action: pan-y pinch-zoom
+
+.orders-day-footer
+    box-shadow: none
+    border: none
+    .orders-day-footer-title
+        padding: 0 5px
+        box-sizing: content-box
+        background-color: #d2d5df
+        border-top-right-radius: 10px
+        border-top-left-radius: 10px
+        transition: 0.3s
+        &:hover
+            box-shadow: inset 0px 0px 0 2px rgba(180, 185, 202, 0.3)
+    .title
+        display: inline-block
+    .order-counter-style
+        display: inline-block
+        padding: 3px 5px
+        margin-right: 9px
+        border-radius: 4px
+        background-color: rgb(255, 179, 156)
+
+// .app-orders
+//     display: grid
+//     height: 100vh
+//     grid-template-columns: auto
+//     grid-template-rows: 49px 80%

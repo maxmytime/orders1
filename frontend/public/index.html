@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <!-- <base href="/"> -->
+
+    <title>Заказы</title>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+
+    <!-- Template Basic Images Start -->
+    <meta property="og:image" content="path/to/image.jpg">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
+    <!-- Template Basic Images End -->
+
+    <!-- Custom Browsers Color Start -->
+    <meta name="theme-color" content="#000">
+    <!-- Custom Browsers Color End -->
+
+    <link rel="stylesheet" href="css/main.min.css">
+
+    <!-- <script src="https://use.fontawesome.com/70b80c7de0.js"></script> -->
+
+</head>
+
+<body class="height-100vh pt-6">
+
+    <div id="login" class="container">
+        <div class="columns is-justify-content-center">
+            <div class="column is-3 is-12-mobile">
+                <div class="is-flex is-align-items-center is-flex-direction-column">
+                    <img class="logo" src="images/logo-gradient.png" alt="Логотип">
+                    <h1 class="title is-1 text-center title-service">Заказы</h1>
+                </div>
+
+                <div class="text-center my-5">
+                    <label class="radio mr-3 has-text-weight-bold">
+                        <input class="orders" type="radio" name="service" checked>
+                        Заказы
+                    </label>
+                    <label class="radio ml-3 has-text-weight-bold">
+                        <input class="oilbase" type="radio" name="service">
+                        Нефтебаза
+                    </label>
+                </div>
+
+                <div class="notification is-danger is-hidden js-alert">
+                    Логин или пароль не верный!
+                </div>
+                <form action="#">
+                    <div class="field">
+                        <label class="label">Логин</label>
+                        <div class="control">
+                            <input class="input input-order" name="login" type="text" placeholder="">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Пароль</label>
+                        <div class="control pass-wrapper">
+                            <input class="input input-order" name="password" type="password" placeholder="">
+                            <i class="fa fa-eye fa-lg pass-icon-eye is-hidden" aria-hidden="true"></i>
+                            <i class="fa fa-eye-slash fa-lg pass-icon-eye-slash" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <button
+                        class="button is-fullwidth is-info js-entrance has-text-weight-bold btn-orders is-uppercase btn-brand">Вход
+                        <!-- <i class="fa fa-spinner fa-spin fa-lg"></i> -->
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/base64.js"></script>
+    <script type="module" src="js/login.js"></script>
+</body>
+
+</html>

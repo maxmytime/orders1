@@ -1,0 +1,28 @@
+{
+  "name": "start-project",
+  "version": "1.0.0",
+  "description": "Start project template",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "author": "MaxKoz",
+  "type": "module",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "browser-sync": "^3.0.2",
+    "cssnano": "^6.0.2",
+    "del": "^7.1.0",
+    "gulp": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^9.0.1",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.69.6"
+  },
+  "dependencies": {
+    "@creativebulma/bulma-divider": "^1.1.0",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0"
+  }
+}

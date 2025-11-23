@@ -1,0 +1,410 @@
+@import 'libs/normalize'
+@import 'libs/font-awesome'
+@import 'libs/loader'
+@import 'modules/fonts'
+@import 'modules/main.min'
+@import 'modules/bulma-switch'
+@import 'modules/divider'
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap')
+
+
+body
+    font-family: 'Montserrat', sans-serif
+
+body,
+button,
+input,
+optgroup,
+select,
+textarea
+  font-family: 'Montserrat', sans-serif
+
+
+.body-min-heigh
+    min-height: 100vh
+
+.logo
+    margin-bottom: -10px
+
+.mb-3px
+    margin-bottom: 3px
+
+.mb-33px
+    margin-bottom: 33px
+
+.mb-50px
+    margin-bottom: 50px
+
+.mb-100px
+    margin-bottom: 100px
+
+.mt-3px
+    margin-top: -3px
+
+.width-auto
+    width: auto
+
+.width-100
+    width: 100%
+
+.width-119
+    max-width: 119px
+
+.text-right
+    text-align: right
+
+.status-archive
+    .badge
+        display: inline-block
+        border: solid 1px #d2d5df
+        padding: 3px 5px
+        border-radius: 4px
+        background-color: rgba(204, 15, 53, 0.8)
+
+.disabled, .select select.disabled, [disabled].input.disabled, .datetimepicker-dummy-wrapper.disabled
+    pointer-events: none
+    background-color: #f4f4f4
+    border-color: rgb(219, 219, 219)
+    box-shadow: none
+    color: #7a7a7a
+
+.datetimepicker-dummy .datetimepicker-dummy-wrapper.disabled .datetimepicker-dummy-input
+    color: #7a7a7a
+
+.datetimepicker-dummy .datetimepicker-dummy-wrapper
+    background-color: #f7f9fc
+
+// style="width: 470px"
+.order-header
+    width: 470px
+
+.color-title-blue
+    color: #8f9bb3
+
+
+
+
+
+.droplist
+    display: block
+    max-height: 50vh
+    overflow-y: scroll
+    .droplist-item, .droplist-item-archive
+        display: block
+
+.switch[type=checkbox]:checked + label::before, .switch[type=checkbox]:checked + label:before
+    background: #3e8ed0
+
+.switch[type=checkbox] + label::before, .switch[type=checkbox] + label:before
+    background: #3e8ed0
+
+.is-fixed
+    position: fixed
+    top: 0
+    z-index: 100
+
+.preloader
+    background-color: #ffffff
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    height: 100%
+    .fa:before
+        color: #3e8ed0
+
+.legal-entity-container
+    position: relative
+
+.alert-danger
+    position: absolute
+    right: 0
+    top: 50%
+    transform: translateY(-50%)
+
+.position-r0-b-10
+    position: absolute
+    right: 0px
+    bottom: -10px
+    z-index: 10
+
+.basis-container .basis
+    padding-bottom: 0
+    margin-bottom: 15px
+
+.btn-schedule-open
+    margin-bottom: 18px
+
+.address-container
+    overflow-x: scroll
+
+.btn-slider-container
+    display: none
+
+.background-color-none
+    background-color: transparent
+
+.color-none.input.disabled
+    color: #f4f4f4
+
+.color-none
+    color: #f7f9fc
+
+.table-basis
+    td
+        width: 20%
+
+.table th[title="name_basis"]
+    padding: 0 0.75em 0.5em 0.75em
+
+.archive-name-client:hover
+    text-decoration: underline
+    cursor: pointer
+
+.divider-custom
+    font-size: 12px
+    font-weight: 700
+    margin: 0
+    padding: 1px 0
+    &:after
+        height: 0
+
+.row-table
+    .basis-table
+        .deliver
+            opacity: 0
+
+.row-table
+    .basis-table:first-child
+        .deliver
+            opacity: 1
+
+.row-table
+    .td-width
+        width: 1%
+
+.table.no-border td, .table.no-border th
+    border: 1px solid #fff
+
+.table td:first-child
+    border-left-width: 1px
+    border-top-left-radius: 10px
+    border-bottom-left-radius: 10px
+
+.table td:last-child
+    border-right-width: 1px
+    border-top-right-radius: 10px
+    border-bottom-right-radius: 10px
+
+.table thead .table-basis td:first-child
+    border-left-width: 0
+    border-top-left-radius: 10px
+    border-bottom-left-radius: 10px
+
+.table thead .table-basis td:last-child
+    border-right-width: 0
+    border-top-right-radius: 10px
+    border-bottom-right-radius: 10px
+
+.table thead td, .table thead th
+    border-bottom-width: 0
+
+.table
+    border-collapse: separate
+    overflow: hidden
+
+.table tbody.table-archive tr:first-child td
+    border-top-width: 1px
+    border: 1px solid #dbdbdb
+
+.table tbody.table-archive tr .basis-table td
+    border-width: 0
+
+.table tbody tr:last-child td
+    border-bottom-width: 1px
+    border-bottom: 1px solid #dbdbdb
+
+.table thead tbody tr:last-child td
+    border-bottom-width: 0
+
+.table
+    tfoot
+        td
+            vertical-align: middle
+            border-bottom: 1px solid #dbdbdb
+
+.table
+    .orders-order-item-status-state
+        border: solid 1px #000
+
+.datetimepicker-dummy .datetimepicker-dummy-wrapper.is-err
+    border: solid 1px rgb(255, 102, 133)
+    &:hover
+        box-shadow: 0 0 0 2px rgba(255, 102, 133, 0.25)
+        border: solid 1px rgb(255, 102, 133)
+
+.datetimepicker-dummy.is-link .datetimepicker-dummy-wrapper.is-err.is-active
+    border: solid 1px rgb(255, 102, 133)
+    box-shadow: 0 0 0 2px rgba(255, 102, 133, 0.25)
+    &:hover
+        box-shadow: 0 0 0 2px rgba(255, 102, 133, 0.25)
+        border: solid 1px rgb(255, 102, 133)
+
+.datetimepicker-dummy.is-link .datetimepicker-dummy-wrapper.is-err:active
+    border: solid 1px rgb(255, 102, 133)
+    box-shadow: 0 0 0 2px rgba(255, 102, 133, 0.25)
+
+input.is-err, select.is-err, select.input-order.is-err
+    border: solid 1px rgb(255, 102, 133)
+    z-index: 2
+    &:hover, &:focus, &:active
+        box-shadow: 0 0 0 2px rgba(255, 102, 133, 0.25)
+        border: solid 1px rgb(255, 102, 133)
+
+.order-disabled
+    div
+        pointer-events: none
+        // background-color: #f4f4f4
+        border-color: rgb(219, 219, 219)
+        box-shadow: none
+        color: #7a7a7a
+    div.unlock
+        pointer-events: auto
+        color: #000
+
+
+.basis
+    width: 500px
+
+.address-select
+    input[name='order-address-select']
+        width: 470px
+
+.position-r0-b8
+    position: absolute
+    right: 0px
+    bottom: 8px
+
+.dropdown-creat-btn .button.is-info.is-focused, .button.is-info:focus
+    border-color: transparent
+    color: #282828
+
+.width-70
+    width: 70%
+
+.width-60
+    width: 60%
+
+.height-100
+    height: 100%
+
+.orders-day-body
+    background-color: #eeeff3
+    height: 100%
+    overflow: scroll
+    scrollbar-width: thin
+    padding-bottom: 100px
+
+.orders-order
+    background-color: #fff
+
+.orders-order.kind-order
+    background-color: #fffdca
+    .orders-order-item-status
+        span:nth-child(1)
+            display: none
+
+.modal-card-new-address
+    height: 50%
+    .modal-card-body
+        overflow: visible
+        .droplist-new-address
+            height: 150px
+
+.droplist.droplist-new-address
+    .droplist-item, .droplist-item-archive
+        height: auto
+
+.js-check-button-mobile .button.droplist-close
+    width: auto
+
+.logo
+    width: 100px
+    height: auto
+    margin-bottom: 10px
+    transform: translateX(-5px)
+
+.tank
+    border-bottom: solid 3px #eeeff3
+
+.color-border-top
+    border-top: solid 1px #eeeff3
+
+.fixed-navbar
+    position: fixed
+    top: 0
+    left: 0
+    width: 54px
+    height: 100vh
+    padding: 20px 5px
+
+.app-oilbase
+    margin-left: 50px
+
+.zi-1000
+    z-index: 1000
+
+.droplist-modal-tank
+    bottom: 100%
+    top: auto
+
+.nav-bar > div
+    margin-bottom: 5px
+
+
+
+
+
+@media (max-width: 940px)
+    .order-header
+        width: 100%
+
+    .address-container
+        overflow-x: visible
+        margin-bottom: 50px
+
+    .btn-slider-container
+        display: flex
+
+    .table-wrapper
+        overflow-x: scroll
+
+    .basis
+        // flex-basis: auto
+        width: calc( 100vw - 30px )
+
+    .address-select input[name=order-address-select]
+        width: 100%
+
+    .basis
+        .modal
+            overflow: visible
+            position:  inherit
+            .modal-background
+                background-color: transparent
+            .datetimepicker
+                box-shadow: 0px 0px 40px -9px rgba(34, 60, 80, 1)
+
+
+
+@import 'modules/buttons'
+@import 'modules/forms'
+@import 'modules/order-card'
+@import 'modules/kanban'
+@import 'modules/mobile-menu-order'
+@import 'modules/order-btn-slider'
+@import 'modules/schedule'
+@import 'modules/oilbase'
+@import 'modules/dnd'
+@import 'modules/archive'

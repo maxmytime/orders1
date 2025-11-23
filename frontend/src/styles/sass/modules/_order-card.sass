@@ -1,0 +1,56 @@
+.orders-order
+    border-radius: 10px
+    transition: 0.3s
+    margin: 10px 9px 10px 3px
+    touch-action: pan-y pinch-zoom
+    &:hover
+        box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.3)
+    &-item
+        background-color: transparent
+        flex-direction: column
+        align-items: flex-start
+        padding: 7px 10px
+        &:last-child
+            border-bottom: none
+    &-item-volume
+        width: 100%
+        display: flex
+        justify-content: space-between
+    &-item-volume-wrapper, &-item-type-order
+        display: inline-block
+        // background-color: rgb(175, 225, 175)
+        border: solid 1px #d2d5df
+        padding: 1px 3px
+        border-radius: 4px
+    &-item-fotter
+        display: flex
+        justify-content: space-between
+        margin-top: 3px
+    &-item-compani, &-item-product, &-item-basis
+        font-weight: 600
+    &-item-body
+        overflow: hidden
+
+
+.orders-day-footer-container
+    .orders-order-item
+        background-color: transparent
+    .orders-order
+        color: #969696
+
+.orders-order
+    .orders-order-item-status-state
+        opacity: 0
+        border: solid 1px black
+
+.orders-order
+    .orders-order-item:first-child
+        .orders-order-item-status-state
+            opacity: 1
+
+.orders-order-item-status-state:first-child
+    margin-bottom: 0
+    margin-right: 3px
+    background-color: red
+
+

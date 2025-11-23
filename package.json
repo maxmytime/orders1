@@ -1,0 +1,17 @@
+{
+    "name": "expressapp",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "body-parser": "^1.20.2",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "express": "^4.17.0",
+        "express-session": "^1.17.3",
+        "node-fetch": "^2.6.12",
+        "socket.io": "^4.8.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.7"
+    }
+}

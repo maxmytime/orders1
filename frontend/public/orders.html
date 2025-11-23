@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <!-- <base href="/"> -->
+
+    <title>Заказы</title>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+
+    <!-- Template Basic Images Start -->
+    <meta property="og:image" content="path/to/image.jpg">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
+    <!-- Template Basic Images End -->
+
+    <!-- Custom Browsers Color Start -->
+    <meta name="theme-color" content="#000">
+    <!-- Custom Browsers Color End -->
+
+    <link rel="stylesheet" href="css/main.min.css">
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+        crossorigin="anonymous"></script>
+
+
+
+
+
+</head>
+
+<body class="has-background-white height-100vh p-1">
+
+    <div class="is-full-fullhd">
+        <!-- Верхняя панель -->
+        <div class="top-bar is-flex is-align-items-center is-justify-content-space-between">
+
+            <div class="buttons is-align-items-center">
+                <a href="order" class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">
+                    <span class="pr-2">Заявка</span>
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                </a>
+
+                <a href="ordergoods" class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">
+                    <span class="pr-2">Приход</span>
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                </a>
+
+                <!-- <div class="dropdown-creat-btn dropdown mr-2">
+                    <div class="dropdown-trigger">
+                        <button class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand"
+                            aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span>Создать</span>
+                            <span class="icon is-small">
+                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <a href="order" class="dropdown-item">Заявка</a>
+                            <a href="ordergoods" class="dropdown-item">Приход</a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <a href="archive" class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">
+                    <span class="pr-2">Архив</span>
+                    <i class="fa fa-archive" aria-hidden="true"></i>
+                </a>
+
+
+
+            </div>
+
+            <div class="width-60 filter-desktop-container">
+
+            </div>
+
+
+
+            <div class="buttons">
+                <a class="button is-info is-uppercase orders-exit ml-5 has-text-weight-bold btn-orders btn-brand">
+                    <span class="pr-2">Выход</span>
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Строка отбора -->
+    <div class="is-full-fullhd mb-4 mt-5 filter-mobile-container">
+
+    </div>
+
+    <!-- Канбан -->
+    <div class="kanban">
+        <div class="kanban-inner">
+
+            <!-- Неотгруженные заявки -->
+            <div class="kanban-overdue-deliveries">
+
+            </div>
+
+            <!-- Текущие заявки -->
+            <div class="kanban-orders kanban-current-orders orders">
+
+                <div class="orders-days">
+
+                </div>
+
+            </div>
+
+            <!-- Будущие заявки -->
+            <div class="kanban-future-deliveries">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mobile-panel-kanban-control btn-slider-container mt-3 mb-1 pt-3">
+        <a class="button is-info has-text-white is-uppercase ml-5 button-prev btn-orders">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </a>
+        <a class="button is-info has-text-white is-uppercase button-next btn-orders">
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+    </div>
+
+    <div class="preloader is-fixed is-flex width-100 height-100v">
+        <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> -->
+        <div class="fire">
+            <div class="fire-left">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-center">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-right">
+                <div class="main-fire"></div>
+                <div class="particle-fire"></div>
+            </div>
+            <div class="fire-bottom">
+                <div class="main-fire"></div>
+            </div>
+        </div>
+    </div>
+
+    <template id="filter-desktop">
+        <div class="columns is-gapless is-align-items-center mt-6px filter-desktop">
+
+            <div class="column is-2">
+                <div class="field is-horizontal">
+                    <div class="control mr-3">
+                        <label class="label">Мои заявки</label>
+                    </div>
+                    <input type="checkbox" class="mr-2 author">
+                </div>
+            </div>
+
+            <div class="column is-9">
+                <div class="field is-horizontal">
+                    <div class="control ml-3 mr-3">
+                        <label class="label mt-2">Бухгалтерский статус</label>
+                    </div>
+                    <div class="control">
+                        <!-- <label class="label">Бухгалтерский статус</label> -->
+                        <div class="select">
+                            <select class="status-buh">
+                                <option value="">Без фильтра</option>
+                                <option value="2">К рассмотрению</option>
+                                <!-- <option value="6">Не согласована</option> -->
+                                <!-- <option value="7">Возвращен</option> -->
+                                <!-- <option value="1">Ожидает</option> -->
+                                <option value="3">В работе</option>
+                                <!-- <option value="2">Согласован</option> -->
+                                <!-- <option value="3">Отправлен</option> -->
+                                <!-- <option value="4">Подписан</option> -->
+                                <!-- <option value="5">Отмена</option> -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="filter-mobile">
+        <div class="columns is-gapless is-align-items-center mt-6px filter-mobile">
+
+            <div class="column is-2">
+                <div class="field is-horizontal">
+                    <label class="label checkbox">
+                        Мои заявки
+                        <input type="checkbox" class="mr-2 author">
+                    </label>
+
+                </div>
+            </div>
+
+            <div class="column is-9 mt-5">
+                <div class="field is-horizontal">
+                    <div class="control">
+                        <label class="label mt-2">Бухгалтерский статус</label>
+                    </div>
+                    <div class="control">
+                        <!-- <label class="label">Бухгалтерский статус</label> -->
+                        <div class="select width-100">
+                            <select class="status-buh width-100">
+                                <option value="">Без фильтра</option>
+                                <option value="2">К рассмотрению</option>
+                                <!-- <option value="6">Не согласована</option> -->
+                                <!-- <option value="7">Возвращен</option> -->
+                                <!-- <option value="1">Ожидает</option> -->
+                                <option value="3">В работе</option>
+                                <!-- <option value="2">Согласован</option> -->
+                                <!-- <option value="3">Отправлен</option> -->
+                                <!-- <option value="4">Подписан</option> -->
+                                <!-- <option value="5">Отмена</option> -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
+
+    <script type="module" src="js/orders.js"></script>
+</body>
+
+</html>

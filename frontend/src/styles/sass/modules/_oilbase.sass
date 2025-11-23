@@ -1,0 +1,116 @@
+$color-bg: #eeeff3
+$color-white: #ffffff
+$color-gray: #B4B4B4
+$color-yellow: #FAEB0A
+$color-yellow-lighte: #f3ff7b
+
+.color-bg
+    background-color: $color-white
+
+.color-bg-gray
+    background-color: #eeeff3
+
+.color-border-b
+    border-bottom: solid 1px $color-bg
+
+.color-border-b-dark
+    border-bottom: solid 1px $color-gray
+
+.color-border-t
+    border-top: solid 3px $color-bg
+
+.row-table
+    cursor: pointer
+
+.app-oilbase
+    margin-bottom: 100px
+
+.oilbasis
+    margin-top: 9px
+    border-top-left-radius: 7px
+    border-top-right-radius: 7px
+    border: solid 5px $color-bg // $color-yellow-lighte
+    // box-shadow: inset 0 0 0 5px $color-bg
+    .navbar
+        background-color: $color-bg // $color-yellow-lighte
+
+
+.toggle-subtable, .icon-hover, .delete-tank
+    padding: 3px
+    border: 2px solid $color-white
+    border-radius: 4px
+    transition: .3s
+    &:hover
+        border-color: $color-gray
+
+.subtable-row
+    transition: background-color 0.5s
+    cursor: grab
+    background-color: $color-bg // $color-white
+    transition: background-color 0.5s
+
+.subtable-row:hover
+    background-color: lighten($color-yellow, 30%)
+
+.over
+    border-top: 2px dashed #ff8c42
+
+.date-subtable, .quantity-subtable
+    cursor: text
+
+.date, .quantity
+    .delete
+        position: absolute
+        right: -20px
+        top: -20px
+    .datetimepicker-dummy .datetimepicker-dummy-wrapper .datetimepicker-dummy-input
+        width: 100%
+
+.name-tank
+    word-break: break-all
+
+.part-number-bg
+    display: inline-block
+    width: 23px
+    height: 23px
+    border: solid 2px #71d809 //#08bdf6
+    border-radius: 100%
+
+.part-number-bb
+    display: inline-block
+    width: 23px
+    height: 23px
+    border: solid 2px #08bdf6
+    border-radius: 100%
+.app-oilbase
+    .table-stayle
+        // margin-top: 35px
+        // border-radius: 10px
+        border-top: solid 3px $color-bg // $color-yellow-lighte
+        .container-undistributed
+            .subtable-row
+                background-color: transparent
+        .toggle-subtable
+            border-radius: 100%
+            width: 23px
+            height: 23px
+            &-rotate
+                transform: rotate(90deg)
+        &-subtable
+            border: solid 2px $color-bg
+            border-radius: 10px
+            padding: 5px 0
+        .tank
+            .subtable-head
+                background-color: $color-bg // $color-yellow-lighte
+
+.app-oilbase
+    .preloader
+        left: 56px
+
+.nav-bar
+    border-right: solid 2px $color-bg
+
+.tank
+    .tank-text-fs-14
+        font-size: 14px
