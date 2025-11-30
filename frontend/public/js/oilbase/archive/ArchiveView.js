@@ -61,6 +61,7 @@ export class ArchiveView extends AppView {
     selectTank(data, container) {
         const archive = container;
         const tankList = archive.querySelector('select[name="tankNameHistory"]');
+        const tankListValue = tankList.value;
 
         [...tankList.children].forEach(select => {
             if (select.textContent != '-') {
@@ -71,10 +72,12 @@ export class ArchiveView extends AppView {
         for (const history of data) {
             console.log(history);
             const option = document.createElement('option');
-            // option.value = history.code;
+            option.value = history.text_tank;
             option.textContent = history.text_tank;
             tankList.appendChild(option);
         }
+
+        tankList.value = tankListValue;
     }
 
     hiddenBasis() {

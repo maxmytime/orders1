@@ -16,6 +16,8 @@ export class ModalController {
         this.view.getContainer().addEventListener('click', this.selectAnItem.bind(this));
         // Валидация поля input. Содержит только число
         this.view.getContainer().addEventListener('input', this.isNumber.bind(this));
+        // Ограничение дленны ввода числа знаков после запятой
+        this.view.getContainer().addEventListener('input', this.isNumberTrim.bind(this));
         // Добавить новую емкость
         this.view.getContainer().addEventListener('click', this.addNewTank.bind(this));
         // Редактировать емкость
@@ -34,10 +36,12 @@ export class ModalController {
         this.view.getContainer().addEventListener('change', this.fullWeightChecked.bind(this));
         // Контроллер подписывается на изменения значения полная масса
         this.view.getContainer().addEventListener('input', this.changingValueMassFull.bind(this));
-        // Контроллер подписывается на изменения значения полей Масса и Объем для расчета плотности
-        this.view.getContainer().addEventListener('input', this.densityСalculation.bind(this));
+        // Контроллер подписывается на изменения значения полей Плотность и Объем для расчета массы
+        this.view.getContainer().addEventListener('input', this.weightСalculation.bind(this));
         // Контроллер подписывается на событие закрития модального окна уведомлений
         this.view.getContainer().addEventListener('click', this.notificationСancellation.bind(this));
+        // Контроллер подписывается на событие калькуляции при операции загрузка
+        this.view.getContainer().addEventListener('input', this.shipPartСalculationDensity.bind(this));
         // Контроллер подписывается на событие удалить емкость
         this.view.getContainer().addEventListener('click', this.deleteTank.bind(this));
         // Контроллер подписывается на событие выбора емкости для перемещения
@@ -98,6 +102,15 @@ export class ModalController {
         }
 
     }
+
+    // Ограничение дленны ввода числа знаков после запятой
+    isNumberTrim(e) {
+        if (e.target.name === 'cost_management_tonn') {
+            this.view.isNumberTrim(e);
+        }
+    }
+
+
 
     // Расчет Обьем (л.)
     volumeСalculation(e) {
@@ -180,10 +193,10 @@ export class ModalController {
             const statusCreatTank = basis ?
                 await this.api.fetchPostData('/postupdatetank', objectCreatTank) :
                 false;
-            console.log(statusCreatTank);
+            console.log(objectCreatTank);
 
 
-            if (statusCreatTank.Errors === '') {
+            if (statusCreatTank.Errors === '' && objectCreatTank.code_client !== undefined) {
                 tank.code = statusCreatTank.Data;
                 console.log('modalcontroller add tank', tank);
                 basis.listOfTanks.push(tank);
@@ -243,7 +256,7 @@ export class ModalController {
             // console.log(statusUpdateTankServer);
 
             if (statusUpdateTankServer.Status === 'Error') {
-                alert('Проверьте правильность заполнения полей')
+                alert('Проверьте правильность заполнения полей');
             } else if (statusUpdateTankServer.Status === 'OK') {
                 const statusUpdateTankModel = this.model.updateTank(tank, tank.id);
                 // console.log(statusUpdateTankModel);
@@ -539,6 +552,17 @@ export class ModalController {
         }
     }
 
+    shipPartСalculationDensity(e) {
+        if (e.target.name === 'volume_fact' || e.target.name === 'weight_fact') {
+            console.log('Controller shipPartСalculationDensity(e)');
+            if (e.target.closest('.modal-part').dataset.kindOrder === '2') return;
+
+            this.view.shipPartСalculationDensity();
+
+        }
+
+    }
+
     // Принята полная масса
     fullWeightChecked(e) {
         if (e.target.name == 'acquiered_full') {
@@ -570,12 +594,12 @@ export class ModalController {
         }
     }
 
-    // Расчет плотности при вводе значений в поле Масса и Объем
-    densityСalculation(e) {
-        if (e.target.name === 'weight' ||
+    // Изменения плотности и объем для расчета массы
+    weightСalculation(e) {
+        if (e.target.name === 'density' ||
             e.target.name === 'startVolume') {
 
-            this.view.densityСalculation();
+            this.view.weightСalculation();
         }
     }
 

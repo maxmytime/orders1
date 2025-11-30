@@ -10,7 +10,7 @@ export class TankView extends AppView {
     }
 
     renderNewTank(item) {
-        // console.log(tank);
+        console.log(tank);
         const template = this.templateTank.cloneNode(true);
         // console.log(tank);
         // Идентификатор емкости
@@ -34,9 +34,9 @@ export class TankView extends AppView {
         // Масса, текущая
         this.setValue('weight', Number(item.model.weight).toFixed(3), template);
         // Остаток, текущий
-        this.setValue('current-balance', Number(item.model.volume).toFixed(3), template);
+        this.setValue('current-balance', Number(item.model.volume).toFixed(0), template);
         // Остаток, плановый
-        this.setValue('planned-balance', Number(item.model.volume_plan).toFixed(3), template);
+        this.setValue('planned-balance', Number(item.model.volume_plan || item.model.volume).toFixed(0), template);
 
 
         this.helpers.userRights(template);
@@ -68,9 +68,9 @@ export class TankView extends AppView {
         // Масса, текущая
         this.setValue('weight', (Number(item.model.weight)).toFixed(3), container);
         // Остаток, текущий
-        this.setValue('current-balance', Number(item.model.volume).toFixed(3), container);
+        this.setValue('current-balance', Number(item.model.volume).toFixed(0), container);
         // Остаток, плановый
-        this.setValue('planned-balance', Number(item.model.volume_plan).toFixed(3), container);
+        this.setValue('planned-balance', Number(item.model.volume_plan).toFixed(0), container);
 
         this.helpers.userRights(container);
 
@@ -78,7 +78,7 @@ export class TankView extends AppView {
 
     // Рендер емкости
     renderTank(item) {
-        // console.log(item);
+        console.log('renderTank');
         const template = this.templateTank.cloneNode(true);
         // console.log(item);
         // Идентификатор емкости
@@ -102,9 +102,10 @@ export class TankView extends AppView {
         // Масса, текущая
         this.setValue('weight', item.model.weight, template);
         // Остаток, текущий
-        this.setValue('current-balance', item.model.volume, template);
+        this.setValue('current-balance', Number(item.model.volume).toFixed(0), template);
         // Остаток, плановый
-        this.setValue('planned-balance', item.model.volume_plan, template);
+        console.log(Math.round(Number(item.model.volume_plan)));
+        this.setValue('planned-balance', Math.round(Number(item.model.volume_plan)), template);
 
         // console.log(template);
         this.helpers.userRights(template);
@@ -134,14 +135,14 @@ export class TankView extends AppView {
     }
 
     updateVolume(objectUpdateVolume) {
-        this.container.querySelector('.planned-balance').textContent = objectUpdateVolume.volume_plan;
+        this.container.querySelector('.planned-balance').textContent = Number(objectUpdateVolume.volume_plan).toFixed(0);
         const parts = [...this.container.querySelectorAll('.distributed')];
         // objectUpdateVolume.volume_part
         for (const [key, value] of Object.entries(objectUpdateVolume.volume_part)) {
             const part = parts.find(part => part.dataset.id === key);
             // console.log(parts);
             if (part) {
-                part.querySelector('.current-balance').textContent = value;
+                part.querySelector('.current-balance').textContent = Number(value).toFixed(0);
             }
         }
 

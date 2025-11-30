@@ -1,11 +1,12 @@
 import { AppView } from '/js/oilbase/views/AppView.js'
 
 export class BasisView extends AppView {
-    constructor() {
+    constructor(helpers) {
         super();
         this.container = document.querySelector('.app-oilbase');        // Контейнер приложения. На текущий момент на него вешаются все события
         this.templateBasis = this.getTemplate('oilbasis');              // Шаблон базиса
         this.templateUndistributed = this.getTemplate('undistributed'); // Шаблон нераспределенной части заявки
+        this.helpers = helpers;
     }
 
     // Метод рендеринга базиса
@@ -19,6 +20,7 @@ export class BasisView extends AppView {
         name.textContent = item.name;
         // console.log(item);
         template.querySelector('.title-distributed').textContent = item.supplier ? 'Спецификации' : 'Емкости';
+        this.helpers.userRights(template);
 
         this.container.appendChild(template);
         return {

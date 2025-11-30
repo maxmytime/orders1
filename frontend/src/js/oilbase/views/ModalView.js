@@ -92,7 +92,7 @@ export class ModalView extends AppView {
         this.setInputValue('input[name="product"]', part.product.name_product);
         this.setDatasetValue('input[name="product"]', part.product.code_product, 'code');
         // Количество
-        this.setInputValue('input[name="startVolume"]', part.volume || part.startVolume);
+        this.setInputValue('input[name="startVolume"]', Number(part.volume).toFixed(0) || Number(part.startVolume).toFixed(0));
         // Масса (т)
         this.setInputValue('input[name="weight"]', Number(part.volume * (part.density || 1) / 1000).toFixed(3));
         // Плотность
@@ -182,7 +182,7 @@ export class ModalView extends AppView {
         // Масса
         this.modalTank.querySelector('input[name="weight"]').value = tank.tank.weight;
         // Обьем
-        this.modalTank.querySelector('input[name="volume"]').value = tank.tank.volume;
+        this.modalTank.querySelector('input[name="volume"]').value = Number(tank.tank.volume).toFixed(0);
         // Плотность
         this.modalTank.querySelector('input[name="density"]').value = tank.tank.density;
         if (Number(tank.tank.type_tank) === 2) {
@@ -515,6 +515,19 @@ export class ModalView extends AppView {
         }
     }
 
+    shipPartСalculationDensity() {
+        const weight = this.modalPart.querySelector('input[name="weight_fact"]').value;
+        const volum = this.modalPart.querySelector('input[name="volume_fact"]').value;
+        const density = this.modalPart.querySelector('input[name="density_fact"]');
+
+        if (isNaN(Number(weight))) return console.log('В поле масса введено не коректное значение');
+        if (isNaN(Number(volum))) return console.log('В поле объем введено не коректное значение');
+
+        if (!weight || !volum || !density) return console.log('Не все  переменные найдены');
+
+        density.value = (Number(weight) * 1000 / Number(volum)).toFixed(3);
+    }
+
     // Принять полную массу
     fullWeightChecked(e) {
         const modal = e.target.closest('.modal-part');
@@ -581,6 +594,15 @@ export class ModalView extends AppView {
 
     }
 
+    // Ограничение дленны ввода числа знаков после запятой
+    isNumberTrim(e) {
+        console.log('isNumberTrim', e.target.value.replace(/(\d+\.\d{2})\d+/gm, '$1'));
+        // if (e.target.value.match(/(\d+\.\d{2}$)/gm)) {
+            e.target.value = e.target.value.replace(/(\d+\.\d{2})\d+/gm, '$1');
+        // }
+
+    }
+
     // Расчет Обьем (л.)
     volumeСalculation(e) {
         const modal = e.target.closest('.modal-tank');
@@ -595,7 +617,7 @@ export class ModalView extends AppView {
             const costPriceLitr = modal.querySelector('input[name="cost_price_litr"]');
             console.log(weight, density);
             if (Number(density) != 0 || Number(density) != '') {
-                volume.value = (Number(weight) / Number(density) * 1000).toFixed(3);
+                volume.value = (Number(weight) / Number(density) * 1000).toFixed(0);
                 costManagementLitr.value = (Number(costManagementTonn) * Number(density) / 1000).toFixed(2);
                 costPriceLitr.value = (Number(costPriceTonn) * Number(density) / 1000).toFixed(2);
             }
@@ -633,16 +655,16 @@ export class ModalView extends AppView {
         }
     }
 
-    // Расчет плоности при изменении полей Масса и Объем
-    densityСalculation() {
-        const weight = Number(this.modalPart.querySelector('input[name="weight"]').value);
+    // Изменения плотности и объем для расчета массы
+    weightСalculation() {
+        const weight = this.modalPart.querySelector('input[name="weight"]');
         const volume = Number(this.modalPart.querySelector('input[name="startVolume"]').value);
-        const density = this.modalPart.querySelector('input[name="density"]');
+        const density = Number(this.modalPart.querySelector('input[name="density"]').value);
 
-        if (weight, volume) {
-            density.value = ( ( weight * 1000 ) / volume ).toFixed(2);
+        if (density, volume) {
+            weight.value = ( Number(volume) * Number(density) / 1000 ).toFixed(3);
         } else {
-            density.value = '';
+            weight.value = '';
         }
     }
 

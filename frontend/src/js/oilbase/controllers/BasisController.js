@@ -292,7 +292,10 @@ export class BasisController {
                     const tankController = this.tankControllerFactory.create(tankData, tank);
                     tankController.volumeСalculation();
                     tankController.alertTank();
+                    this.helpers.userRights(tank);
                 }
+
+
             }
 
         });

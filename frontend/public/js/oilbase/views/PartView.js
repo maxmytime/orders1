@@ -52,7 +52,7 @@ export class PartView extends AppView {
         }
         // console.log(part.part.differences);
         // Количество
-        template.querySelector('.volume').textContent = part.part.volume;
+        template.querySelector('.volume').textContent = Number(part.part.volume).toFixed(0);
         if (this.getDifferences(part.part.differences, 'volume')) {
             template.querySelector('.volume').classList.add('has-text-danger');
         }
@@ -99,7 +99,7 @@ export class PartView extends AppView {
             template.querySelector('.name-product').classList.add('has-text-danger');
         }
         // Количество
-        template.querySelector('.volume').textContent = part.part.volume;
+        template.querySelector('.volume').textContent = Number(part.part.volume).toFixed(0);
         if (this.getDifferences(part.part.differences, 'volume')) {
             template.querySelector('.volume').classList.add('has-text-danger');
         }
@@ -157,7 +157,7 @@ export class PartView extends AppView {
         }
 
         // Количество
-        container.querySelector('.volume').textContent = part.part.volume;
+        container.querySelector('.volume').textContent = Number(part.part.volume).toFixed(0);
         if (this.getDifferences(part.part.differences, 'volume')) {
             container.querySelector('.volume').classList.add('has-text-danger');
         } else {
@@ -202,7 +202,7 @@ export class PartView extends AppView {
             container.querySelector('.name-product').classList.remove('has-text-danger');
         }
         // Количество
-        container.querySelector('.volume').textContent = part.part.volume;
+        container.querySelector('.volume').textContent = Number(part.part.volume).toFixed(0);
         // console.log('1');
         if (this.getDifferences(part.part.differences, 'volume')) {
             // console.log('2');

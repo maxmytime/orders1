@@ -52,7 +52,7 @@ export class Helpers {
         const setTextContent = (selector) => {
             const el = container.querySelector(selector);
             if (el) {
-                el.textContent = '-';
+                el.textContent = '';
             } else {
                 console.log('Элемент не найден:', selector);
             }
@@ -68,12 +68,25 @@ export class Helpers {
             }
         }
 
+        const noDraggable = (selector) => {
+            const draggableEl = container.querySelectorAll(selector);
+            console.log(draggableEl);
+            if (draggableEl.length) {
+                draggableEl.forEach(el => {
+                    el.draggable = false;
+                });
+            } else {
+                console.log('noDraggable: Элемент не найден:', selector);
+            }
+        }
+
 
         const userRights = sessionStorage.getItem('user_rights');
         // console.log(userRights);
         if (userRights === '2') {
             setTextContent('.management-сost');
             setTextContent('.management-сost-l');
+            setTextContent('.upr-ss');
             container.querySelector('input[name="cost_management_tonn"')
                 ?.closest('.field').classList.add('is-hidden');
             container.querySelector('input[name="cost_management_litr"]')
@@ -81,12 +94,14 @@ export class Helpers {
         } else if (userRights === '3') {
             setTextContent('.management-сost');
             setTextContent('.management-сost-l');
+            setTextContent('.upr-ss');
             container.querySelector('input[name="cost_management_tonn"')
                 ?.closest('.field').classList.add('is-hidden');
             container.querySelector('input[name="cost_management_litr"]')
                 ?.closest('.field').classList.add('is-hidden');
             setHidden('.add-container');
             setHidden('.subtable-row-edit');
+            noDraggable('.distributed');
 
         }
 
