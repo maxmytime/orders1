@@ -51,8 +51,8 @@ const row = `<div class="columns is-mobile is-gapless is-multiline mb-2 schedule
                                     <option value="1">П/о на дату</option>
                                     <option value="2">П/о до отгрузки </option>
                                     <option value="3">По факту отгрузки</option>
-                                    <option value="4">Отсрочка на дату</option>
-                                    <option value="5">Сдвиг</option>
+                                    <option value="4" disabled="true">Отсрочка на дату</option>
+                                    <option value="5" disabled="true">Сдвиг</option>
                                 </select>
                             </span>
                         </p>

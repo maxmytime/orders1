@@ -2856,9 +2856,16 @@ window.addEventListener('DOMContentLoaded', () => {
             function delleteRow(e) {
                 const elem = e.currentTarget;
                 const company = elem.closest('.schedule-company');
+
                 elem.parentElement.remove();
                 setAlert();
                 highlightingLine(company);
+                // блокируем разблокируем типы оплаты в строках графика платежей
+                const payments = typePayments(company);
+                // console.log(payments);
+                const statusShift = validationShift(payments);
+                // console.log(statusShift);
+                blocType(statusShift, payments);
             }
 
             // Валидация поля сдвиг
@@ -3338,6 +3345,75 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Отслеживаем событие внутри компании и получаем контейнер компании
+            function getCompany(e) {
+                return e.target.closest('.schedule-company') || console.log('Компания не найдена:', e.target.closest('.schedule-company'));
+            }
+
+            // Собираем все типы оплаты внутри компании
+            function typePayments(company) {
+                return [...company.querySelectorAll('select[name="schedule-row-type-payment"]')];
+            }
+
+            // Проверяем есть ли тип оплаты отсрочка сдвиг
+            function validationShift(arrElements) {
+                for (let element of arrElements) {
+                    if (element.value === '5') {
+                        return true;
+                    } else if (element.value === '4') {
+                        return false;
+                    }
+                }
+
+                return null;
+            }
+
+            // Блокируем/разблокируем выбор типа оплаты "Отсрочка на дату" value="4"
+            function blocType(boolean, arrElements) {
+                console.log('blocType(boolean, arrElements):', boolean, arrElements);
+                if (boolean === true) {
+                    for (let element of arrElements) {
+                        [...element.children].forEach(option => {
+                            if (option.value === '4') option.disabled = true;
+                            if (option.value === '5') option.disabled = false;
+                        })
+                    }
+                } else if (boolean === false) {
+                    for (let element of arrElements) {
+                        [...element.children].forEach(option => {
+                            if (option.value === '4') option.disabled = false;
+                            if (option.value === '5') option.disabled = true;
+                        })
+                    }
+                } else if (boolean === null) {
+                    for (let element of arrElements) {
+                        [...element.children].forEach(option => {
+                            if (option.value === '4') option.disabled = false;
+                            if (option.value === '5') option.disabled = false;
+                        })
+                    }
+                }
+            }
+
+            // Блокировка/Разблокировка полей тип оплаты
+            function paymentType(e) {
+                // console.log('paymentType(e)');
+                const company = getCompany(e);
+                // console.log(company);
+                if (company) {
+                    const payments = typePayments(company);
+                    // console.log(payments);
+                    const statusShift = validationShift(payments);
+                    // console.log(statusShift);
+                    blocType(statusShift, payments);
+                }
+
+            }
+
+            // Подписываемся на событие выбора типа оплаты в строке, нажатие кнопки добавить/удалить строку
+            paymentSchedulesContainer.addEventListener('change', paymentType);
+            paymentSchedulesContainer.addEventListener('click', paymentType);
+
             // Подписываемся на событие  изменения суммы в строке графика платежей
             paymentSchedulesContainer.addEventListener('input', calculationBalance);
             // Подписываемся на событие ввода данных в поле сумма
@@ -3435,6 +3511,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     // Добавляем раздел компания со всеми элементами в график
                     paymentSchedulesContainer.append(schedule);
+
+                    // блокируем разблокируем типы оплаты в строках графика платежей
+                    const payments = typePayments(schedule);
+                    // console.log(payments);
+                    const statusShift = validationShift(payments);
+                    // console.log(statusShift);
+                    blocType(statusShift, payments);
 
                 })
             }
