@@ -189,10 +189,13 @@ export class ModalController {
             const tankController = this.tankControllerFactory.create(tank, container);
             const objectCreatTank = tankController.getObjectCreatTank();
             console.log(objectCreatTank);
+            let statusCreatTank = {};
 
-            const statusCreatTank = basis ?
-                await this.api.fetchPostData('/postupdatetank', objectCreatTank) :
-                false;
+            if (objectCreatTank.code_client !== undefined) {
+                statusCreatTank = basis ? await this.api.fetchPostData('/postupdatetank', objectCreatTank) : false;
+            } else {
+                statusCreatTank.Errors = '';
+            }
             console.log(objectCreatTank);
 
 
