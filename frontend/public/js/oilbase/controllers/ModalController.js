@@ -191,21 +191,24 @@ export class ModalController {
             console.log(objectCreatTank);
             let statusCreatTank = {};
 
-            if (objectCreatTank.code_client !== undefined) {
+            if (objectCreatTank.type_tank === 1 || objectCreatTank.code_client !== undefined) {
                 statusCreatTank = basis ? await this.api.fetchPostData('/postupdatetank', objectCreatTank) : false;
+                console.log(1);
             } else {
-                statusCreatTank.Errors = '';
+                statusCreatTank.Errors = 'Errors';
             }
             console.log(objectCreatTank);
 
 
-            if (statusCreatTank.Errors === '' && objectCreatTank.code_client !== undefined) {
+            if (objectCreatTank.type_tank === 1  && statusCreatTank.Errors === '' ||
+                statusCreatTank.Errors === '' && objectCreatTank.code_client !== undefined) {
                 tank.code = statusCreatTank.Data;
                 console.log('modalcontroller add tank', tank);
                 basis.listOfTanks.push(tank);
                 tankController.renderNewTank();
                 this.view.modalClose(e);
             } else {
+                console.log(2);
                 alert('Проверьте правильность заполнения полей');
             }
 
@@ -259,6 +262,7 @@ export class ModalController {
             // console.log(statusUpdateTankServer);
 
             if (statusUpdateTankServer.Status === 'Error') {
+
                 alert('Проверьте правильность заполнения полей');
             } else if (statusUpdateTankServer.Status === 'OK') {
                 const statusUpdateTankModel = this.model.updateTank(tank, tank.id);
