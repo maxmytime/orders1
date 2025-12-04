@@ -402,12 +402,13 @@ export class AppModel { // Выполняет инициализацию при�
                     app => app.id === targetId
                 );
                 if (foundApplication) {
-                    // console.log(basis.id);
+                    console.log(basis);
                     return {
                         'part': foundApplication,
                         'basisID': basis.id,
                         'listTanks': basis.listOfTanks,
-                        'tankID': 0
+                        'tankID': 0,
+                        'basisSupplier': basis.supplier
                     };
                 }
             }
@@ -424,7 +425,8 @@ export class AppModel { // Выполняет инициализацию при�
                             'part': foundApplication,
                             'basisID': basis.id,
                             'listTanks': basis.listOfTanks,
-                            'tankID': tank.id
+                            'tankID': tank.id,
+                            'basisSupplier': basis.supplier
                         };
                     }
                 }

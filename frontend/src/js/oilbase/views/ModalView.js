@@ -40,8 +40,8 @@ export class ModalView extends AppView {
         this.container.appendChild(this.modalNotification);
     }
 
-    modalPartActive(part, basiss, basisID, listTanks, tankID) {
-        console.log(part);
+    modalPartActive(part, basiss, basisID, listTanks, tankID, basisSupplier) {
+        console.log(basisSupplier);
         // устанавливаем id части заявки
         this.modalPart.dataset.partid = part.id;
         // Номер распределенной заявки, если номера нет то заявка не распределена
@@ -69,6 +69,8 @@ export class ModalView extends AppView {
         this.modalPart.dataset.numaddress = part.num_address;
         // numbasis
         this.modalPart.dataset.numbasis = part.num_basis;
+        // Заголовок
+        this.modalPart.querySelector('.modal-card-title').textContent = Number(part.kind_order) === 2 ? 'Отгрузка' : 'Загрузка';
         // Базис
         // this.modalPart.querySelector('select[name="basisName"]').textContent = '';
         // this.modalPart.querySelector('select[name="basisName"]').appendChild(this.setBasiss(basiss));
@@ -77,6 +79,7 @@ export class ModalView extends AppView {
         // this.modalPart.querySelector('input[name="basis"]').dataset.code = basisID;
         // this.modalPart.querySelector('select[name="basisName"]').value = basisID;
         // Емкость
+        this.modalPart.querySelector('.lable-tank').textContent = basisSupplier ? 'Спецификация' : 'Емкость';
         this.modalPart.querySelector('select[name="tankName"]').textContent = '';
         this.modalPart.querySelector('select[name="tankName"]').appendChild(this.setTanks(listTanks, part.product.name_product));
         this.modalPart.querySelector('select[name="tankName"]').value = tankID;
@@ -525,7 +528,7 @@ export class ModalView extends AppView {
 
         if (!weight || !volum || !density) return console.log('Не все  переменные найдены');
 
-        density.value = (Number(weight) * 1000 / Number(volum)).toFixed(3);
+        density.value = (Number(weight) * 1000 / Number(volum)).toFixed(4);
     }
 
     // Принять полную массу
@@ -596,9 +599,9 @@ export class ModalView extends AppView {
 
     // Ограничение дленны ввода числа знаков после запятой
     isNumberTrim(e) {
-        console.log('isNumberTrim', e.target.value.replace(/(\d+\.\d{2})\d+/gm, '$1'));
+        console.log('isNumberTrim', e.target.value.replace(/(\d+\.\d{3})\d+/gm, '$1'));
         // if (e.target.value.match(/(\d+\.\d{2}$)/gm)) {
-            e.target.value = e.target.value.replace(/(\d+\.\d{2})\d+/gm, '$1');
+            e.target.value = e.target.value.replace(/(\d+\.\d{3})\d+/gm, '$1');
         // }
 
     }

@@ -31,7 +31,7 @@
 
 <body class="color-bg body-min-heigh">
 
-    <div class="app-oilbase">
+    <div class="app-oilbase width-1420">
 
 
 
@@ -95,7 +95,7 @@
     <!-- Шаблон архива -->
     <template id="archive">
         <div class="archive p-3">
-            <div class="columns table-nav">
+            <div class="columns is-mobile table-nav width-1420">
                 <div class="column is-3">
                     <nav class="navbar color-bg" role="navigation" aria-label="main navigation">
                         <div class="navbar-brand">
@@ -103,12 +103,12 @@
                                 <h2 class="title is-2 basis-name">Архив</h2>
                             </div>
 
-                            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                            <!-- <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
                                 data-target="navbarBasicExample">
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
-                            </a>
+                            </a> -->
                         </div>
 
                         <div id="navbarBasicExample" class="navbar-menu">
@@ -160,14 +160,13 @@
                 </div>
             </div>
 
-            <div
-                class="columns is-multiline table-row has-background-white color-border-t is-clickable table-stayle mb-5 archive-table-width">
+            <div class="columns is-mobile is-multiline table-row has-background-white color-border-t is-clickable table-stayle mb-5 archive-table-width width-1420">
                 <div class="column is-12 subtable">
                     <!-- has-background-white -->
-                    <div class="columns is-multiline ">
+                    <div class="columns is-mobile is-multiline ">
 
                         <div class="column is-12 subtable-head color-border-b is-uppercase">
-                            <div class="columns is-multiline">
+                            <div class="columns is-mobile is-multiline">
                                 <div class="column is-1">Дата</div>
                                 <div class="column is-1">Время</div>
                                 <div class="column is-1">Базис</div>
@@ -202,7 +201,7 @@
 
     <!-- Шаблон архива точка -->
     <template id="tank-history-point">
-        <div class="columns tank-history-point">
+        <div class="columns is-mobile tank-history-point">
             <div class="column is-1 date"></div>
             <div class="column is-1 time"></div>
             <div class="column is-1 text_basis"></div>
@@ -449,7 +448,7 @@
                         <!-- Емкость -->
                         <div class="column is-6">
                             <div class="field">
-                                <label class="label">Емкость</label>
+                                <label class="label lable-tank">Емкость</label>
                                 <div class="control">
                                     <div class="select width-100">
                                         <select name="tankName" class="width-100 input-order js-type">
@@ -762,9 +761,9 @@
     <!-- Шаблон не распределенной заявки -->
     <template id="undistributed">
         <!-- draggable="true" -->
-        <div class="columns color-border-b subtable-row undistributed">
+        <div class="columns is-mobile color-border-b subtable-row undistributed">
             <div class="column is-1 pl-5">
-                <div class="columns">
+                <div class="columns is-mobile">
                     <div class="column">
                         <span class="part-number has-text-centered">1</span>
                     </div>
@@ -833,7 +832,7 @@
     <template id="tank">
         <!-- Емкость -->
         <div class="column is-12 tank mb-0 pb-0">
-            <div class="columns table-content mb-0 is-flex is-align-items-center tank-text-fs-14 has-text-weight-bold">
+            <div class="columns is-mobile table-content mb-0 is-flex is-align-items-center tank-text-fs-14 has-text-weight-bold">
                 <div class="column is-1 is-flex is-align-items-center">
                     <div class="columns height-100 ">
                         <div class="column is-5 pl-5 is-flex-js">
@@ -875,9 +874,9 @@
                 <div class="columns is-multiline ">
 
                     <div class="column is-12 subtable-head color-border-top color-border-b-dark">
-                        <div class="columns is-multiline">
+                        <div class="columns is-mobile is-multiline">
                             <div class="column is-1 pl-5">
-                                <div class="columns">
+                                <div class="columns is-mobile">
                                     <div class="column">
                                         <span></span>
                                     </div>
@@ -921,12 +920,12 @@
                                 <h3 class="title is-2 basis-name px-4 py-3"></h3>
                             </div>
 
-                            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                            <!-- <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
                                 data-target="navbarBasicExample">
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
-                            </a>
+                            </a> -->
                         </div>
 
                         <div id="navbarBasicExample" class="navbar-menu">
@@ -983,7 +982,7 @@
                 <div class="columns is-gapless is-flex-direction-column table-basis has-background-white table-stayle">
                     <h5 class="title is-3 mt-4 ml-4 title-distributed">Емкости</h5>
                     <div class="table-item">
-                        <div class="columns table-head is-uppercase">
+                        <div class="columns is-mobile table-head is-uppercase">
                             <div class="column is-1 "></div>
                             <div class="column"></div>
                             <div class="column is-1 ">Продукт</div>

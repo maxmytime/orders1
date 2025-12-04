@@ -674,8 +674,8 @@ export class ModalController {
 
 
     // Открытие модального окна для редактирования части заявки
-    openModalEditPart(part, basiss, basisID, listTanks, tankID) {
-        this.view.modalPartActive(part, basiss, basisID, listTanks, tankID);
+    openModalEditPart(part, basiss, basisID, listTanks, tankID, basisSupplier) {
+        this.view.modalPartActive(part, basiss, basisID, listTanks, tankID, basisSupplier);
         this.view.validationMassFild();
     }
 

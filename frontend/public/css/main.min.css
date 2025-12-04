@@ -23342,6 +23342,23 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
   word-break: break-all;
 }
 
+.width-1420 {
+  min-width: 1420px;
+}
+
+.navbar {
+  z-index: 0;
+}
+
+.fixed-navbar {
+  z-index: 1;
+}
+
+body {
+  width: 100%;
+  overflow-x: scroll;
+}
+
 @media (max-width: 940px) {
   .order-header {
     width: 100%;
@@ -23953,6 +23970,7 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
 
 .archive {
   position: absolute;
+  overflow-x: scroll;
   min-height: 100vh;
   top: 0;
   left: 0;

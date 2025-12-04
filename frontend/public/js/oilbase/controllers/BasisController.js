@@ -57,7 +57,7 @@ export class BasisController {
             const part = this.model.getPart(element.dataset.id);
             console.log(part);
             const basiss = this.model.getBasiss();
-            this.modalController.openModalEditPart(part.part, basiss, part.basisID, part.listTanks, part.tankID);
+            this.modalController.openModalEditPart(part.part, basiss, part.basisID, part.listTanks, part.tankID, part.basisSupplier);
             // this.validationMassFild();
         }
     }
