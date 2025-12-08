@@ -78,7 +78,7 @@ export class TankView extends AppView {
 
     // Рендер емкости
     renderTank(item) {
-        console.log('renderTank');
+        // console.log('renderTank');
         const template = this.templateTank.cloneNode(true);
         // console.log(item);
         // Идентификатор емкости
@@ -104,7 +104,7 @@ export class TankView extends AppView {
         // Остаток, текущий
         this.setValue('current-balance', Number(item.model.volume).toFixed(0), template);
         // Остаток, плановый
-        console.log(Math.round(Number(item.model.volume_plan)));
+        // console.log(Math.round(Number(item.model.volume_plan)));
         this.setValue('planned-balance', Math.round(Number(item.model.volume_plan)), template);
 
         // console.log(template);
@@ -135,14 +135,22 @@ export class TankView extends AppView {
     }
 
     updateVolume(objectUpdateVolume) {
-        this.container.querySelector('.planned-balance').textContent = Number(objectUpdateVolume.volume_plan).toFixed(0);
+        const plannedBalance = this.container.querySelector('.planned-balance');
+        plannedBalance.textContent = Number(objectUpdateVolume.volume_plan).toFixed(0);
+        if (Number(objectUpdateVolume.volume_plan) < 0) plannedBalance.classList.add('has-text-danger');
+        if (Number(objectUpdateVolume.volume_plan) >= 0) plannedBalance.classList.remove('has-text-danger');
         const parts = [...this.container.querySelectorAll('.distributed')];
         // objectUpdateVolume.volume_part
         for (const [key, value] of Object.entries(objectUpdateVolume.volume_part)) {
             const part = parts.find(part => part.dataset.id === key);
             // console.log(parts);
             if (part) {
-                part.querySelector('.current-balance').textContent = Number(value).toFixed(0);
+                const currentBalance = part.querySelector('.current-balance');
+                currentBalance.textContent = Number(value).toFixed(0);
+                // console.log(Number(value));
+                // if (Number(value) < 0) currentBalance.classList.add('has-text-danger');
+                // if (Number(value) >= 0) currentBalance.classList.remove('has-text-danger');
+
             }
         }
 

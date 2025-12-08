@@ -23338,7 +23338,7 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
   margin-bottom: 5px;
 }
 
-.archive-table-width {
+.archive-table-width, .distributed {
   word-break: break-all;
 }
 

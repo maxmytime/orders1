@@ -4,7 +4,7 @@ import { Helpers } from '/js/oilbase/utils/Helpers.js';
 export class ModalView extends AppView {
     constructor() {
         super();
-        this.container = document.querySelector('.app-oilbase');  // Контейнер приложения. На текущий момент на него вешаются все события
+        this.container = document.querySelector('.app-oilbase');     // Контейнер приложения. На текущий момент на него вешаются все события
         // this.templateModalPart = this.getTemplate('modal-part');  // Модальное окно части заявки
         // this.templateModalTank = this.getTemplate('modal-tank');  // Модальное окно емкости
         this.modalPart = null;

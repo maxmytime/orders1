@@ -54,7 +54,7 @@ export class Helpers {
             if (el) {
                 el.textContent = '';
             } else {
-                console.log('Элемент не найден:', selector);
+                // console.log('Элемент не найден:', selector);
             }
         }
 
