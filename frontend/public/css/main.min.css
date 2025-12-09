@@ -23356,6 +23356,7 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
 
 body {
   width: 100%;
+  height: 100vh;
   overflow-x: scroll;
 }
 
@@ -23971,7 +23972,7 @@ body {
 .archive {
   position: absolute;
   overflow-x: scroll;
-  min-height: 100vh;
+  height: 100vh;
   top: 0;
   left: 0;
   right: 0;
