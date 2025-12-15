@@ -579,7 +579,13 @@ app.post('/postupdatetank', jsonParser, function (request, response) {
 // Запрос спиская распределенных частей заявок
 app.get("/getdispatchlist", function(request, response) {
     const lp = testMode ? pass : request.cookies.token;
-    const url = 'http://vpn.glados.ru/base/hs/siteapi/GetDispatchList';
+    let url = '';
+    if (request.query.tank) {
+        url = 'http://vpn.glados.ru/base/hs/siteapi/GetDispatchList?CodeTank=' + `${request.query.tank}`;
+    } else {
+        url = 'http://vpn.glados.ru/base/hs/siteapi/GetDispatchList';
+    }
+
     let result;
 
     fetch(url, {

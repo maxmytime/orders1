@@ -252,6 +252,9 @@ export class ModalController {
                 "listOfDistributedApplications": []
             }
 
+            const densityOld = Number(modalTank.dataset.density);
+            const densityNew = Number(tank.density);
+
             // console.log(modalTank.dataset.tankId);
 
             const tankController = this.tankControllerFactory.create(tank);
@@ -260,6 +263,26 @@ export class ModalController {
 
             const statusUpdateTankServer = await this.api.fetchPostData('/postupdatetank', objectUpdateTank);
             // console.log(statusUpdateTankServer);
+
+            // Обновление плотности если изменеилась плотность
+            if (densityNew !== densityOld && objectUpdateTank.type_action_tank === 2) {
+                console.log('Плотность в емкости изменилась');
+                const partList = this.model.getTank(modalTank.dataset.tankId).tank.listOfDistributedApplications;
+                console.log(partList);
+                if (partList.length !== 0) {
+                    const updateList = await this.api.fetchGetData(`/getdispatchlist?tank=${tank.code}`);
+                    console.log(updateList.Data.OrdersList);
+                    for (const partDispatch of updateList.Data.OrdersList) {
+                        const part = partList.find(part => part.number === partDispatch.number);
+                        if (part) {
+                            part.density = partDispatch.density;
+                            part.weight = partDispatch.weight;
+                        }
+                    }
+                }
+
+
+            }
 
             if (statusUpdateTankServer.Status === 'Error') {
 

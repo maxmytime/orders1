@@ -169,6 +169,7 @@ export class ModalView extends AppView {
         this.modalTank.dataset.tankId = tank.tank.id;
         this.modalTank.dataset.basisName = tank.tank.name_base;
         this.modalTank.dataset.code = tank.tank.code;
+        this.modalTank.dataset.density = tank.tank.density;
         // Имя емскости
         this.modalTank.querySelector('input[name="nameTank"]').value = tank.tank.name;
         // Базис
