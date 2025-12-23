@@ -477,7 +477,7 @@ app.post('/newaddress', jsonParser, function (request, response) {
 io.on('connection', (socket) => {
     console.log('Коннект');
     socket.on('save', () => {
-        // console.log('message: ' + msg);
+        console.log('message: ');
         io.emit('refreshKanban');
         // socket.broadcast.emit('hi');
         // socket.broadcast.emit('save', msg);
@@ -485,6 +485,22 @@ io.on('connection', (socket) => {
 
     socket.on('delete', () => {
         io.emit('refreshArchive');
+    });
+
+    socket.on('order:save', (msg) => {
+        io.emit('order-save', msg);
+    });
+
+    socket.on('order:create', (msg) => {
+        io.emit('order-create', msg);
+    });
+
+    socket.on('ordergoods:create', (msg) => {
+        io.emit('ordergoods-create', msg);
+    });
+
+    socket.on('ordergoods:save', (msg) => {
+        io.emit('ordergoods-save', msg);
     });
 });
 

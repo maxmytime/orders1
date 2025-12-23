@@ -13,6 +13,7 @@ import { sliderActive, addDot } from '/js/libs/slider.js';
 
 window.addEventListener('DOMContentLoaded', () => {
 
+    const socket = io();
     // console.log(settings.protocol, settings.host, settings.port);
 
     const getURL = (settings) => {
@@ -351,7 +352,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(orderData)
             }).then(response => response.text())
               .then(commits => {
-                    console.log(commits);
+                    console.log(JSON.stringify(orderData));
                     alert('Продолжить?')
                     if (JSON.parse(commits).Status === 'Error') {
                         alert(JSON.parse(commits).Status);
@@ -359,6 +360,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
 
                     if (JSON.parse(commits).Status === 'OK') {
+                        if (orderData.action_type === 2) socket.emit('ordergoods:save', JSON.parse(commits));
+                        if (orderData.action_type === 1) socket.emit('ordergoods:create', JSON.parse(commits));
                         document.location = 'orders';
                     }
             });

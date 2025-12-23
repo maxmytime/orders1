@@ -64,19 +64,19 @@ export class Helpers {
             if (el) {
                 el.remove();
             } else {
-                console.log('setDisabled: Элемент не найден:', selector);
+                // console.log('setDisabled: Элемент не найден:', selector);
             }
         }
 
         const noDraggable = (selector) => {
             const draggableEl = container.querySelectorAll(selector);
-            console.log(draggableEl);
+            // console.log(draggableEl);
             if (draggableEl.length) {
                 draggableEl.forEach(el => {
                     el.draggable = false;
                 });
             } else {
-                console.log('noDraggable: Элемент не найден:', selector);
+                // console.log('noDraggable: Элемент не найден:', selector);
             }
         }
 

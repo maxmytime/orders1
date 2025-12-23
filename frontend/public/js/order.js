@@ -5859,14 +5859,18 @@ window.addEventListener('DOMContentLoaded', () => {
         }).then(response => response.text())
             .then(commits => {
                 console.log(commits);
-                // alert('Продолжить?');
+                console.log(JSON.stringify(orderData));
+
+                alert('Продолжить?');
                 if (JSON.parse(commits).Status === 'Error') {
                     alert(JSON.parse(commits).Status);
                     run = true;
                 }
 
                 if (JSON.parse(commits).Status === 'OK') {
-                    // socket.emit('save order', 'записан заказ');
+                    if (orderData.action_type === 2) socket.emit('order:save', JSON.parse(commits));
+                    if (orderData.action_type === 1) socket.emit('order:create', JSON.parse(commits));
+
                     document.location = 'orders';
                 }
             });
@@ -5974,9 +5978,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // console.log(JSON.stringify(orderData));
             sendOrder(orderData);          // Отправка данных на сервер
-            // alert('STOP');
+            // alert('ok');
             // socket.emit('save', 'записан заказ');
             socket.emit('save');
+            // socket.emit('order:create');
 
         })
     })

@@ -2,7 +2,7 @@ import settings from '/js/config.js';
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 
 export class BasisController {
-    constructor(model, view, modalController, partControllerFactory, tankControllerFactory, helpers) {
+    constructor(model, view, modalController, partControllerFactory, tankControllerFactory, helpers, socket) {
         this.model = model;
         this.view = view;
         this.modalController = modalController;
@@ -10,6 +10,7 @@ export class BasisController {
         this.tankControllerFactory = tankControllerFactory;
         this.api = new ApiClient();
         this.helpers = helpers;
+        this.socket = socket.socket;
 
 
 
@@ -28,8 +29,50 @@ export class BasisController {
         // Контроллер подписывается на событие открыть уведомление
         this.view.getContainer().addEventListener('click', this.deleteTankNotification.bind(this));
 
+        // Прослушивание соккетов
+        // Сохранена заявка в сервисе заявок
+        this.socket.on('order-save', this.getOrder.bind(this));
+        // Создана новая заявка в сервисе заявок
+        this.socket.on('order-create', this.getOrder.bind(this));
+
+        this.socket.on('ordergoods-save', (msg) => {
+            console.log('ordergoods-save', msg);
+        });
+
+        this.socket.on('ordergoods-create', (msg) => {
+            console.log('ordergoods-create', msg);
+        });
+
+
     }
 
+    // Получаем вновь созданную заявку
+    // Получает новую выдачу для канбана и находит вновь созаднную заявку
+    // Добавляет ную заявку в модель
+    // Отрисовывает новую заявку в интерфесе
+    async getOrder(msg) {
+        console.log('order-save', msg);
+        const number = msg.Data;
+        console.log(this.api);
+        // const order = await this.api.fetchGetData(`/GetOrderDetails?OrderID=${number}`);
+        const response = await this.api.fetchGetData(`/orderlist?archieved=false`);
+        const ordersForKanban = response.Data.OrdersList.filter(order => order.number === number);
+        const partList = this.model.getListPart(ordersForKanban);
+
+        for (const part of partList) {
+            const index = this.model.addPart(part, part.nameBasis);
+            console.log(index);
+            const basisID = this.model.getBasis(part.nameBasis).id;
+            const container = document.querySelector(`div[data-id=${basisID}] .container-undistributed`);
+            console.log(container);
+            console.log(basisID);
+            const partController = this.partControllerFactory.create(part, container, index);
+            const partTpl =  partController.render();
+            const children = [ ...container.children];
+            container.insertBefore(partTpl, children[index]);
+        }
+
+    }
 
 
     // Открыть модальное окно для редактирования емкости
@@ -47,7 +90,7 @@ export class BasisController {
             }
 
         }
-    }
+    };
 
     // Открть модальное окно для редактирования части заявки
     editPart(e) {

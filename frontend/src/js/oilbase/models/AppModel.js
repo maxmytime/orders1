@@ -346,7 +346,7 @@ export class AppModel { // Выполняет инициализацию при�
             // console.log(order.kind_order);
             order.array_addresses.forEach(addres => {     // В заявке находим список адресов и перебераем его
                 addres.array_basises.forEach(basis => {   // В адресе находим список базисов и перебераем его
-                    console.log(basis, order);
+                    // console.log(basis, order);
                     if (basis.status_logistic != 2) { // basis.status_logistic не пропускаем отгруженые заявки
                         listParts.push({
                             "id": this.helpers.getID(),

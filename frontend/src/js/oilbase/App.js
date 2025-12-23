@@ -12,6 +12,7 @@ import { NavbarModel } from '/js/oilbase/navbar/NavbarModel.js';
 import { NavbarController } from '/js/oilbase/navbar/NavbarController.js';
 import { NavbarView } from '/js/oilbase/navbar/NavbarView.js';
 import { BasisControllerFactory } from '/js/oilbase/BasisControllerFactory.js';
+import { SocketService } from '/js/oilbase/services/SocketService.js';
 
 
 export class App {
@@ -34,13 +35,16 @@ export class App {
             this.helpers
         );
 
+        this.socket = new SocketService();
+
         this.basisController = new BasisController(
             this.model,
             this.basisView,
             this.modalController, // Внедряем зависимость
             this.partControllerFactory, // Добавляем фабрику создания части заявки
             this.tankControllerFactory, // Добавляем фабрику создания емкости
-            this.helpers
+            this.helpers,
+            this.socket
         );
 
         this.modalController.basisController = this.basisController;

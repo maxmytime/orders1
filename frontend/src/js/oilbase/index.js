@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const dataAllBases = await api.fetchGetData(`/getbasises`);
         const dataTankList = await api.fetchGetData(`/gettanklist`);
         const dataDispatchList = await api.fetchGetData(`/getdispatchlist`);
-        console.log(dataDispatchList);
+        console.log(dataOrders);
 
         const undistributeParts = dataOrders.Data.OrdersList;
         const distributeParts = dataDispatchList.Data.OrdersList;
@@ -36,15 +36,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация приложения
     initApp();
-
-    // const updateApp = () => {
-    //     const appOld = document.querySelector('.app-oilbase');
-    //     appOld.textContent = '';
-    //     const appNew = appOld.cloneNode(true);
-    //     appOld.parentNode.replaceChild(appNew, appOld);
-
-
-    //     initApp();
-    // }
-    // setInterval(updateApp, 60000);
 });
