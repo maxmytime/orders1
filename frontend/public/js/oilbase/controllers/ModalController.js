@@ -1,13 +1,14 @@
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 
 export class ModalController {
-    constructor(model, view, partControllerFactory, tankControllerFactory, helpers) {
+    constructor(model, view, partControllerFactory, tankControllerFactory, helpers, socket) {
         this.model = model;
         this.view = view;
         this.api = new ApiClient();
         this.helpers = helpers;
         this.tankControllerFactory = tankControllerFactory;
         this.partControllerFactory = partControllerFactory;
+        this.socket = socket.socket;
 
         // Контроллер подписывается на событие ввода данных в поле Базис,
         // при вводе открывается выпадающий список
@@ -207,6 +208,7 @@ export class ModalController {
                 basis.listOfTanks.push(tank);
                 tankController.renderNewTank();
                 this.view.modalClose(e);
+                this.socket.emit('tank:create', statusCreatTank);
             } else {
                 console.log(2);
                 alert('Проверьте правильность заполнения полей');

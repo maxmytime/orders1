@@ -484,23 +484,27 @@ io.on('connection', (socket) => {
     });
 
     socket.on('delete', () => {
-        io.emit('refreshArchive');
+        socket.broadcast.emit('refreshArchive');
     });
 
     socket.on('order:save', (msg) => {
-        io.emit('order-save', msg);
+        socket.broadcast.emit('order-save', msg);
     });
 
     socket.on('order:create', (msg) => {
-        io.emit('order-create', msg);
+        socket.broadcast.emit('order-create', msg);
     });
 
     socket.on('ordergoods:create', (msg) => {
-        io.emit('ordergoods-create', msg);
+        socket.broadcast.emit('ordergoods-create', msg);
     });
 
     socket.on('ordergoods:save', (msg) => {
-        io.emit('ordergoods-save', msg);
+        socket.broadcast.emit('ordergoods-save', msg);
+    });
+
+    socket.on('tank:create', (msg) => {
+        socket.broadcast.emit('tank-create', msg);
     });
 });
 

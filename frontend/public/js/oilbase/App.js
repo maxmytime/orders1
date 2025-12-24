@@ -26,16 +26,17 @@ export class App {
         this.archiveControllerFactory = new ArchiveControllerFactory(this.helpers);
         // this.basisControllerFactory = new BasisControllerFactory();
 
+        this.socket = new SocketService();
 
         this.modalController = new ModalController(
             this.model,
             this.modalView,
             this.partControllerFactory,
             this.tankControllerFactory,
-            this.helpers
+            this.helpers,
+            this.socket
         );
 
-        this.socket = new SocketService();
 
         this.basisController = new BasisController(
             this.model,
