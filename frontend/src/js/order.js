@@ -5948,6 +5948,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Событие кнопки Создание
     createOrder.addEventListener('click', (e) => {
+        console.log('createOrder.addEventListener');
         const validation = validVal();
         const validationVolume = daelsVolume();
 
@@ -5955,6 +5956,7 @@ window.addEventListener('DOMContentLoaded', () => {
             run = false;
             const orderData = getOrder();  // Сбор данных о заявке и клиенте
             console.log(JSON.stringify(orderData));
+            orderData.action_type = 1;
             // alert('ok');
             sendOrder(orderData);          // Отправка данных на сервер
             // socket.emit('save order', 'записан заказ');

@@ -506,6 +506,10 @@ io.on('connection', (socket) => {
     socket.on('tank:create', (msg) => {
         socket.broadcast.emit('tank-create', msg);
     });
+
+    socket.on('tank:save', (msg) => {
+        socket.broadcast.emit('tank-save', msg);
+    });
 });
 
 

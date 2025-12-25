@@ -265,6 +265,7 @@ export class ModalController {
 
             const statusUpdateTankServer = await this.api.fetchPostData('/postupdatetank', objectUpdateTank);
             // console.log(statusUpdateTankServer);
+            if (statusUpdateTankServer.Status === 'OK') this.socket.emit('tank:save', statusUpdateTankServer);
 
             // Обновление плотности если изменеилась плотность
             if (densityNew !== densityOld && objectUpdateTank.type_action_tank === 2) {
@@ -304,13 +305,6 @@ export class ModalController {
                     this.view.modalClose(e);
                 }
             }
-
-
-
-            // + Получить объект для обновления емкости на сервере
-            // + Обновить данные на сервере
-            // Обновить данные в модели
-            // Обнвоить интерфес
 
 
         }

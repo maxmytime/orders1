@@ -222,9 +222,9 @@ export class AppModel { // Выполняет инициализацию при�
     // Получаем базис по имени
     getBasis(nameBasis) {
         for (const basis of this.#listBasiss) {
-            console.log(basis.name, nameBasis);
+            // console.log(basis.name, nameBasis);
             if (basis.name === nameBasis) {
-                // console.log(basis);
+                console.log(basis);
                 return basis;
             }
         }
@@ -537,8 +537,8 @@ export class AppModel { // Выполняет инициализацию при�
 
     // Добавить часть заявки в емкость
     addPart(part, basisName, tankID = 0) {
-        console.log('addPart()');
-        console.log(part, basisName, tankID);
+        console.log('addPart()', part, basisName, tankID);
+        // console.log(part, basisName, tankID);
         if (tankID != '0') {
             for (const basis of this.basiss) {
                 // if (basisName === basis.name) {
@@ -547,11 +547,11 @@ export class AppModel { // Выполняет инициализацию при�
                         if (tankID === tank.id) {
                             // console.log(part);
                             const partObj = this.sortParts(tank.listOfDistributedApplications, part);
-                            console.log(partObj);
+                            // console.log(partObj);
                             // partObj.part.density = tank.density;
                             tank.listOfDistributedApplications.splice(partObj.index, 0, partObj.part);
                             // tank.listOfDistributedApplications.push(part);
-                            console.log(tank.listOfDistributedApplications);
+                            // console.log(tank.listOfDistributedApplications);
                             return partObj.index;
                         }
                     }

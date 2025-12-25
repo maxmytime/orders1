@@ -45,7 +45,7 @@ export class TankView extends AppView {
     }
 
     renderUpdateTank(item) {
-        console.log(item.model);
+        console.log(item);
         const container = document.querySelector(`div[data-id='${item.model.id}']`);
         // Идентификатор емкости
         // template.dataset.id = item.id;
@@ -120,6 +120,7 @@ export class TankView extends AppView {
     }
 
     setValue(selector, value, template) {
+        // console.log('setValue(selector, value, template)', selector, value, template);
         const element = template.querySelector('.' + selector);
         if (element) element.textContent = value;
     }

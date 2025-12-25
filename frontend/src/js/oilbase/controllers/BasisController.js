@@ -12,7 +12,7 @@ export class BasisController {
         this.api = new ApiClient();
         this.helpers = helpers;
         this.socket = socket.socket;
-        this.updatingModel = new UpdatingModel(model, partControllerFactory, tankControllerFactory, this.api, this.helpers);
+        this.updatingModel = new UpdatingModel(model, partControllerFactory, tankControllerFactory, this.api, this.helpers, this);
 
 
 
@@ -34,19 +34,20 @@ export class BasisController {
         // Прослушивание соккетов
         // Сохранена заявка в сервисе заявок
         // this.socket.on('order-save', this.getOrder.bind(this));
-        // Создана новая заявка в сервисе заявок
+        // Создана новая заявка в сервисе заявок - расход
         this.socket.on('order-create', this.updatingModel.orderCreated.bind(this.updatingModel));
+        this.socket.on('order-save', this.updatingModel.orderSave.bind(this.updatingModel));
 
         this.socket.on('ordergoods-save', (msg) => {
             console.log('ordergoods-save', msg);
         });
 
-        this.socket.on('ordergoods-create', (msg) => {
-            console.log('ordergoods-create', msg);
-        });
-
+        // Создана новая заявка в сервисе заявок - приход
+        this.socket.on('ordergoods-create', this.updatingModel.orderCreated.bind(this.updatingModel));
         // Создана новая емкость
         this.socket.on('tank-create', this.updatingModel.tankCreated.bind(this.updatingModel));
+        // Данные в емкости обновились
+        this.socket.on('tank-save', this.updatingModel.tankUpdate.bind(this.updatingModel));
 
 
     }
@@ -288,7 +289,7 @@ export class BasisController {
 
 
                     // Рендер распределенных заявок
-                    if (tank.listOfDistributedApplications.length) {
+                    if (tank.listOfDistributedApplications?.length) {
                         const subtable = tankContainer.querySelector('.subtable-rows');
                         // console.log(tankContainer.querySelector('.subtable-rows'));
                         tank.listOfDistributedApplications.forEach((part, index) => {
@@ -319,5 +320,7 @@ export class BasisController {
             }
 
         });
+
+        console.log(basiss);
     }
 }
