@@ -266,6 +266,7 @@ export class BasisController {
         // console.log(this.model);
         const basiss = basisData || this.model.basiss;
         basiss.forEach(basis => {
+            // console.log(basis);
             if (basis.listOfUndistributedApplications.length || basis.listOfTanks.length || basisData) {
                 // console.log(basis);
                 const containers = this.view.renderBasis(basis);
@@ -321,6 +322,6 @@ export class BasisController {
 
         });
 
-        console.log(basiss);
+        // console.log(basiss);
     }
 }

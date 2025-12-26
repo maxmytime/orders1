@@ -244,6 +244,16 @@ export class AppModel { // Выполняет инициализацию при�
         return basiss;
     }
 
+    // Получаем список всех базисов
+    getBasissFull() {
+        const basiss = [];
+
+        this.#listBasiss.forEach(basis => {
+            basiss.push(basis);
+        })
+        return basiss;
+    }
+
     // Обновить емкость
     updateTank(tank, tankID) {
         // console.log(this.#listBasiss);

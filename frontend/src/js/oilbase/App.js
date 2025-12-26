@@ -13,6 +13,9 @@ import { NavbarController } from '/js/oilbase/navbar/NavbarController.js';
 import { NavbarView } from '/js/oilbase/navbar/NavbarView.js';
 import { BasisControllerFactory } from '/js/oilbase/BasisControllerFactory.js';
 import { SocketService } from '/js/oilbase/services/SocketService.js';
+import { NavbarRegionModel } from '/js/oilbase/models/NavbarRegionModel.js';
+import { NavbarRegionView } from '/js/oilbase/views/NavbarRegionView.js';
+import { NavbarRegionController } from '/js/oilbase/controllers/NavbarRegionController.js';
 
 
 export class App {
@@ -56,6 +59,11 @@ export class App {
         })
         this.navbarView = new NavbarView(this.helpers);
         this.navbarController = new NavbarController(this.navbarModel.model, this.navbarView, this.archiveControllerFactory);
+
+        // Навигационная панель по регионам
+        this.navbarRegionModel = new NavbarRegionModel(this.model.getBasissFull());
+        this.navbarRegionView = new NavbarRegionView();
+        this.navbarRegionController = new NavbarRegionController(this.navbarRegionModel, this.navbarRegionView, this.basisController);
     }
 
 
@@ -64,5 +72,6 @@ export class App {
         this.modalController.init();
         this.navbarController.init();
         this.basisController.init();
+        this.navbarRegionController.init();
     }
 }

@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const dataAllBases = await api.fetchGetData(`/getbasises`);
         const dataTankList = await api.fetchGetData(`/gettanklist`);
         const dataDispatchList = await api.fetchGetData(`/getdispatchlist`);
-        // console.log(dataTankList);
+        // console.log(dataRegion);
 
         const undistributeParts = dataOrders.Data.OrdersList;
         const distributeParts = dataDispatchList.Data.OrdersList;

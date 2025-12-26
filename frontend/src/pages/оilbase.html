@@ -37,6 +37,8 @@
 
 
 
+
+
         <div class="preloader is-fixed is-flex width-100 height-100v is-hidden">
             <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> -->
             <div class="fire">
@@ -162,7 +164,8 @@
                 </div>
             </div>
 
-            <div class="columns is-mobile is-multiline table-row has-background-white color-border-t is-clickable table-stayle mb-5 archive-table-width width-1420">
+            <div
+                class="columns is-mobile is-multiline table-row has-background-white color-border-t is-clickable table-stayle mb-5 archive-table-width width-1420">
                 <div class="column is-12 subtable">
                     <!-- has-background-white -->
                     <div class="columns is-mobile is-multiline ">
@@ -234,7 +237,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title has-text-weight-bold"></p>
-                    <button class="delete close-modal" aria-label="close"></button>
+                    <button class="delete delete-modal close-modal" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="columns is-multiline">
@@ -430,7 +433,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title has-text-weight-bold">Отгрузка/Загрузка</p>
-                    <button class="delete" aria-label="close"></button>
+                    <button class="delete delete-modal" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="columns is-multiline card-part">
@@ -834,7 +837,8 @@
     <template id="tank">
         <!-- Емкость -->
         <div class="column is-12 tank mb-0 pb-0">
-            <div class="columns is-mobile table-content mb-0 is-flex is-align-items-center tank-text-fs-14 has-text-weight-bold">
+            <div
+                class="columns is-mobile table-content mb-0 is-flex is-align-items-center tank-text-fs-14 has-text-weight-bold">
                 <div class="column is-1 is-flex is-align-items-center">
                     <div class="columns height-100 ">
                         <div class="column is-5 pl-5 is-flex-js">
@@ -1022,6 +1026,51 @@
 
         </div>
     </template>
+
+    <!-- Шаблоны нафигации по регионам -->
+    <!-- Шаблон панели навигации -->
+    <template id="navbar-region">
+        <div class="navbar-region">
+            <nav class="navbar navbar-region" role="navigation" aria-label="main navigation">
+                <div class="navbar-menu">
+                    <div class="navbar-start">
+
+                    </div>
+                </div>
+
+            </nav>
+            <div class="tags are-medium mt-5">
+
+            </div>
+        </div>
+
+    </template>
+
+    <!-- Шаблон пункта меню -->
+    <template id="navbar-item-region">
+        <div class="navbar-item navbar-item-region has-dropdown is-hoverable">
+            <a class="navbar-link navbar-link-region has-text-weight-bold">Dropdown</a>
+
+            <div class="navbar-dropdown">
+
+            </div>
+
+        </div>
+    </template>
+
+    <!-- Шаблон подпункта меню -->
+    <template id="navbar-item-basis">
+        <a class="navbar-item navbar-item-basis">Profile</a>
+    </template>
+
+    <!-- Шаблон тега -->
+    <template id="tag">
+        <span class="tag">
+            <span class="tag-name"></span>
+            <button class="delete delete-tag-navbar-region ml-3"></button>
+        </span>
+    </template>
+
 
     <script src="js/bulma-calendar.min.js"></script>
     <script type="module" src="js/oilbase/index.js"></script>

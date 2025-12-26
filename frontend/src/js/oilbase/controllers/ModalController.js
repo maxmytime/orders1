@@ -614,7 +614,7 @@ export class ModalController {
 
     // Кнопка закрыть модальное окно без внесения изменений
     closeModal(e) {
-        if (e.target.classList.contains('delete')) {
+        if (e.target.classList.contains('delete-modal')) {
             console.log('closeModal');
             this.view.modalClose(e);
         }

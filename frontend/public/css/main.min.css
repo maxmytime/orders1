@@ -23980,3 +23980,10 @@ body {
   margin-left: 56px;
   margin-right: 6px;
 }
+
+.navbar-region {
+  z-index: 2000;
+}
+.navbar-region .navbar-item-basis {
+  cursor: pointer;
+}
