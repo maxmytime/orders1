@@ -25,9 +25,13 @@ export class PartView extends AppView {
         // Парядковый номер
         template.querySelector('.part-number').textContent = index;
         if (part.part.kind_order == 1) {
-            template.querySelector('.part-number').classList.add('part-number-bg');
-        } else if (part.part.kind_order == 2) {
             template.querySelector('.part-number').classList.add('part-number-bb');
+        } else if (part.part.kind_order == 2) {
+            template.querySelector('.part-number').classList.add('part-number-bg');
+        }
+
+        if (part.part.type_order === 1) {
+            template.querySelector('.lock .fa-lock').classList.remove('is-hidden');
         }
         // Дата загрузки/дата прихода
         // template.querySelector('.date_dispatch').textContent = this.helpers.convertDateTo1С(part.part.date_dispatch);
@@ -66,7 +70,7 @@ export class PartView extends AppView {
 
     // Рендер не распределенной заявки
     renderPart(part, index) {
-        // console.log(part.part);
+        console.log(part.part);
         const template = this.templateUndistributed.cloneNode(true);
 
         // id элемента
@@ -74,11 +78,14 @@ export class PartView extends AppView {
         // kindOrder
         template.dataset.kindOrder = part.part.kind_order;
         // Парядковый номер
-        template.querySelector('.part-number').textContent = index + 1;
         if (part.part.kind_order == 1) {
-            template.querySelector('.part-number').classList.add('part-number-bg');
-        } else if (part.part.kind_order == 2) {
             template.querySelector('.part-number').classList.add('part-number-bb');
+        } else if (part.part.kind_order == 2) {
+            template.querySelector('.part-number').classList.add('part-number-bg');
+        }
+
+        if (part.part.type_order === 1) {
+            template.querySelector('.lock .fa-lock').classList.remove('is-hidden');
         }
 
         // Дата загрузки/дата прихода
@@ -229,7 +236,7 @@ export class PartView extends AppView {
 
     updateSerialNumber(wrapper) {
         const list = wrapper.querySelectorAll('.part-number');
-        list.forEach((element, index)  => {
+        list.forEach((element, index) => {
             element.textContent = index + 1;
         });
     }

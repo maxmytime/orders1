@@ -26,9 +26,11 @@ export class NavbarRegionController {
         const dataForMenu = new Map();
 
         for (const basis of basissVisibl) {
-            if (!dataForMenu.has(basis.region)) dataForMenu.set(basis.region, []);
-            dataForMenu.get(basis.region).push(basis.name);
+            if (!dataForMenu.has(basis.region)) dataForMenu.set(basis.region || 'Без региона', []);
+            dataForMenu.get(basis.region || 'Без региона').push(basis.name);
         }
+
+        this.setDataMenu(dataForMenu);
 
         return dataForMenu;
     }
@@ -36,55 +38,61 @@ export class NavbarRegionController {
     // События выбора региона
     choosingRegion(e) {
         if (e.target.classList.contains('navbar-link-region')) {
-            // console.log('Выбран региона', e.target.textContent);
-            const nameRegion = e.target.textContent;
-            if (this.setFilters(nameRegion)) {
-                const filters = this.getFilters();
-                const basisList = this.filterBasis(filters, 'region');
-                this.clearListBases();
-                this.basisController.init(basisList);
-                this.view.renderTag(nameRegion);
-            }
-
+            this.renderNewListBasiss(e);
         }
     }
 
     // События выбора базиса
     choosingBasis(e) {
         if (e.target.classList.contains('navbar-item-basis')) {
-            // console.log('Выбран базис', e.target.textContent);
-            const nameBasis = e.target.textContent;
-            if (this.setFilters(nameBasis)) {
-                const filters = this.getFilters();
-                const basisList = this.filterBasis(filters, 'region');
-                this.clearListBases();
-                this.basisController.init(basisList);
-                this.view.renderTag(nameBasis);
+            this.renderNewListBasiss(e);
+        }
+    }
+
+    // Ренден новового списка базисов согласно установленным фильтрам
+    renderNewListBasiss(e) {
+        const name = e.target.textContent;
+        // console.log(this.getDataMenu());
+        const dataForMenu = this.getDataMenu();
+        let filter;
+        // Определяем является ли выбранный элемент базисом или регионом
+        if (dataForMenu.get(name)) {
+            filter = { 'region': name, 'basiss': dataForMenu.get(name) };
+        } else {
+            for (const value of dataForMenu.values()) {
+                for (const basis of value) {
+                    if (basis === name) filter = { 'region': '', 'basiss': new Array(name) };
+                }
             }
+        }
+        // console.log(filter);
+        if (this.setFilters(filter)) {
+            const filters = this.getFilters();
+            // console.log(filters);
+            const basisList = this.filterBasis(filters);
+            this.clearListBases();
+            this.basisController.init(basisList);
+            this.view.renderTag(name);
+            const listFilterNames = this.getListFilterNames();
+            this.view.synchronizationFilters(listFilterNames);
         }
     }
 
     // Возвращает список базисов согласно установленным фильтрам
-    filterBasis(filters, field) {
-        let listBasis = [];
+    filterBasis(filters) {
+        const listBasis = [];
         // console.log(filters);
-        for (const param of filters) {
-            console.log(param);
-            const parametr = param === 'Без региона' ? '' : param;
-            // console.log(parametr);
-
-            if (field === 'region') {
-                const partListBasis = this.model.model.
-                                        filter(basis => basis.region === parametr && basis.visible === true);
-                partListBasis.map(region => listBasis.push(region));
-            } else if (field === 'name') {
-                const partListBasis = this.model.model.
-                                        filter(basis => basis.name === parametr && basis.visible === true);
-                partListBasis.map(basis => listBasis.push(basis));
-            }
+        for (const filter of filters) {
+            const partListBasis = this.model.model.
+                filter(basis => basis.name === filter && basis.visible === true);
+            partListBasis.map(basis => listBasis.push(basis));
         }
 
-        // console.log(listBasis);
+        if (filters.length === 0) {
+            const partListBasis = this.model.model.filter(basis => basis.visible === true);
+            partListBasis.map(basis => listBasis.push(basis));
+        }
+
         return listBasis;
     }
 
@@ -95,9 +103,15 @@ export class NavbarRegionController {
 
     // Удаляем тег фильтров
     clearTag(e) {
-        // console.log('clearTag(e)');
         if (e.target.classList.contains('delete-tag-navbar-region')) {
-            this.view.clearTag(e.target);
+            console.log('clearTag(e)');
+            const arrFilters = this.view.clearTag(e.target);
+            this.deleteFilters(arrFilters);
+            const filters = this.getFilters();
+            console.log(filters);
+            const basisList = this.filterBasis(filters);
+            this.clearListBases();
+            this.basisController.init(basisList);
         }
     }
 
@@ -105,8 +119,20 @@ export class NavbarRegionController {
     clearTags(e) {
         // console.log('clearTags(e)');
         if (e.target.classList.contains('delete-tags-navbar-region')) {
-            this.view.clearTags(e.target);
+            const arrFilters = this.view.clearTags(e.target);
+            // console.log(arrFilters);
+            this.deleteFilters(arrFilters);
+            const filters = this.getFilters();
+            // console.log(filters);
+            const basisList = this.filterBasis(filters);
+            this.clearListBases();
+            this.basisController.init(basisList);
         }
+    }
+
+    // Возвращает список имен фильтроф для панели фильтров
+    getListFilterNames() {
+        return this.model.getListFilterNames();
     }
 
     // Добавляет новый фильтр в список фильтров
@@ -117,5 +143,20 @@ export class NavbarRegionController {
     // Получает список фильтров
     getFilters() {
         return this.model.getFilters();
+    }
+
+    // Получает массив имен фильтров и удаляет их из списка фильтров
+    deleteFilters(arr) {
+        this.model.deleteFilters(arr);
+    }
+
+    // Устанавливаем данные для меню
+    setDataMenu(dataForMenu) {
+        this.model.setDataMenu(dataForMenu);
+    }
+
+    // Получить данные для меню
+    getDataMenu() {
+        return this.model.getDataMenu();
     }
 }

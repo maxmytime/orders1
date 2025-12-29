@@ -358,6 +358,7 @@ export class AppModel { // Выполняет инициализацию при�
                 addres.array_basises.forEach(basis => {   // В адресе находим список базисов и перебераем его
                     // console.log(basis, order);
                     if (basis.status_logistic != 2) { // basis.status_logistic не пропускаем отгруженые заявки
+                        // console.log(order);
                         listParts.push({
                             "id": this.helpers.getID(),
                             "number": '',
@@ -390,6 +391,7 @@ export class AppModel { // Выполняет инициализацию при�
                             "kind_order": order.kind_order,
                             "commentary": "",
                             "author": "site",
+                            "type_order": order.type_order,
                         });
                     }
 

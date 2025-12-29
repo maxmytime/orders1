@@ -23272,9 +23272,6 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
   background-color: #fff;
 }
 
-.orders-order.kind-order {
-  background-color: #fffdca;
-}
 .orders-order.kind-order .orders-order-item-status span:nth-child(1) {
   display: none;
 }
@@ -23516,10 +23513,15 @@ body {
 .orders-order-item:last-child {
   border-bottom: none;
 }
+.orders-order-item .tag {
+  font-size: 0.9rem;
+}
 .orders-order-item-volume {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
 }
 .orders-order-item-volume-wrapper, .orders-order-item-type-order {
   display: inline-block;

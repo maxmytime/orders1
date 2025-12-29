@@ -619,13 +619,32 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function getTypeOrder(typeorder) {
-        if (typeorder === 1) {
-            return `#83b2fc`;
-        } else if (typeorder === 2) {
-            return `#ffb39c`;
+    function getTypeOrder(kindorder) {
+        if (kindorder === 1) {
+            // return `#83b2fc`;
+            return `#08bdf6`;
+        } else if (kindorder === 2) {
+            // return `#ffb39c`;
+            return `#71d809`;
         }
         // console.log('OK');
+    }
+
+
+    function getTypeOrderName(typeorder) {
+        if (typeorder === 1) {
+            return `Бронь`;
+        } else {
+            return '';
+        }
+    }
+
+    function getTypeOrderTag(typeorder) {
+        if (typeorder === 1) {
+            return `tag`;
+        } else {
+            return '';
+        }
     }
 
     function sortOverdueDeliveries() {
@@ -818,7 +837,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 ordersOrder.setAttribute('data-kind-order', order.kind_order);
                 // ordersOrder.setAttribute('data-status-logistic', order.status_logistic);
                 ordersOrder.setAttribute('data-date', order.date_order.date_start);
-                ordersOrder.style.border = `solid 2px ${getTypeOrder(order.type_order)}`;
+                ordersOrder.style.border = `solid 2px ${getTypeOrder(order.kind_order)}`;
                 // ordersOrder.style.backgroundColor = `${order.status_logistic === 2 || order.archieved === true ? 'transparent' : '#ffffff'}`
 
             let orderTest = document.createElement('div');
@@ -842,7 +861,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     let item = `<div class="orders-order-item">
                                     <div class="orders-order-item-volume mr-2">
                                         <div>${getDate(startDate, endDate)}</div>
-
+                                        <div class="${getTypeOrderTag(order.type_order)} has-background-danger has-text-weight-bold has-text-white">${getTypeOrderName(order.type_order)}</div>
                                         <div class="orders-order-item-status">
                                             ${getStatusBuh(order.status_buh)}
 
