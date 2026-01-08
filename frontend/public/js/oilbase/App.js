@@ -16,6 +16,10 @@ import { SocketService } from '/js/oilbase/services/SocketService.js';
 import { NavbarRegionModel } from '/js/oilbase/models/NavbarRegionModel.js';
 import { NavbarRegionView } from '/js/oilbase/views/NavbarRegionView.js';
 import { NavbarRegionController } from '/js/oilbase/controllers/NavbarRegionController.js';
+import { OrderSupplyControllerFactory } from '/js/oilbase/OrderSupplyControllerFactory.js';
+import { OrderSupplyModalModel } from '/js/oilbase/models/OrderSupplyModalModel.js';
+import { OrderSupplyModalView } from '/js/oilbase/views/OrderSupplyModalView.js';
+import { OrderSupplyModalContoller } from '/js/oilbase/controllers/OrderSupplyModalContoller.js';
 
 
 export class App {
@@ -27,9 +31,22 @@ export class App {
         this.partControllerFactory = new PartControllerFactory(this.helpers);
         this.tankControllerFactory = new TankControllerFactory(this.helpers);
         this.archiveControllerFactory = new ArchiveControllerFactory(this.helpers);
-        // this.basisControllerFactory = new BasisControllerFactory();
+        this.basisControllerFactory = new BasisControllerFactory();
+        this.orderSupplyControllerFactory = new OrderSupplyControllerFactory();
+
+
 
         this.socket = new SocketService();
+
+        this.orderSupplyModalView = new OrderSupplyModalView();
+        this.orderSupplyModalModel = new OrderSupplyModalModel();
+        this.orderSupplyModalContoller = new OrderSupplyModalContoller(
+            this.model,
+            this.orderSupplyModalModel,
+            this.orderSupplyModalView,
+            this.helpers,
+            this.socket
+        );
 
         this.modalController = new ModalController(
             this.model,
@@ -40,13 +57,14 @@ export class App {
             this.socket
         );
 
-
         this.basisController = new BasisController(
             this.model,
             this.basisView,
             this.modalController, // Внедряем зависимость
+            this.orderSupplyModalContoller, // Внедряем зависимость
             this.partControllerFactory, // Добавляем фабрику создания части заявки
             this.tankControllerFactory, // Добавляем фабрику создания емкости
+            this.orderSupplyControllerFactory,
             this.helpers,
             this.socket
         );
@@ -69,6 +87,7 @@ export class App {
 
 
     init() {
+        this.orderSupplyModalContoller.init();
         this.modalController.init();
         this.navbarController.init();
         this.basisController.init();

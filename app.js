@@ -420,6 +420,30 @@ app.get("/GetCatalogAddress", function(request, response){
 
 });
 
+// Получаем новый GUID
+app.get("/getnewguid", function(request, response){
+    // const lp = getPass(settings, request);
+    const lp = testMode ? pass : request.cookies.token;
+    const url = 'http://vpn.glados.ru/base/hs/siteapi/GetNewGUID';
+    let result;
+
+    console.log(url);
+
+    fetch(url, {
+        headers: {
+            'Authorization': `Basic ${lp}`
+        }
+    }).then(response => response.text())
+      .then(commits => {
+          result = commits;
+
+        //   console.log(result);
+          response.end(result);
+      });
+
+});
+
+
 
 
 // Создание/обновление заказа http://vpn.glados.ru/base/hs/siteapi/PostUpdateOrder

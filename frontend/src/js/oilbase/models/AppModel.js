@@ -25,6 +25,7 @@ export class AppModel { // Выполняет инициализацию при�
             basis.id = this.helpers.getID();
             basis.listOfUndistributedApplications = [];
             basis.listOfTanks = [];
+            basis.listOfOrderSupply = [];
             basis.visible = false;
         })
 

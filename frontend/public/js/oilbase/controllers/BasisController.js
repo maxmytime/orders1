@@ -3,12 +3,14 @@ import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 import { UpdatingModel } from '/js/oilbase/services/UpdatingModel.js';
 
 export class BasisController {
-    constructor(model, view, modalController, partControllerFactory, tankControllerFactory, helpers, socket) {
+    constructor(model, view, modalController, orderSupplyModalContoller, partControllerFactory, tankControllerFactory, orderSupplyControllerFactory, helpers, socket) {
         this.model = model;
         this.view = view;
         this.modalController = modalController;
+        this.orderSupplyModalContoller = orderSupplyModalContoller;
         this.partControllerFactory = partControllerFactory;
         this.tankControllerFactory = tankControllerFactory;
+        this.orderSupplyControllerFactory = orderSupplyControllerFactory;
         this.api = new ApiClient();
         this.helpers = helpers;
         this.socket = socket.socket;
@@ -30,6 +32,8 @@ export class BasisController {
         this.view.getContainer().addEventListener('dragend', this.eventDragend.bind(this));
         // Контроллер подписывается на событие открыть уведомление
         this.view.getContainer().addEventListener('click', this.deleteTankNotification.bind(this));
+        // Контроллер подписывается на событие открытя модального окна для создания новой заявки снабжения
+        this.view.getContainer().addEventListener('click', this.openModalAddNewOrderSupply.bind(this));
 
         // Прослушивание соккетов
         // Сохранена заявка в сервисе заявок
@@ -100,6 +104,14 @@ export class BasisController {
     deleteTankNotification(e) {
         if (e.target.classList.contains('delete-tank')) {
             this.modalController.notification(e);
+        }
+    }
+
+    // Открывает модальное окно для создания новой заявки-снабжения
+    openModalAddNewOrderSupply(e) {
+        if (e.target.classList.contains('bnt-add-order-supply')) {
+            console.log('bnt-add-order-supply');
+            this.orderSupplyModalContoller.open();
         }
     }
 
@@ -286,6 +298,9 @@ export class BasisController {
 
                 basis.listOfTanks.forEach((tank, index) => {
                     const controller = this.tankControllerFactory.create(tank, containers.tanksContainer, index);
+                    // orderSupplyController
+                    // const orderSupplyController = this.orderSupplyControllerFactory.create();
+                    // ------------------------------------------
                     const tankContainer = controller.renderInit();
 
 

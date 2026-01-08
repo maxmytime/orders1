@@ -70,7 +70,7 @@ export class PartView extends AppView {
 
     // Рендер не распределенной заявки
     renderPart(part, index) {
-        console.log(part.part);
+        // console.log(part.part);
         const template = this.templateUndistributed.cloneNode(true);
 
         // id элемента

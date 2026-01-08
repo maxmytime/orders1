@@ -23984,7 +23984,7 @@ body {
 }
 
 .navbar-region {
-  z-index: 2000;
+  z-index: 10;
 }
 .navbar-region .navbar-item-basis {
   cursor: pointer;

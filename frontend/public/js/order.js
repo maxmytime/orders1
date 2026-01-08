@@ -5,6 +5,7 @@ import { paymentSchedules, company, row, btnContainer, sum, checkBox, scheduleAl
 import engineHTML from '/js/libs/engine.js';
 import setPreloader from '/js/libs/preloader.js';
 import fias from '/js/libs/fias.js';
+import { setNewGUID } from '/js/libs/getguid.js';
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -99,6 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 "name_counteragent": "",
                                 "code_counteragent": "",
                             },
+                            "guid": "",
                             "volume": 0,
                             "weight": 0,
                             "cost": 0,
@@ -1486,7 +1488,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const select = `<select
                             name="${options.name}"
-                            class="${options.class}">
+                            class="${options.class}"
+                            data-guid="${options.guid}">
                             ${option}
                         </select>`;
         return select;
@@ -2236,6 +2239,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Возвращает блок юридическое лицо
     function getElemEL(obj) {
+
         return `<div class="legal-entity">
 
                     <!-- Шаблон ЮЛ начало -->
@@ -2249,6 +2253,7 @@ window.addEventListener('DOMContentLoaded', () => {
             'name': 'order-address-basis-legal-entity',
             'valueName': `${obj.counteragent.name_counteragent}`,
             'valueCode': `${obj.counteragent.code_counteragent}`,
+            'guid': `${obj.guid}`,
             'class': 'width-100 input-order',
         })}
                             </span>
@@ -3863,6 +3868,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 validationSchedule();
                 validationTypeShipment();
                 checkingPrice();
+                const order = document.querySelector('.order');
+                setNewGUID(order);
 
             } else if (el.classList.contains('js-add-new-basis')) {
                 const container = containerSearchAdd(el, 'basis');
@@ -3944,6 +3951,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 calculateDensity();
                 validationSchedule();
                 checkingPrice();
+                const order = document.querySelector('.order');
+                setNewGUID(order);
 
             } else if (el.classList.contains('js-add-new-legal-entity')) {
                 const container = containerSearchAdd(el, 'legal-entity-container');
@@ -3964,6 +3973,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 validVal();
                 calculateDensity();
                 validationSchedule();
+                const order = document.querySelector('.order');
+                setNewGUID(order);
 
             }
 
@@ -5556,12 +5567,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
                 lockFields();
                 sessionStorage.setItem('downloadedData', JSON.stringify(getOrder()));
+
+                const order = document.querySelector('.order');
+                setNewGUID(order);
             });
     } else {
         orderConstructor(orderR);
         eventOrder();
         validVal();
         // validation();
+
+        const order = document.querySelector('.order');
+        setNewGUID(order);
 
         const typeShipment = document.querySelector('select[name="order-client-type-shipment"]');
         typeShipment.addEventListener('change', e => {
@@ -5832,6 +5849,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         "weight": counteragent.querySelector('input[name="order-address-basis-legal-entity-dael-wt"]').value,
                         "cost": counteragent.querySelector('input[name="order-address-basis-legal-entity-dael-price"]').value,
                         "type_cost": Number(counteragent.querySelector('select[name="order-address-basis-legal-entity-dael-unit"]').value),
+                        "guid": counteragent.querySelector('select[name="order-address-basis-legal-entity"]').dataset.guid,
                     };
 
                     arrayСounteragents.push(counteragentsObj);

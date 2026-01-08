@@ -10,12 +10,12 @@ export class NavbarRegionView extends AppView {
         this.templateTag = this.getTemplate('tag'); // Шаблон элемента тег
         this.helpers = helpers;
 
-        console.log('NavbarRegionView');
+        // console.log('NavbarRegionView');
     }
 
     // Рендер меню регионов и базисов
     renderNavbarRegion(data) {
-        console.log('renderNavbarRegion()', data);
+        // console.log('renderNavbarRegion()', data);
         const navbar = this.templateNavbarRegion;
 
         for (const region of data) {
