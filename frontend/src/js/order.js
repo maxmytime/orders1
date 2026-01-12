@@ -3869,7 +3869,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 validationTypeShipment();
                 checkingPrice();
                 const order = document.querySelector('.order');
-                setNewGUID(order);
+                setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
 
             } else if (el.classList.contains('js-add-new-basis')) {
                 const container = containerSearchAdd(el, 'basis');
@@ -3952,7 +3952,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 validationSchedule();
                 checkingPrice();
                 const order = document.querySelector('.order');
-                setNewGUID(order);
+                setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
 
             } else if (el.classList.contains('js-add-new-legal-entity')) {
                 const container = containerSearchAdd(el, 'legal-entity-container');
@@ -3974,7 +3974,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 calculateDensity();
                 validationSchedule();
                 const order = document.querySelector('.order');
-                setNewGUID(order);
+                setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
 
             }
 
@@ -5569,7 +5569,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('downloadedData', JSON.stringify(getOrder()));
 
                 const order = document.querySelector('.order');
-                setNewGUID(order);
+                setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
             });
     } else {
         orderConstructor(orderR);
@@ -5578,7 +5578,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // validation();
 
         const order = document.querySelector('.order');
-        setNewGUID(order);
+        setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
 
         const typeShipment = document.querySelector('select[name="order-client-type-shipment"]');
         typeShipment.addEventListener('change', e => {

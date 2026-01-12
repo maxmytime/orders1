@@ -19,11 +19,11 @@ window.addEventListener('DOMContentLoaded', () => {
     // Функция инициализации приложения
     const initApp = async () => {
         const api = new ApiClient();  // Инициализация экземпляра класса с роутами
-        const dataOrders = await api.fetchGetData(`/orderlist?archieved=false`);                    // Получаем данные от сервиса
+        const dataOrders = await api.fetchGetData(`/orderlist?archieved=false&CounteragDetail=true`);                    // Получаем данные от сервиса
         const dataAllBases = await api.fetchGetData(`/getbasises`);
         const dataTankList = await api.fetchGetData(`/gettanklist`);
         const dataDispatchList = await api.fetchGetData(`/getdispatchlist`);
-        // console.log(dataRegion);
+        console.log(dataOrders);
 
         const undistributeParts = dataOrders.Data.OrdersList;
         const distributeParts = dataDispatchList.Data.OrdersList;

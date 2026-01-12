@@ -310,6 +310,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         "date_end": getBasisData(basis).end,
                     },
                     "commentary": basis.querySelector('textarea[name="order-basis-comment"]').value,
+                    "guid": basis.querySelector('input[name="order-basis"]').dataset.guid,
                     "array_counteragents": []
                 };
 

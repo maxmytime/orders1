@@ -9,10 +9,10 @@ function getURL(settings) {
 }
 
 
-export async function setNewGUID(element) {
+export async function setNewGUID(element, selector) {
 
     console.log('getguid');
-    const contragents = element.querySelectorAll('select[name="order-address-basis-legal-entity"]');
+    const contragents = element.querySelectorAll(selector);
     console.log(contragents);
 
     for (const contragent of contragents) {

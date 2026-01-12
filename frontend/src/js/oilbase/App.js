@@ -20,6 +20,9 @@ import { OrderSupplyControllerFactory } from '/js/oilbase/OrderSupplyControllerF
 import { OrderSupplyModalModel } from '/js/oilbase/models/OrderSupplyModalModel.js';
 import { OrderSupplyModalView } from '/js/oilbase/views/OrderSupplyModalView.js';
 import { OrderSupplyModalContoller } from '/js/oilbase/controllers/OrderSupplyModalContoller.js';
+import { PartDistributedModalModel } from '/js/oilbase/models/PartDistributedModalModel.js';
+import { PartDistributedModalView } from '/js/oilbase/views/PartDistributedModalView.js';
+import { PartDistributedModalController } from '/js/oilbase/controllers/PartDistributedModalController.js';
 
 
 export class App {
@@ -38,12 +41,20 @@ export class App {
 
         this.socket = new SocketService();
 
+        this.partDistributedModalModel = new PartDistributedModalModel();
+        this.partDistributedModalView = new PartDistributedModalView();
+        this.partDistributedModalController = new PartDistributedModalController(
+            this.partDistributedModalModel,
+            this.partDistributedModalView
+        );
+
         this.orderSupplyModalView = new OrderSupplyModalView();
         this.orderSupplyModalModel = new OrderSupplyModalModel();
         this.orderSupplyModalContoller = new OrderSupplyModalContoller(
             this.model,
             this.orderSupplyModalModel,
             this.orderSupplyModalView,
+            this.partDistributedModalController,
             this.helpers,
             this.socket
         );
@@ -88,6 +99,7 @@ export class App {
 
     init() {
         this.orderSupplyModalContoller.init();
+        this.partDistributedModalController.init();
         this.modalController.init();
         this.navbarController.init();
         this.basisController.init();

@@ -413,9 +413,10 @@
     </div>
   </template>
 
-  <!-- Шаблон модального окна части заявки -->
+  <!-- =============================================================== -->
+  <!-- Шаблон модального окна секции -->
   <template id="modal-order-supply">
-    <div class="modal modal-order-supply">
+    <div class="modal modal-order-supply is-active">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -424,153 +425,168 @@
         </header>
         <section class="modal-card-body">
           <div class="columns is-multiline card-part">
-            <!-- Базис -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label">Базис</label>
-                <div class="control">
-                  <div class="droplist-wrapper">
-                    <input type="text" name="basis" class="input input-order" value="" autocomplete="off">
-                    <div class="droplist is-hidden"></div>
+            <!-- Список не распределенных заявок -->
+            <div class="column is-12">
+              <h4 class="is-4 title">Не распределенные заявки</h4>
+
+              <div class="order-supply-list-undistributed-parts border-bottom-3px pb-5">
+                <div class="columns is-clickable order-supply-undistributed-part">
+                  <div class="column date-of-shipment">20.12-21.12</div>
+                  <div class="column name-client" data-code="">Нефтесиб</div>
+                  <div class="column name-product">ДТз-К5 ВПК</div>
+                  <div class="column volume">10000</div>
+                </div>
+
+                <div class="columns is-clickable order-supply-undistributed-part">
+                  <div class="column date-of-shipment">20.12-21.12</div>
+                  <div class="column name-client" data-code="">Нефтесиб</div>
+                  <div class="column name-product">ДТз-К5 ВПК</div>
+                  <div class="column volume">10000</div>
+                </div>
+
+                <div class="columns is-clickable order-supply-undistributed-part">
+                  <div class="column date-of-shipment">20.12-21.12</div>
+                  <div class="column name-client" data-code="">Нефтесиб</div>
+                  <div class="column name-product">ДТз-К5 ВПК</div>
+                  <div class="column volume">10000</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Параметры заявки снабжения -->
+            <div class="columns is-flex-wrap-wrap">
+              <!-- Базис -->
+              <div class="column is-6">
+                <div class="field">
+                  <label class="label">Базис</label>
+                  <div class="control">
+                    <div class="droplist-wrapper">
+                      <input type="text" name="basis" class="input input-order" value="" autocomplete="off">
+                      <div class="droplist is-hidden"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Емкость -->
+              <div class="column is-6">
+                <div class="field">
+                  <label class="label lable-tank">Емкость</label>
+                  <div class="control">
+                    <input type="text" name="basis" class="input input-order" value="Имя емкости" autocomplete="off"
+                      disabled>
+                  </div>
+                </div>
+              </div>
+              <!-- Дата загрузки/дата прихода -->
+              <div class="column is-3">
+                <div class="field">
+                  <label class="label">Загрузка/Приход</label>
+                  <div class="control">
+                    <input type="date" name="date_dispatch" class="input input-order">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Продукт -->
+              <div class="column is-4">
+                <div class="field">
+                  <label class="label">Продукт</label>
+                  <div class="control">
+                    <div class="droplist-wrapper">
+                      <input type="text" name="product" class="input input-order" value="" autocomplete="off">
+                      <div class="droplist is-hidden"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Количество -->
+              <div class="column is-4">
+                <div class="field">
+                  <label class="label">Объем (л)</label>
+                  <div class="control">
+                    <input type="text" name="startVolume" class="input input-order">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Масса -->
+              <div class="column is-4">
+                <div class="field">
+                  <label class="label">Масса (т)</label>
+                  <div class="control">
+                    <input type="text" name="weight" class="input input-order" value="" autocomplete="off" disabled>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Плотность -->
+              <div class="column is-4">
+                <div class="field">
+                  <label class="label">Плотность</label>
+                  <div class="control">
+                    <input type="text" name="density" class="input input-order" value="" autocomplete="off" disabled>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Емкость -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label lable-tank">Емкость</label>
-                <div class="control">
-                  <input type="text" name="basis" class="input input-order" value="Имя емкости" autocomplete="off"
-                    disabled>
-                </div>
-              </div>
-            </div>
-            <!-- Дата загрузки/дата прихода -->
-            <div class="column is-3">
-              <div class="field">
-                <label class="label">Загрузка/Приход</label>
-                <div class="control">
-                  <input type="date" name="date_dispatch" class="input input-order">
-                </div>
-              </div>
-            </div>
 
-            <!-- Продукт -->
-            <div class="column is-4">
-              <div class="field">
-                <label class="label">Продукт</label>
-                <div class="control">
-                  <div class="droplist-wrapper">
-                    <input type="text" name="product" class="input input-order" value="" autocomplete="off">
-                    <div class="droplist is-hidden"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Количество -->
-            <div class="column is-4">
-              <div class="field">
-                <label class="label">Объем (л)</label>
-                <div class="control">
-                  <input type="text" name="startVolume" class="input input-order">
-                </div>
-              </div>
-            </div>
-
-            <!-- Масса -->
-            <div class="column is-4">
-              <div class="field">
-                <label class="label">Масса (т)</label>
-                <div class="control">
-                  <input type="text" name="weight" class="input input-order" value="" autocomplete="off" disabled>
-                </div>
-              </div>
-            </div>
-
-            <!-- Плотность -->
-            <div class="column is-4">
-              <div class="field">
-                <label class="label">Плотность</label>
-                <div class="control">
-                  <input type="text" name="density" class="input input-order" value="" autocomplete="off" disabled>
-                </div>
-              </div>
-            </div>
 
             <!-- Секции -->
-            <div class="column is-12 orderc-supple-sections">
+            <div class="column is-12 order-supple-sections">
 
-              <div class="column is-12 order-supply-section">
-                <h5 class="is-5 title">Секция 1</h4>
-                  <div class="field is-flex is-justify-content-space-between">
+              <h4 class="title is-4">Секции</h4>
 
-                    <div class="control">
-                      <label class="label">Объем (л)</label>
-                      <input type="text" name="order-supply-volume" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-                    <div class="control">
-                      <label class="label">Распределено</label>
-                      <input type="text" name="order-supply-distributed" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-                    <div class="control">
-                      <label class="label">Остаток</label>
-                      <input type="text" name="order-supply-remainder" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-
+              <!-- <div class="column is-12 order-supply-section">
+                <div class="columns">
+                  <div class="column is-10">
+                    <h5 class="is-5 title">Секция 1</h5>
                   </div>
-                  <div class="fild">
-                    <div class="order-supply-parts">
-                      <div class="order-supply-part columns has-text-right">
-                        <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-                        <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-                        <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-                        <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
-                      </div>
+                  <div class="column is-clickable has-text-right">
+                    <i class="fa fa-lg fa-trash icon-hover" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <div class="field is-flex is-justify-content-space-between">
+
+                  <div class="control">
+                    <label class="label">Объем (л)</label>
+                    <input type="text" name="order-supply-volume" class="input input-order" value=""
+                      autocomplete="off">
+                  </div>
+                  <div class="control">
+                    <label class="label">Распределено</label>
+                    <input type="text" name="order-supply-distributed" class="input input-order" value=""
+                      autocomplete="off">
+                  </div>
+                  <div class="control">
+                    <label class="label">Остаток</label>
+                    <input type="text" name="order-supply-remainder" class="input input-order" value=""
+                      autocomplete="off">
+                  </div>
+
+                </div>
+                <div class="fild">
+                  <div class="order-supply-parts">
+                    <div class="order-supply-part columns has-text-right">
+                      <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
+                      <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
+                      <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
+                      <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
                     </div>
                   </div>
+                </div>
+              </div> -->
+
+              <div class="columns orderc-supple-sections-container is-flex-wrap-wrap">
+
               </div>
 
-              <div class="column is-12 order-supply-section">
-                <h5 class="is-5 title">Секция 1</h4>
-                  <div class="field is-flex is-justify-content-space-between">
-
-                    <div class="control">
-                      <label class="label">Объем (л)</label>
-                      <input type="text" name="order-supply-volume" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-                    <div class="control">
-                      <label class="label">Распределено</label>
-                      <input type="text" name="order-supply-distributed" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-                    <div class="control">
-                      <label class="label">Остаток</label>
-                      <input type="text" name="order-supply-remainder" class="input input-order" value=""
-                        autocomplete="off">
-                    </div>
-
-                  </div>
-                  <div class="fild">
-                    <div class="order-supply-parts">
-                      <div class="order-supply-part columns has-text-right">
-                        <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-                        <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-                        <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-                        <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
-                      </div>
-                    </div>
-                  </div>
-              </div>
 
               <div class="buttons is-justify-content-end mt-5">
                 <button
-                  class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-add-section">Добавить</button>
+                  class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-add-section">Секция
+                  +</button>
               </div>
 
             </div>
@@ -649,8 +665,78 @@
     </div>
   </template>
 
-  <!-- Шаблон модального окна части заявки -->
+  <!-- Шаблон секции -->
+  <template id="order-supply-section">
+    <div class="column is-12 order-supply-section">
+      <div class="columns">
+        <div class="column is-10">
+          <h5 class="is-5 title">Секция 1</h5>
+        </div>
+        <div class="column is-clickable has-text-right">
+          <i class="fa fa-lg fa-trash icon-hover btn-del-section" aria-hidden="true"></i>
+        </div>
+      </div>
 
+      <div class="field is-flex is-justify-content-space-between">
+
+        <div class="control">
+          <label class="label">Объем (л)</label>
+          <input type="text" name="order-supply-volume" class="input input-order" value="" autocomplete="off">
+        </div>
+        <div class="control">
+          <label class="label">Распределено</label>
+          <input type="text" name="order-supply-distributed" class="input input-order" value="" autocomplete="off">
+        </div>
+        <div class="control">
+          <label class="label">Остаток</label>
+          <input type="text" name="order-supply-remainder" class="input input-order" value="" autocomplete="off">
+        </div>
+
+      </div>
+      <div class="fild">
+
+      </div>
+    </div>
+  </template>
+
+  <!-- Шаблон распределенной части заявки в секции -->
+  <template>
+    <div class="order-supply-parts">
+      <div class="order-supply-part columns has-text-right">
+        <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
+        <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
+        <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
+        <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
+      </div>
+    </div>
+  </template>
+
+  <!-- Шаблон модального окна распределения заявки -->
+  <template id="modal-part-distributed">
+    <div class="modal modal-part-distributed">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-weight-bold">Блок заявки №000000000</p>
+          <button class="delete delete-modal" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, quaerat tenetur explicabo excepturi
+            tempora rerum quo dolor, neque provident, quibusdam harum necessitatibus vitae optio aut esse deleniti eum
+            soluta nostrum?</p>
+        </section>
+        <footer class="modal-card-foot ">
+          <div class="buttons width-100 is-justify-content-space-between">
+            <button
+              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-">Сохранить</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </template>
+  <!-- =============================================================== -->
+
+  <!-- Шаблон модального окна части заявки -->
   <template id="modal-part">
     <div class="modal modal-part">
       <div class="modal-background"></div>

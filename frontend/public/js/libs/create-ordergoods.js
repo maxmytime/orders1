@@ -5,6 +5,7 @@ import orderNew from '/js/libs/order-new.js';
 import { vSetFilds, validationForm } from '/js/libs/v.js';
 import validationvSet from '/js/libs/v-config.js';
 import { sliderActive, addDot, removeDot } from '/js/libs/slider.js';
+import { setNewGUID } from '/js/libs/getguid.js';
 
 const newAddress = orderNew.array_addresses[0];
 const newBasis = orderNew.array_addresses[0].array_basises[0];
@@ -483,6 +484,10 @@ const creatBasis = (template, data = newBasis) => {
     }
 
     basis.addEventListener('input', basisList);
+
+    // Установка GUID
+    basis.dataset.guid = data.array_counteragents[0].guid;
+    setNewGUID(template, 'input[name="order-basis"]');
 
     // Выбор базиса из выпадающего списка
     const wrapper = template.querySelector('.droplist-wrapper');              // Контейнер с выпадающим списком

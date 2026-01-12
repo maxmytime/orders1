@@ -23351,6 +23351,10 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
   z-index: 1;
 }
 
+.border-bottom-3px {
+  border-bottom: solid 2px #eeeff3;
+}
+
 body {
   width: 100%;
   height: 100vh;
@@ -23988,4 +23992,8 @@ body {
 }
 .navbar-region .navbar-item-basis {
   cursor: pointer;
+}
+
+.order-supply-undistributed-part:hover {
+  background-color: #eeeff3;
 }

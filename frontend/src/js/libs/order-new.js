@@ -67,6 +67,7 @@ const orderNew = {
                 "date_end": undefined,
             },
             "commentary": "",
+            "guid": "",
             "array_counteragents": [{
                 "counteragent": {
                     "name_counteragent": "",
@@ -75,7 +76,8 @@ const orderNew = {
                 "volume": '',
                 "weight": '',
                 "cost": '',
-                "type_cost": 2
+                "type_cost": 2,
+                "guid": "",
             }]
         }]
     }]

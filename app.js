@@ -203,7 +203,8 @@ app.post('/login', jsonParser, function (request, response) {
 // Получаем список заказов для канбана
 app.get("/orderlist", function(request, response) {
     const lp = testMode ? settings.pass : request.cookies.token;
-    const url = 'http://vpn.glados.ru/base/hs/siteapi/GetOrdersList' + '?' + `${testMode}` + `&archieved=${request.query.archieved}`;
+    // const url = 'http://vpn.glados.ru/base/hs/siteapi/GetOrdersList' + '?' + `${testMode}` + `&archieved=${request.query.archieved}`;
+    const url = 'http://vpn.glados.ru/base/hs/siteapi/GetOrdersList' + '?' + `${testMode}` + `&archieved=${request.query.archieved}` + `&CounteragDetail=${request.query.CounteragDetail}`;
     console.log(url);
     getData(lp, url, response);
 
