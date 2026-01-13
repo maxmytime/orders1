@@ -2,11 +2,11 @@ import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 
 export class OrderSupplyModalContoller {
     constructor(modelApp,
-            orderSupplyModalModel,
-            orderSupplyModalView,
-            partDistributedModalController,
-            helpers,
-            socket) {
+        orderSupplyModalModel,
+        orderSupplyModalView,
+        partDistributedModalController,
+        helpers,
+        socket) {
         this.modelApp = modelApp;
         this.model = orderSupplyModalModel;
         this.view = orderSupplyModalView;
@@ -24,12 +24,32 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('click', this.delSection.bind(this));
         // Контроллер подписывается на событие открытие модального окна распределения заявки
         this.view.getContainer().addEventListener('click', this.openPartDistributed.bind(this));
+        // Контроллер подписывается на событие клик по кнопки создать заявка снабжение
+        // this.view.getContainer().addEventListener('click', this.open.bind(this));
+        // Контроллер подписывается на событие клик по кнопке закрыть модальное окно
+        this.view.getContainer().addEventListener('click', this.close.bind(this));
+        // Контроллер подписывается на событие клик по кнопке создать заявку снабжения
+        this.view.getContainer().addEventListener('click', this.createOrderSupply.bind(this));
 
     }
 
     // Открыть модальное окно
-    open() {
-        this.view.open();
+    open(e) {
+        const basisID = this.view.getBasisID(e);
+        const tanksList = this.modelApp.getListTanks(basisID);
+        const partsList = this.modelApp.getListUndistributedParts(basisID);
+        const basisName = this.modelApp.getBasisName(basisID);
+        this.view.open(basisID, basisName, tanksList, partsList);
+    }
+
+    close(e) {
+        if (e.target.classList.contains('delete-modal')) {
+            const modal = e.target.closest('.modal-order-supply');
+            if (modal) {
+                this.view.close();
+            }
+        }
+
     }
 
     // Добавить секциию
@@ -45,6 +65,14 @@ export class OrderSupplyModalContoller {
         if (e.target.classList.contains('btn-del-section')) {
             console.log('delSection(e)');
             this.view.delSection(e);
+        }
+    }
+
+    // Создать заявку снабжение
+    createOrderSupply(e) {
+        if (e.target.classList.contains('btn-create-order-supply')) {
+            const docObject = this.view.getDocObject(e);
+            console.log(docObject);
         }
     }
 

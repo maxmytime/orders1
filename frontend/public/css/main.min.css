@@ -23355,6 +23355,10 @@ input.is-err:hover, input.is-err:focus, input.is-err:active, select.is-err:hover
   border-bottom: solid 2px #eeeff3;
 }
 
+.border-top-3px {
+  border-top: solid 2px #eeeff3;
+}
+
 body {
   width: 100%;
   height: 100vh;

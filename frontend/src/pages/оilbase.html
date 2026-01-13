@@ -414,9 +414,9 @@
   </template>
 
   <!-- =============================================================== -->
-  <!-- Шаблон модального окна секции -->
+  <!-- Шаблон модального окна заявка снабжения -->
   <template id="modal-order-supply">
-    <div class="modal modal-order-supply is-active">
+    <div class="modal modal-order-supply ">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -430,7 +430,7 @@
               <h4 class="is-4 title">Не распределенные заявки</h4>
 
               <div class="order-supply-list-undistributed-parts border-bottom-3px pb-5">
-                <div class="columns is-clickable order-supply-undistributed-part">
+                <!-- <div class="columns is-clickable order-supply-undistributed-part">
                   <div class="column date-of-shipment">20.12-21.12</div>
                   <div class="column name-client" data-code="">Нефтесиб</div>
                   <div class="column name-product">ДТз-К5 ВПК</div>
@@ -449,7 +449,7 @@
                   <div class="column name-client" data-code="">Нефтесиб</div>
                   <div class="column name-product">ДТз-К5 ВПК</div>
                   <div class="column volume">10000</div>
-                </div>
+                </div> -->
               </div>
 
             </div>
@@ -473,8 +473,12 @@
                 <div class="field">
                   <label class="label lable-tank">Емкость</label>
                   <div class="control">
-                    <input type="text" name="basis" class="input input-order" value="Имя емкости" autocomplete="off"
-                      disabled>
+                    <div class="select width-100">
+                      <select name="order-supple-tank-name" class="width-100 input-order js-type">
+                        <option value="1">Емкость 1</option>
+                        <option value="2">Емкость 2</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -506,7 +510,7 @@
                 <div class="field">
                   <label class="label">Объем (л)</label>
                   <div class="control">
-                    <input type="text" name="startVolume" class="input input-order">
+                    <input type="text" name="startVolume" class="input input-order" autocomplete="off">
                   </div>
                 </div>
               </div>
@@ -532,11 +536,10 @@
               </div>
             </div>
 
-
             <!-- Секции -->
             <div class="column is-12 order-supple-sections">
 
-              <h4 class="title is-4">Секции</h4>
+              <h4 class="title is-4 border-top-3px pt-5">Секции</h4>
 
               <!-- <div class="column is-12 order-supply-section">
                 <div class="columns">
@@ -591,8 +594,6 @@
 
             </div>
 
-
-
             <!-- Комментарий -->
             <div class="column is-12">
               <div class="field">
@@ -603,65 +604,24 @@
               </div>
             </div>
           </div>
-          <div class="columns is-multiline card-ship is-hidden">
-            <!-- Объем факт (л) -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label">Объем факт (л)</label>
-                <div class="control">
-                  <input type="text" name="volume_fact" class="input input-order" value="" autocomplete="off">
-                </div>
-              </div>
-            </div>
-            <!-- Масса факт (т) -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label">Масса факт (т)</label>
-                <div class="control">
-                  <input type="text" name="weight_fact" class="input input-order" value="" autocomplete="off">
-                </div>
-              </div>
-            </div>
-            <!-- Плотность факт -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label">Плотность факт</label>
-                <div class="control">
-                  <input type="text" name="density_fact" class="input input-order" value="" autocomplete="off">
-                </div>
-              </div>
-            </div>
-            <!-- Температура -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="label">Температура</label>
-                <div class="control">
-                  <input type="text" name="temperature" class="input input-order" value="" autocomplete="off">
-                </div>
-              </div>
-            </div>
-            <!-- Принята полная масса -->
-            <div class="column is-6">
-              <div class="field">
-                <label class="checkbox is-flex mb-3">
-                  <input type="checkbox" class="mr-2" name="acquiered_full">
-                  Принята полная масса
-                </label>
-              </div>
-            </div>
-          </div>
         </section>
         <footer class="modal-card-foot ">
-          <div class="buttons width-100 is-justify-content-space-between">
+          <div class="buttons width-100 is-justify-content-end">
             <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-ship-part">Отгрузить</button>
-            <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-cancellation-part is-hidden">Отмена</button>
-            <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-save-part">Сохранить</button>
+              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-create-order-supply">Сохранить</button>
           </div>
         </footer>
       </div>
+    </div>
+  </template>
+
+  <!-- Шаблон не распределенной части заявки -->
+  <template id="order-supply-undistributed-part">
+    <div class="columns is-clickable order-supply-undistributed-part">
+      <div class="column date-of-shipment">20.12-21.12</div>
+      <div class="column name-client" data-code="">Нефтесиб</div>
+      <div class="column name-product">ДТз-К5 ВПК</div>
+      <div class="column volume">10000</div>
     </div>
   </template>
 
@@ -721,9 +681,148 @@
           <button class="delete delete-modal" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, quaerat tenetur explicabo excepturi
-            tempora rerum quo dolor, neque provident, quibusdam harum necessitatibus vitae optio aut esse deleniti eum
-            soluta nostrum?</p>
+          <div class="columns is-flex-wrap-wrap">
+            <!-- Базис -->
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">Базис</label>
+                <div class="control">
+                  <div class="droplist-wrapper">
+                    <input type="text" name="basis" class="input input-order" value="" autocomplete="off">
+                    <div class="droplist is-hidden"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Емкость -->
+            <div class="column is-4">
+              <div class="field">
+                <label class="label lable-tank">Емкость</label>
+                <div class="control">
+                  <div class="select width-100">
+                    <select name="tankName" class="width-100 input-order js-type">
+                      <option value="1">Емкость 1</option>
+                      <option value="2">Емкость 2</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Секция -->
+            <div class="column is-4">
+              <div class="field">
+                <label class="label lable-tank">Секция</label>
+                <div class="control">
+                  <div class="select width-100">
+                    <select name="tankName" class="width-100 input-order">
+                      <option value="1">Секция 1</option>
+                      <option value="2">Секция 2</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Дата загрузки/дата прихода -->
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">Загрузка/Приход</label>
+                <div class="control">
+                  <input type="date" name="date_dispatch" class="input input-order">
+                </div>
+              </div>
+            </div>
+
+            <!-- Дата отгрузки -->
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Дата отгрузки</label>
+                <div class="control is-flex is-flex-direction-row">
+                  <input type="date" name="basisDateStart" class="input input-order mr-2" disabled>
+                  <div class="is-flex is-align-items-center"><span>-</span></div>
+                  <input type="date" name="basisDateEnd" class="input input-order ml-2" disabled>
+                </div>
+              </div>
+            </div>
+
+            <!-- Партнер -->
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Партнер</label>
+                <div class="control">
+                  <div class="droplist-wrapper">
+                    <input type="text" name="nameClient" class="input input-order" value="" autocomplete="off" disabled>
+                    <div class="droplist is-hidden"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Контрагент -->
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Контрагент</label>
+                <div class="control">
+                  <div class="droplist-wrapper">
+                    <input type="text" name="nameClient" class="input input-order" value="" autocomplete="off" disabled>
+                    <div class="droplist is-hidden"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Продукт -->
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">Продукт</label>
+                <div class="control">
+                  <div class="droplist-wrapper">
+                    <input type="text" name="product" class="input input-order" value="" autocomplete="off">
+                    <div class="droplist is-hidden"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Количество -->
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">Объем (л)</label>
+                <div class="control">
+                  <input type="text" name="startVolume" class="input input-order">
+                </div>
+              </div>
+            </div>
+
+            <!-- Масса -->
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">Масса (т)</label>
+                <div class="control">
+                  <input type="text" name="weight" class="input input-order" value="" autocomplete="off" disabled>
+                </div>
+              </div>
+            </div>
+
+            <!-- Плотность -->
+            <div class="column is-3">
+              <div class="field">
+                <label class="label">Плотность</label>
+                <div class="control">
+                  <input type="text" name="density" class="input input-order" value="" autocomplete="off" disabled>
+                </div>
+              </div>
+            </div>
+
+            <!-- Комментарий -->
+            <div class="column is-12">
+              <div class="field">
+                <label class="label">Комментарий</label>
+                <div class="control">
+                  <textarea name="comment" class="textarea input-order" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
         <footer class="modal-card-foot ">
           <div class="buttons width-100 is-justify-content-space-between">
@@ -850,16 +949,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Остаток -->
-            <!-- <div class="column is-2">
-                            <div class="field">
-                                <label class="label">Остаток</label>
-                                <div class="control">
-                                    <input type="number" name="" class="input input-order" disabled>
-                                </div>
-                            </div>
-                        </div> -->
 
             <!-- Комментарий -->
             <div class="column is-12">

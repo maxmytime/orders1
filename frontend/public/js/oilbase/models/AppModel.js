@@ -306,6 +306,22 @@ export class AppModel { // Выполняет инициализацию при�
         return null;
     }
 
+    // Получаем список емкостей в базисе по ID базиса
+    getListUndistributedParts(basisID) {
+        for (const basis of this.#listBasiss) {
+            if (basis.id === basisID) return basis.listOfUndistributedApplications;
+        }
+        return null;
+    }
+
+    // Получаем ибя базиса
+    getBasisName(basisID) {
+        for (const basis of this.#listBasiss) {
+            if (basis.id === basisID) return basis.name;
+        }
+        return null;
+    }
+
     getListTanksName(basisName) {
         for (const basis of this.#listBasiss) {
             if (basis.name === basisName) return basis.listOfTanks;
@@ -555,19 +571,19 @@ export class AppModel { // Выполняет инициализацию при�
         if (tankID != '0') {
             for (const basis of this.basiss) {
                 // if (basisName === basis.name) {
-                    // console.log(basis);
-                    for (const tank of basis.listOfTanks) {
-                        if (tankID === tank.id) {
-                            // console.log(part);
-                            const partObj = this.sortParts(tank.listOfDistributedApplications, part);
-                            // console.log(partObj);
-                            // partObj.part.density = tank.density;
-                            tank.listOfDistributedApplications.splice(partObj.index, 0, partObj.part);
-                            // tank.listOfDistributedApplications.push(part);
-                            // console.log(tank.listOfDistributedApplications);
-                            return partObj.index;
-                        }
+                // console.log(basis);
+                for (const tank of basis.listOfTanks) {
+                    if (tankID === tank.id) {
+                        // console.log(part);
+                        const partObj = this.sortParts(tank.listOfDistributedApplications, part);
+                        // console.log(partObj);
+                        // partObj.part.density = tank.density;
+                        tank.listOfDistributedApplications.splice(partObj.index, 0, partObj.part);
+                        // tank.listOfDistributedApplications.push(part);
+                        // console.log(tank.listOfDistributedApplications);
+                        return partObj.index;
                     }
+                }
                 // }
             }
         } else {

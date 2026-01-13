@@ -110,8 +110,8 @@ export class BasisController {
     // Открывает модальное окно для создания новой заявки-снабжения
     openModalAddNewOrderSupply(e) {
         if (e.target.classList.contains('bnt-add-order-supply')) {
-            console.log('bnt-add-order-supply');
-            this.orderSupplyModalContoller.open();
+            // console.log('bnt-add-order-supply');
+            this.orderSupplyModalContoller.open(e);
         }
     }
 
