@@ -26,9 +26,9 @@ import { PartDistributedModalController } from '/js/oilbase/controllers/PartDist
 
 
 export class App {
-    constructor(parts, tanks, basiss, distributeParts) {
+    constructor(parts, tanks, basiss, distributeParts, suplOrders) {
         this.helpers = new Helpers();
-        this.model = new AppModel(parts, tanks, basiss, this.helpers, distributeParts);
+        this.model = new AppModel(parts, tanks, basiss, this.helpers, distributeParts, suplOrders);
         this.basisView = new BasisView(this.helpers);
         this.modalView = new ModalView(this.helpers);
         this.partControllerFactory = new PartControllerFactory(this.helpers);
@@ -41,6 +41,8 @@ export class App {
 
         this.socket = new SocketService();
 
+
+        // Модальное окно распределения заявки в секцию. Открывается из заявки снабжения
         this.partDistributedModalModel = new PartDistributedModalModel();
         this.partDistributedModalView = new PartDistributedModalView();
         this.partDistributedModalController = new PartDistributedModalController(
@@ -48,6 +50,7 @@ export class App {
             this.partDistributedModalView
         );
 
+        // Модальное окно сохдания/изменения заявки снабжения
         this.orderSupplyModalView = new OrderSupplyModalView();
         this.orderSupplyModalModel = new OrderSupplyModalModel();
         this.orderSupplyModalContoller = new OrderSupplyModalContoller(
@@ -75,7 +78,7 @@ export class App {
             this.orderSupplyModalContoller, // Внедряем зависимость
             this.partControllerFactory, // Добавляем фабрику создания части заявки
             this.tankControllerFactory, // Добавляем фабрику создания емкости
-            this.orderSupplyControllerFactory,
+            this.orderSupplyControllerFactory, // Добавляем фабрику создания заявки снабжения
             this.helpers,
             this.socket
         );

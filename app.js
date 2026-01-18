@@ -705,6 +705,42 @@ app.get("/gettankhistory", function(request, response) {
       });
 
 });
+// Получить список заявок снабжения
+app.get("/getsuplorderlist", function(request, response) {
+    const lp = testMode ? pass : request.cookies.token;
+    const url = 'http://vpn.glados.ru/base/hs/siteapi/GetSuplOrderList';
+    let result;
+
+    fetch(url, {
+        headers: {
+            'Authorization': `Basic ${lp}`
+        }
+    }).then(response => response.text())
+      .then(commits => {
+          result = commits;
+          response.end(result);
+      });
+
+});
+// Создать обновить заявку снабжения
+app.post('/postupdatesuplorder', jsonParser, function (request, response) {
+    const lp = testMode ? pass : request.cookies.token;
+    const part = request.body;
+    const url = 'http://vpn.glados.ru/base/hs/siteapi/PostUpdateSuplOrder' + '?' + `${testMode}`;
+    let result;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${lp}`,
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(part)
+    }).then(res => res.text())
+      .then(commits => {
+        response.end(commits);
+    });
+});
 // ================= API Учет нефтебаз ====================
 
 httpServer.listen(port, host);

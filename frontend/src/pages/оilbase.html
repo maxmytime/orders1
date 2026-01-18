@@ -1225,6 +1225,51 @@
     </div>
   </template>
 
+  <!-- Шаблон заявки снабжения в базисе -->
+  <template id="order-supply">
+    <div class="columns color-border-b-dark subtable-row order-supply is-flex-wrap-wrap is-mobile" draggable="true">
+      <div class="column is-1 pl-5">
+        <div class="columns is-mobile">
+          <div class="column">
+            <span class="part-number has-text-centered">1</span>
+          </div>
+          <div class="column">
+            <i class="fa fa-lg fa-external-link icon-hover subtable-row-edit is-clickable bnt-edit-order-supply"
+              aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="column lock"><i class="fa fa-lg fa-lock is-hidden" aria-hidden="true"></i></div>
+      <div class="column is-2">
+        <div class="date">
+          <span class="date_dispatch">25.04.2025</span>
+          <div class="field date-input is-hidden is-relative">
+            <div class="control">
+              <input type="date" name="date-subtable" class="input input-order">
+            </div>
+            <button class="delete" aria-label="close"></button>
+          </div>
+        </div>
+      </div>
+      <div class="column date-of-shipment">7.05-8.05</div>
+      <div class="column name-client">ООО АЗС</div>
+      <div class="column name-product">ДТе</div>
+      <div class="column">
+        <div class="quantity">
+          <span class="quantity-subtable volume">32,398</span>
+          <div class="field quantity-input is-relative is-hidden">
+            <div class="control">
+              <input type="number" class="input input-order">
+            </div>
+            <button class="delete" aria-label="close"></button>
+          </div>
+        </div>
+      </div>
+      <div class="column current-balance">-</div>
+      <div class="column is-3 comment">Lorem ipsum dolor sit amet.</div>
+    </div>
+  </template>
+
   <!-- Шаблон емкости -->
   <template id="tank">
     <!-- Емкость -->
@@ -1299,8 +1344,16 @@
 
           </div>
 
+          <!-- Контейнер для заявок снабжения -->
+          <div class="column is-12 order-supply-container">
+            <h3 class="title is-5">Контейнер для заявок снабжения</h3>
+
+          </div>
+
         </div>
       </div>
+
+
     </div>
 
 
@@ -1423,7 +1476,7 @@
     </div>
   </template>
 
-  <!-- Шаблоны нафигации по регионам -->
+  <!-- Шаблоны навигации по регионам -->
   <!-- Шаблон панели навигации -->
   <template id="navbar-region">
     <div class="navbar-region">

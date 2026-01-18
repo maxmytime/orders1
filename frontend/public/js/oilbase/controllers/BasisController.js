@@ -34,6 +34,8 @@ export class BasisController {
         this.view.getContainer().addEventListener('click', this.deleteTankNotification.bind(this));
         // Контроллер подписывается на событие открытя модального окна для создания новой заявки снабжения
         this.view.getContainer().addEventListener('click', this.openModalAddNewOrderSupply.bind(this));
+        // Контроллер подписывается на событие открытя модального окна для редактирования заявки-снабжения
+        this.view.getContainer().addEventListener('click', this.openModalAddEditOrderSupply.bind(this));
 
         // Прослушивание соккетов
         // Сохранена заявка в сервисе заявок
@@ -115,7 +117,13 @@ export class BasisController {
         }
     }
 
-
+    // Открытие модального окна для редактирования заявки снабжения
+    openModalAddEditOrderSupply(e) {
+        if (e.target.classList.contains('bnt-edit-order-supply')) {
+            // console.log('bnt-add-order-supply');
+            this.orderSupplyModalContoller.open(e);
+        }
+    }
 
     // ОБЪЯСНЕНИЕ: Используем делегирование на document для обработки ВСЕХ списков
     eventDragstart(e) {
@@ -275,7 +283,7 @@ export class BasisController {
 
     // Метод инициализации
     init(basisData) {
-        // console.log(this.model);
+        console.log(this.model.basiss);
         const basiss = basisData || this.model.basiss;
         basiss.forEach(basis => {
             // console.log(basis);
@@ -285,6 +293,7 @@ export class BasisController {
                 const fragmentUndistributed = document.createDocumentFragment();
                 const fragmentTsnks = document.createDocumentFragment();
                 const fragmentDistributed = document.createDocumentFragment();
+                const fragmentOrderSupply = document.createDocumentFragment();
 
                 basis.visible = true;
 
@@ -298,8 +307,7 @@ export class BasisController {
 
                 basis.listOfTanks.forEach((tank, index) => {
                     const controller = this.tankControllerFactory.create(tank, containers.tanksContainer, index);
-                    // orderSupplyController
-                    // const orderSupplyController = this.orderSupplyControllerFactory.create();
+
                     // ------------------------------------------
                     const tankContainer = controller.renderInit();
 
@@ -317,6 +325,20 @@ export class BasisController {
                         // controller.volumeСalculation();
 
                     }
+
+                    // Рендер заявок снабжения
+                    if (tank.listOfOrderSupply?.length) {
+                        console.log(tank.listOfOrderSupply);
+                        const container = tankContainer.querySelector('.order-supply-container');
+                        console.log(container);
+                        tank.listOfOrderSupply.forEach((OrderSupply) => {
+                            const orderSupplyController = this.orderSupplyControllerFactory.create();
+                            fragmentOrderSupply.appendChild(orderSupplyController.render(OrderSupply));
+                        })
+                        container.appendChild(fragmentOrderSupply);
+                    }
+
+
 
                     fragmentTsnks.appendChild(tankContainer);
                     // console.log(tankContainer);

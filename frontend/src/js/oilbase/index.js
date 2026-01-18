@@ -23,14 +23,21 @@ window.addEventListener('DOMContentLoaded', () => {
         const dataAllBases = await api.fetchGetData(`/getbasises`);
         const dataTankList = await api.fetchGetData(`/gettanklist`);
         const dataDispatchList = await api.fetchGetData(`/getdispatchlist`);
-        console.log(dataOrders);
+        const dataSuplOrderList = await api.fetchGetData(`/getsuplorderlist`);
+        console.log(dataSuplOrderList);
 
         const undistributeParts = dataOrders.Data.OrdersList;
         const distributeParts = dataDispatchList.Data.OrdersList;
         const tanks = dataTankList.Data.OrdersList;
         const basiss = dataAllBases.Data;
+        const suplOrders = dataSuplOrderList.Data.SuplOrderList;
+        console.log(suplOrders);
 
-        const app = new App(undistributeParts, tanks, basiss, distributeParts);  // Создаем экземпляр модели приложения "AppModel"
+        const app = new App(undistributeParts,
+                            tanks,
+                            basiss,
+                            distributeParts,
+                            suplOrders);  // Создаем экземпляр модели приложения "AppModel"
         app.init();         // Инициализация приложения
     }
 

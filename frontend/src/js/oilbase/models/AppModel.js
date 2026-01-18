@@ -2,19 +2,20 @@ export class AppModel { // Выполняет инициализацию при�
     #listBasiss = [];   // Список базисов
     listPartsOriginal = [] // Список оригинальный частей заявок
 
-    constructor(parts, tanks, basiss, helpers, distributeParts) {
+    constructor(parts, tanks, basiss, helpers, distributeParts, suplOrders) {
         this.helpers = helpers;
-        this.#initBasiss(parts, tanks, basiss, distributeParts);
+        this.#initBasiss(parts, tanks, basiss, distributeParts, suplOrders);
     }
 
     // Метод наполняет список ListBasiss частями заявок
-    #initBasiss(parts, tanks, basiss, distributeParts) {
+    #initBasiss(parts, tanks, basiss, distributeParts, suplOrders) {
         // console.log(parts);
 
         this.#listBasiss = basiss;
         const listParts = this.getListPart(parts);
         const listTanks = tanks;
         const listDistributeParts = distributeParts;
+        const listSuplOrders = suplOrders;
         // console.log(listDistributeParts);
 
         this.listPartsOriginal = structuredClone(listParts);
@@ -25,7 +26,6 @@ export class AppModel { // Выполняет инициализацию при�
             basis.id = this.helpers.getID();
             basis.listOfUndistributedApplications = [];
             basis.listOfTanks = [];
-            basis.listOfOrderSupply = [];
             basis.visible = false;
         })
 
@@ -88,8 +88,7 @@ export class AppModel { // Выполняет инициализацию при�
                     if (tank.type_tank != 0) {
                         tank.id = this.helpers.getID();
                         tank.listOfDistributedApplications = [];
-                        // console.log(JSON.stringify(tank));
-                        // console.log(tank);
+                        tank.listOfOrderSupply = [];
                         basis.listOfTanks.push(tank);
                     }
                 }
@@ -111,6 +110,19 @@ export class AppModel { // Выполняет инициализацию при�
                 })
                 // console.log(tank.listOfDistributedApplications);
                 tank.listOfDistributedApplications.sort((a, b) => a.sort_number - b.sort_number);
+            })
+        })
+
+        // Добавляем заявки снабжения в емкости
+        this.#listBasiss.forEach(basis => {
+            basis.listOfTanks.forEach(tank => {
+                // console.log(listSuplOrders);
+                tank.listOfOrderSupply = listSuplOrders.filter(order => {
+                    if (order.code_tank === tank.code) {
+                        order.id = this.helpers.getID();
+                        return order;
+                    }
+                });
             })
         })
     }

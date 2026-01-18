@@ -9,4 +9,8 @@ export class OrderSupplyController {
 
     }
 
+    render(orderSupply) {
+        return this.view.render(orderSupply);
+    }
+
 }
