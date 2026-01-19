@@ -2,7 +2,7 @@ export class PartDistributedModalController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
-        console.log('PartDistributedModalController');
+        // console.log('PartDistributedModalController');
 
         // Контроллер подписывается на события
         // this.view.getContainer().addEventListener('click', this.openModal.bind(this));

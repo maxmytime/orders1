@@ -6,11 +6,11 @@ export class OrderSupplyControllerFactory {
     constructor(helpers) {  // Принимаем Helpers
         this.helpers = helpers;
 
-        console.log('OrderSupplyControllerFactory');
+        // console.log('OrderSupplyControllerFactory');
     }
 
     create(data) {
-        console.log('OrderSupplyControllerFactory create');
+        // console.log('OrderSupplyControllerFactory create');
         const model = new OrderSupplyModel(data, this.helpers);
         const view = new OrderSupplyView(this.helpers);
         return new OrderSupplyController(model, view);

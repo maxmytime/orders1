@@ -283,7 +283,7 @@ export class BasisController {
 
     // Метод инициализации
     init(basisData) {
-        console.log(this.model.basiss);
+        // console.log(this.model.basiss);
         const basiss = basisData || this.model.basiss;
         basiss.forEach(basis => {
             // console.log(basis);
@@ -328,9 +328,9 @@ export class BasisController {
 
                     // Рендер заявок снабжения
                     if (tank.listOfOrderSupply?.length) {
-                        console.log(tank.listOfOrderSupply);
+                        // console.log(tank.listOfOrderSupply);
                         const container = tankContainer.querySelector('.order-supply-container');
-                        console.log(container);
+                        // console.log(container);
                         tank.listOfOrderSupply.forEach((OrderSupply) => {
                             const orderSupplyController = this.orderSupplyControllerFactory.create();
                             fragmentOrderSupply.appendChild(orderSupplyController.render(OrderSupply));

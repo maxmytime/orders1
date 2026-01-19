@@ -7,12 +7,12 @@ export class PartDistributedModalView extends AppView {
         this.container = document.querySelector('.app-oilbase');     // Контейнер приложения
         this.modalPartDistributed = null; // Шаблон модального окна распределение заявки
         this.helpers = new Helpers();
-        console.log('PartDistributedModalView');
+        // console.log('PartDistributedModalView');
     }
 
     // Рендер модальных окон
     renderModal() {
-        console.log('renderModal PartDistributedModalView');
+        // console.log('renderModal PartDistributedModalView');
         this.modalPartDistributed = this.getTemplate('modal-part-distributed').cloneNode(true);
         this.container.appendChild(this.modalPartDistributed);
     }

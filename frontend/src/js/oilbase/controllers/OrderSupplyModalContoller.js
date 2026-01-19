@@ -15,7 +15,7 @@ export class OrderSupplyModalContoller {
         this.helpers = helpers;
         this.socket = socket.socket;
 
-        console.log('OrderSupplyModalContoller');
+        // console.log('OrderSupplyModalContoller');
         // Контроллер подписывается на событие ввода данных в поле Базис,
         // this.view.getContainer().addEventListener('input', this.dropdown.bind(this));
         // Контроллер подписывается на событие добавление новой секции
@@ -71,39 +71,45 @@ export class OrderSupplyModalContoller {
     // Создать заявку снабжение
     async createOrderSupply(e) {
         if (e.target.classList.contains('btn-create-order-supply')) {
-            const docObject = this.view.getDocObject(e);
+            // console.log(e.target);
+            const modal = this.view.getModal(e);  // Получаем узел модального окна
+            const tankID = this.view.getElementValue(modal, 'select[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
+            if (tankID === '-') return;      // Прекращаем выполнение функции если поле емкость не выбрано
+            const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
+            const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
             console.log(docObject);
+            this.view.getSections(modal);
 
-            const supply = {
-                "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
-                "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
-                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
-                "code_tank": "000000226", //код емкости
-                "date_income": "18.01.2026",  //дата загрузки
-                "code_product": "000000005",  //код продукта
-                "volume": 11111,  //объем
-                "weight": 10,  //вес
-                "density": 0.9,  //плотность
-                "commentary": "какой-то коммент",
-                "array_sections":
-                    [
-                        {
-                            "sort_number": 1,  //порядок сортировки
-                            "name_section": "Секция1",  //имя секции
-                            "volume_section": 123,  //объем секции
-                            "number_dispatch": '' //номер распределенного блока заявки
-                        },
-                        {
-                            "sort_number": 2,  //порядок сортировки
-                            "name_section": "Секция2",  //имя секции
-                            "volume_section": 321,  //объем секции
-                            "number_dispatch": '' //номер распределенного блока заявки
-                        }
-                    ]
-            }
+            // const supply = {
+            //     "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
+            //     "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
+            //     "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+            //     "code_tank": "000000226", //код емкости
+            //     "date_income": "18.01.2026",  //дата загрузки
+            //     "code_product": "000000005",  //код продукта
+            //     "volume": 11111,  //объем
+            //     "weight": 10,  //вес
+            //     "density": 0.9,  //плотность
+            //     "commentary": "какой-то коммент",
+            //     "array_sections":
+            //         [
+            //             {
+            //                 "sort_number": 1,  //порядок сортировки
+            //                 "name_section": "Секция1",  //имя секции
+            //                 "volume_section": 123,  //объем секции
+            //                 "number_dispatch": '' //номер распределенного блока заявки
+            //             },
+            //             {
+            //                 "sort_number": 2,  //порядок сортировки
+            //                 "name_section": "Секция2",  //имя секции
+            //                 "volume_section": 321,  //объем секции
+            //                 "number_dispatch": '' //номер распределенного блока заявки
+            //             }
+            //         ]
+            // }
 
-            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
-            console.log(status);
+            // const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            // console.log(status);
         }
     }
 
