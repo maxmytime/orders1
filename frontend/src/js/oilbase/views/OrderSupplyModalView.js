@@ -120,7 +120,7 @@ export class OrderSupplyModalView extends AppView {
 
   // Получаем объект документа
   getDocObject(e, tankNumber) {
-    const modal= e.target.closest('.modal-order-supply');
+    const modal = e.target.closest('.modal-order-supply');
     // console.log(orderSupply);
     const docObject = {
       "number": "",
@@ -134,33 +134,10 @@ export class OrderSupplyModalView extends AppView {
       "volume": Number(modal.querySelector('input[name="startVolume"]').value),
       "weight": Number(modal.querySelector('input[name="weight"]').value),         // disabled расчет из volume и density
       "density": Number(modal.querySelector('input[name="density"]').value),       // Возможно нужно получить из емкости
-      "sort_number": 0,     // Как то получаю от дамира
+      "sort_number": 1,     // Как то получаю от дамира
       "commentary": modal.querySelector('textarea[name="comment"]').value,
       "author": "site",
-      "array_sections": [
-        {
-          "order_section": 1,
-          "name_section": "Секция1",
-          "volume_section": 123,
-          "array_dispatch": [
-            {
-              "number_dispatch": "",
-              "volume_dispatch": 0
-            }
-          ]
-        },
-        {
-          "order_section": 2,
-          "name_section": "Секция2",
-          "volume_section": 321,
-          "array_dispatch": [
-            {
-              "number_dispatch": "",
-              "volume_dispatch": 0
-            }
-          ]
-        }
-      ],
+      "array_sections": [...this.getSections(modal)],
       "id": "mkkjftsnz6205o1fe1o"
     }
     return docObject;
@@ -168,21 +145,21 @@ export class OrderSupplyModalView extends AppView {
 
   // Получаем секции
   getSections(modal) {
-    const sectionsNode = [ ...modal.querySelectorAll('.order-supply-section')];
+    const sectionsNode = [...modal.querySelectorAll('.order-supply-section')];
     const section = sectionsNode.map(sectionNode => {
       return {
-          "order_section": 1,
-          "name_section": sectionNode.querySelector('.title').textContent,
-          "volume_section": sectionNode.querySelector('input[name="order-supply-volume"]').value,
-          "array_dispatch": [
-            {
-              "number_dispatch": "",
-              "volume_dispatch": 0
-            }
-          ]
-        }
+        "order_section": 1,
+        "name_section": sectionNode.querySelector('.title').textContent,
+        "volume_section": sectionNode.querySelector('input[name="order-supply-volume"]').value,
+        "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-part')].map(part => {
+          return {
+            "number_dispatch": part.dataset.numberDispatch,
+            "volume_dispatch": part.querySelector('.volume-dispatch').textContent
+          }
+        })
+      }
     });
-    console.log(section);
+    return section;
   }
 
   // Получаем узел модального окна

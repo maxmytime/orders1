@@ -80,36 +80,33 @@ export class OrderSupplyModalContoller {
             console.log(docObject);
             this.view.getSections(modal);
 
-            // const supply = {
-            //     "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
-            //     "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
-            //     "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
-            //     "code_tank": "000000226", //код емкости
-            //     "date_income": "18.01.2026",  //дата загрузки
-            //     "code_product": "000000005",  //код продукта
-            //     "volume": 11111,  //объем
-            //     "weight": 10,  //вес
-            //     "density": 0.9,  //плотность
-            //     "commentary": "какой-то коммент",
-            //     "array_sections":
-            //         [
-            //             {
-            //                 "sort_number": 1,  //порядок сортировки
-            //                 "name_section": "Секция1",  //имя секции
-            //                 "volume_section": 123,  //объем секции
-            //                 "number_dispatch": '' //номер распределенного блока заявки
-            //             },
-            //             {
-            //                 "sort_number": 2,  //порядок сортировки
-            //                 "name_section": "Секция2",  //имя секции
-            //                 "volume_section": 321,  //объем секции
-            //                 "number_dispatch": '' //номер распределенного блока заявки
-            //             }
-            //         ]
-            // }
+            const supply = {
+                "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
+                "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
+                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+                "code_tank": docObject.code_tank, //код емкости
+                "date_income": docObject.date_income,  //дата загрузки
+                "code_product": docObject.product.code_product,  //код продукта
+                "volume": docObject.volume,  //объем
+                "weight": docObject.weight,  //вес
+                "density": docObject.density,  //плотность
+                "commentary": docObject.commentary,
+                "array_sections": [...docObject.array_sections].map(section => {
+                    return section.array_dispatch.map(part => {
+                        return {
+                            "sort_number": 1,
+                            "name_section": section.name_section,
+                            "volume_section": section.volume_section,  //объем секции
+                            "number_dispatch": part.number_dispatch    //номер распределенного блока заявки
+                        }
+                    })
+                }).flat(Infinity)
+            }
 
-            // const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
-            // console.log(status);
+            console.log(supply);
+
+            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            console.log(status);
         }
     }
 
