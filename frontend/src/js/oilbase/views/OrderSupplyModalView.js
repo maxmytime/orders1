@@ -20,8 +20,8 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Открыть модальное окно
-  open(basisID, basisName, tanksList, partsList) {
-    // console.log(basisID, basisName, tanksList, partsList);
+  open(tank, basisID, partsList) {
+    console.log(tank, basisID, partsList);
 
     // Базис id
     this.modalOrderSupply.dataset.basisId = basisID;
@@ -30,15 +30,26 @@ export class OrderSupplyModalView extends AppView {
     const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
     divPartsList.appendChild(this.creatingListOfParts(partsList));
 
-    // Список емкостей
-    const selectTanks = this.modalOrderSupply.querySelector('select[name="order-supple-tank-name"]');
-    selectTanks.textContent = '';
-    selectTanks.appendChild(this.createListOfTanks(tanksList));
-
     // Базис
-    this.modalOrderSupply.querySelector('input[name="basis"]').value = basisName;
+    this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
 
-    this.openAddNewOrderSupply();
+    // Список емкостей
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+
+    // Продукт
+    this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
+    this.modalOrderSupply.querySelector('input[name="product"]').dataset.code = tank.product.code_product;
+
+    // Загрузка/Приход
+    // this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+
+    // Масса (т)
+    this.modalOrderSupply.querySelector('input[name="weight"]').value = tank.weight;
+
+    // Плотность
+    this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
+
+    // this.openAddNewOrderSupply();
     this.modalOrderSupply.classList.add('is-active');
   }
 
@@ -112,6 +123,11 @@ export class OrderSupplyModalView extends AppView {
     return e.target.closest('.oilbasis').dataset.id;
   }
 
+  // Получаем ID Базис
+  getTankID(e) {
+    return e.target.closest('.tank').dataset.id;
+  }
+
   // Удалить секцию
   delSection(e) {
     const section = e.target.closest('.order-supply-section');
@@ -170,6 +186,66 @@ export class OrderSupplyModalView extends AppView {
   // Получаем значение поля value у элемента
   getElementValue(element, selector) {
     return element.querySelector(selector).value;
+  }
+
+  // Распределить заявку в секцию
+  handleStartDistribution(e) {
+    console.log(e);
+    const uPart = e.target.closest('.order-supply-undistributed-part');
+    const formOfDistribution = uPart.querySelector('.form-of-distribution');
+    const selectSection = formOfDistribution.querySelector('select[name="u-part-section"]');
+    const btnOpen = uPart.querySelector('.open');
+    const btnClose = uPart.querySelector('.close');
+
+    // Начинаем или завершаем распределение
+    if (formOfDistribution.classList.contains('is-hidden')) {
+      btnOpen.classList.add('is-hidden');
+      btnClose.classList.remove('is-hidden');
+      // Получаем все секции в заявке снабжения
+      const listSection = this.getSectionsStartDistribution(e);
+      // Формируем список options для select в котором находятся секции
+      this.creatingListSections(selectSection, listSection);
+
+
+      formOfDistribution.classList.remove('is-hidden');
+    } else {
+      btnOpen.classList.remove('is-hidden');
+      btnClose.classList.add('is-hidden');
+      formOfDistribution.classList.add('is-hidden');
+    }
+
+  }
+
+  // Получить секции в заявке-снабжения для начала распределения
+  getSectionsStartDistribution(e) {
+    const orderSupply = e.target.closest('.modal-order-supply');
+    console.log(orderSupply);
+    const sections = [ ...orderSupply.querySelectorAll('.order-supply-section') ].map(section => {
+        return {
+          'name': section.querySelector('.title').textContent,
+          'volume': Number(section.querySelector('input[name="order-supply-volume"]').value),
+          'distributed': Number(section.querySelector('input[name="order-supply-distributed"]').value),
+          'remainder': Number(section.querySelector('input[name="order-supply-remainder"]').value),
+        }
+    });
+
+    return sections;
+
+  }
+
+  // Формируем список секций
+  creatingListSections(element, listSection) {
+    console.log(element, listSection);
+    element.textContent = '';
+    for (const section of listSection) {
+      const option = document.createElement('option');
+      option.value = section.name;
+      option.textContent = section.name;
+      option.dataset.volume = section.volume;
+      option.dataset.distributed = section.distributed;
+      option.dataset.remainder = section.remainder;
+      element.append(option);
+    }
   }
 
   // Получаем контейнер приложения

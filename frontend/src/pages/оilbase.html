@@ -429,7 +429,7 @@
             <div class="column is-12">
               <h4 class="is-4 title">Не распределенные заявки</h4>
 
-              <div class="order-supply-list-undistributed-parts border-bottom-3px pb-5">
+              <div class="order-supply-list-undistributed-parts pb-5">
                 <!-- <div class="columns is-clickable order-supply-undistributed-part">
                   <div class="column date-of-shipment">20.12-21.12</div>
                   <div class="column name-client" data-code="">Нефтесиб</div>
@@ -457,48 +457,35 @@
             <!-- Параметры заявки снабжения -->
             <div class="columns is-flex-wrap-wrap">
               <!-- Базис -->
-              <div class="column is-6">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Базис</label>
                   <div class="control">
                     <div class="droplist-wrapper">
-                      <input type="text" name="basis" class="input input-order" value="" autocomplete="off">
+                      <input type="text" name="basis" class="input input-order" value="" autocomplete="off" disabled>
                       <div class="droplist is-hidden"></div>
                     </div>
                   </div>
                 </div>
               </div>
               <!-- Емкость -->
-              <div class="column is-6">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label lable-tank">Емкость</label>
                   <div class="control">
-                    <div class="select width-100">
-                      <select name="order-supple-tank-name" class="width-100 input-order js-type">
-                        <option value="1">Емкость 1</option>
-                        <option value="2">Емкость 2</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Дата загрузки/дата прихода -->
-              <div class="column is-3">
-                <div class="field">
-                  <label class="label">Загрузка/Приход</label>
-                  <div class="control">
-                    <input type="date" name="date_dispatch" class="input input-order">
+                    <input type="text" name="order-supple-tank-name" class="input input-order" value=""
+                      autocomplete="off" disabled>
                   </div>
                 </div>
               </div>
 
               <!-- Продукт -->
-              <div class="column is-4">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Продукт</label>
                   <div class="control">
                     <div class="droplist-wrapper">
-                      <input type="text" name="product" class="input input-order" value="" autocomplete="off">
+                      <input type="text" name="product" class="input input-order" value="" autocomplete="off" disabled>
                       <div class="droplist is-hidden"></div>
                     </div>
                   </div>
@@ -506,11 +493,21 @@
               </div>
 
               <!-- Количество -->
-              <div class="column is-4">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Объем (л)</label>
                   <div class="control">
                     <input type="text" name="startVolume" class="input input-order" autocomplete="off">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Дата загрузки/дата прихода -->
+              <div class="column is-4">
+                <div class="field">
+                  <label class="label">Загрузка/Приход</label>
+                  <div class="control">
+                    <input type="date" name="date_dispatch" class="input input-order">
                   </div>
                 </div>
               </div>
@@ -617,12 +614,87 @@
 
   <!-- Шаблон не распределенной части заявки -->
   <template id="order-supply-undistributed-part">
-    <div class="columns is-clickable order-supply-undistributed-part">
-      <div class="column date-of-shipment">20.12-21.12</div>
-      <div class="column name-client" data-code="">Нефтесиб</div>
-      <div class="column name-product">ДТз-К5 ВПК</div>
-      <div class="column volume">10000</div>
+    <div class="columns is-flex-wrap-wrap order-supply-undistributed-part">
+      <div class="column is-12">
+        <div class="columns">
+          <div class="column date-of-shipment">20.12-21.12</div>
+          <div class="column name-client" data-code="">Нефтесиб</div>
+          <div class="column name-product">ДТз-К5 ВПК</div>
+          <div class="column volume">10000</div>
+          <div class="column is-1 volume">
+            <button type="button" class="button btn-orders btn-brand has-background-white btn-start-distribution">
+              <span class="icon btn-start-distribution">
+                <i class="fa fa-plus btn-start-distribution open" aria-hidden="true"></i>
+                <i class="fa fa-times btn-start-distribution close is-hidden" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="column is-12 form-of-distribution is-hidden">
+        <div class="columns is-align-items-end">
+          <!-- Секция -->
+          <div class="column">
+            <div class="field">
+              <label class="label lable-tank">Секция</label>
+              <div class="control">
+                <div class="select width-100">
+                  <select name="u-part-section" class="width-100 input-order js-type">
+                    <option value="1">Секция 1</option>
+                    <option value="2">Секция 2</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Остаток в секции -->
+          <div class="column is-2">
+            <div class="field">
+              <label class="label">Остаток в секции (л)</label>
+              <div class="control">
+                <input type="text" name="u-part-remainder" class="input input-order" value="" autocomplete="off"
+                  disabled>
+              </div>
+            </div>
+          </div>
+          <!-- Остаток в заявке -->
+          <div class="column is-2">
+            <div class="field">
+              <label class="label">Остаток в заявке (л)</label>
+              <div class="control">
+                <input type="text" name="u-part-remainder" class="input input-order" value="" autocomplete="off"
+                  disabled>
+              </div>
+            </div>
+          </div>
+          <!-- Остаток в заявке -->
+          <div class="column is-2">
+            <div class="field">
+              <label class="label">Загрузить (л)</label>
+              <div class="control">
+                <input type="text" name="u-part-remainder" class="input input-order" value="" autocomplete="off">
+              </div>
+            </div>
+          </div>
+          <!-- Кнопки -->
+          <div class="column is-1 volume">
+            <button type="button" class="button btn-orders btn-brand has-background-white">
+              <span class="icon">
+                <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <!-- <div class="column is-1 volume">
+            <button type="button" class="button btn-orders btn-brand has-background-white">
+              <span class="icon">
+                <i class="fa fa-exchange" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div> -->
+        </div>
+      </div>
     </div>
+
   </template>
 
   <!-- Шаблон секции -->
@@ -1304,6 +1376,13 @@
           <span class="ml-3 tank-alert is-hidden"><i class="fa fa-exclamation-circle fa-lg" style="color: red"
               aria-hidden="true"></i></span>
         </div>
+        <div class="column">
+          <button type="button" class="button btn-orders btn-brand has-background-white bnt-add-order-supply">
+            <span class="icon bnt-add-order-supply">
+              <i class="fa fa-plus bnt-add-order-supply" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
         <div class="column is-1 product"></div>
         <!-- <div class="column is-1 nomenclature">АИ-95</div> -->
         <div class="column is-1 density"></div>
@@ -1446,13 +1525,12 @@
           <div class="is-flex">
             <h5 class="title is-3 mt-4 ml-4 title-distributed">Емкости</h5>
             <div class="buttons ml-5">
-              <a class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand bnt-add-order-supply">Заявка-снабжения
-                +</a>
             </div>
           </div>
           <div class="table-item">
             <div class="columns is-mobile table-head is-uppercase">
               <div class="column is-1 "></div>
+              <div class="column"></div>
               <div class="column"></div>
               <div class="column is-1 ">Продукт</div>
               <!-- <div class="column is-1 ">Продукт</div> -->

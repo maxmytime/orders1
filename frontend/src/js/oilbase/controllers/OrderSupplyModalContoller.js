@@ -23,23 +23,25 @@ export class OrderSupplyModalContoller {
         // Контроллер подписывается на событие удалить секцию
         this.view.getContainer().addEventListener('click', this.delSection.bind(this));
         // Контроллер подписывается на событие открытие модального окна распределения заявки
-        this.view.getContainer().addEventListener('click', this.openPartDistributed.bind(this));
+        // this.view.getContainer().addEventListener('click', this.openPartDistributed.bind(this));
         // Контроллер подписывается на событие клик по кнопки создать заявка снабжение
         // this.view.getContainer().addEventListener('click', this.open.bind(this));
         // Контроллер подписывается на событие клик по кнопке закрыть модальное окно
         this.view.getContainer().addEventListener('click', this.close.bind(this));
         // Контроллер подписывается на событие клик по кнопке создать заявку снабжения
         this.view.getContainer().addEventListener('click', this.createOrderSupply.bind(this));
+        // Контроллер подписывается на событие клик по кнопке начать распределение в секцию
+        this.view.getContainer().addEventListener('click', this.handleStartDistribution.bind(this));
 
     }
 
     // Открыть модальное окно
     open(e) {
-        const basisID = this.view.getBasisID(e);
-        const tanksList = this.modelApp.getListTanks(basisID);
+        const tankID = this.view.getTankID(e);
+        const { tank, basisID} = this.modelApp.getTank(tankID);
+        console.log(tank);
         const partsList = this.modelApp.getListUndistributedParts(basisID);
-        const basisName = this.modelApp.getBasisName(basisID);
-        this.view.open(basisID, basisName, tanksList, partsList);
+        this.view.open(tank, basisID, partsList);
     }
 
     close(e) {
@@ -65,6 +67,14 @@ export class OrderSupplyModalContoller {
         if (e.target.classList.contains('btn-del-section')) {
             console.log('delSection(e)');
             this.view.delSection(e);
+        }
+    }
+
+    // Распределить заявку в секцию
+    handleStartDistribution(e) {
+        if (e.target.classList.contains('btn-start-distribution')) {
+            console.log('handleStartDistribution(e)');
+            this.view.handleStartDistribution(e);
         }
     }
 
@@ -111,13 +121,13 @@ export class OrderSupplyModalContoller {
     }
 
     // Открыть заявку для распределение
-    openPartDistributed(e) {
-        const container = e.target.closest('.order-supply-undistributed-part');
+    // openPartDistributed(e) {
+    //     const container = e.target.closest('.order-supply-undistributed-part');
 
-        if (container) {
-            this.partDistributedModalController.open();
-        }
-    }
+    //     if (container) {
+    //         this.partDistributedModalController.open();
+    //     }
+    // }
 
     // Инициализация модальных окон
     init() {

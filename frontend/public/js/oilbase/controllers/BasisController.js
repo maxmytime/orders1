@@ -64,8 +64,9 @@ export class BasisController {
         const tank = e.target.closest('.table-content');
         const toggleSubtable = e.target.classList.contains('toggle-subtable');
         const deleteTank = e.target.classList.contains('delete-tank');
+        const addOrderSupply = e.target.classList.contains('bnt-add-order-supply');
 
-        if (tank && !toggleSubtable && !deleteTank) {
+        if (tank && !toggleSubtable && !deleteTank && !addOrderSupply) {
             const element = e.target.closest('[data-id]');
             const tank = this.model.getTank(element.dataset.id);
             console.log('modalcontroller', tank);
