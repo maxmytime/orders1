@@ -32,6 +32,14 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('click', this.createOrderSupply.bind(this));
         // Контроллер подписывается на событие клик по кнопке начать распределение в секцию
         this.view.getContainer().addEventListener('click', this.handleStartDistribution.bind(this));
+        // Контроллер подписывается на событие ввода именя секции
+        this.view.getContainer().addEventListener('input', this.enterNameSection.bind(this));
+        // Контроллер подписывается на событие нажатия кнопки  переименовать секцию
+        this.view.getContainer().addEventListener('click', this.handleRenameSection.bind(this));
+        // Контроллер подписывается на событие нажатия кнопки  закончить распределение в  секцию
+        this.view.getContainer().addEventListener('click', this.handleEndDistribution.bind(this));
+        // Контроллер подписывается на событие выбора секции
+        this.view.getContainer().addEventListener('change', this.selectSection.bind(this));
 
     }
 
@@ -62,6 +70,23 @@ export class OrderSupplyModalContoller {
         }
     }
 
+    // Ввод имяни секции
+    enterNameSection(e) {
+        if (e.target.name === 'order-supply-name-section') {
+            console.log('renameSection(e)');
+            console.log(e.target);
+            this.view.enterNameSection(e, '123');
+        }
+    }
+
+    // Кнопка переименовать секцию
+    handleRenameSection(e) {
+        if (e.target.classList.contains('btn-rename-section')) {
+            console.log('handleRenameSection(e)');
+            this.view.handleRenameSection(e);
+        }
+    }
+
     // Удалить секцию
     delSection(e) {
         if (e.target.classList.contains('btn-del-section')) {
@@ -70,11 +95,27 @@ export class OrderSupplyModalContoller {
         }
     }
 
-    // Распределить заявку в секцию
+    // Начало распределения заявки в секцию
     handleStartDistribution(e) {
         if (e.target.classList.contains('btn-start-distribution')) {
             console.log('handleStartDistribution(e)');
             this.view.handleStartDistribution(e);
+        }
+    }
+
+    // Выбрать секцию
+    selectSection(e) {
+        if (e.target.name === 'u-part-section') {
+            console.log('selectSection(e)');
+            this.view.selectSection(e);
+        }
+    }
+
+    // Конец распределения заявки в секцию
+    handleEndDistribution(e) {
+        if (e.target.classList.contains('btn-end-distribution')) {
+            console.log('handleEndDistribution(e)');
+            this.view.handleEndDistribution(e);
         }
     }
 

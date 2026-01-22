@@ -7,7 +7,8 @@ export class OrderSupplyModalView extends AppView {
     this.container = document.querySelector('.app-oilbase');            // Контейнер приложения
     this.modalOrderSupply = null;                                       // Шаблон модального окна заявки снабжения
     this.orderSupplySection = this.getTemplate('order-supply-section'); // Шаблон секции
-    this.undistributedPart = this.getTemplate('order-supply-undistributed-part'); // Шаблон не распределенной части заявки
+    this.undistributedPart = this.getTemplate('order-supply-undistributed-part');  // Шаблон не распределенной части заявки
+    this.distributedPart = this.getTemplate('order-supply-distributed-part');      // Шаблон распределенной части заявки
     this.helpers = new Helpers();
     // console.log('OrderSupplyModalView');
   }
@@ -115,7 +116,26 @@ export class OrderSupplyModalView extends AppView {
     const container = e.target.closest('.order-supple-sections').
       querySelector('.orderc-supple-sections-container');
     const section = this.orderSupplySection.cloneNode(true);
+    section.dataset.id = this.helpers.getID();
     container.appendChild(section);
+  }
+
+  // Ввод имяни секции
+  enterNameSection(e) {
+    // console.log(e, string);
+    const section = e.target.closest('.order-supply-section');
+    const title = section.querySelector('.title');
+    title.textContent = e.target.value;
+  }
+
+  // Кнопка переименовать секцию
+  handleRenameSection(e) {
+    const section = e.target.closest('.order-supply-section');
+    const input = section.querySelector('input[name="order-supply-name-section"]');
+    const title = section.querySelector('.title');
+    title.classList.toggle('is-hidden');
+    input.classList.toggle('is-hidden');
+
   }
 
   // Получаем ID Базис
@@ -222,6 +242,7 @@ export class OrderSupplyModalView extends AppView {
     console.log(orderSupply);
     const sections = [ ...orderSupply.querySelectorAll('.order-supply-section') ].map(section => {
         return {
+          'id': section.dataset.id,
           'name': section.querySelector('.title').textContent,
           'volume': Number(section.querySelector('input[name="order-supply-volume"]').value),
           'distributed': Number(section.querySelector('input[name="order-supply-distributed"]').value),
@@ -237,15 +258,47 @@ export class OrderSupplyModalView extends AppView {
   creatingListSections(element, listSection) {
     console.log(element, listSection);
     element.textContent = '';
+    const option = document.createElement('option');
+    option.textContent = '-';
+    option.value = '-';
+    element.append(option);
     for (const section of listSection) {
       const option = document.createElement('option');
-      option.value = section.name;
+      option.value = section.id;
       option.textContent = section.name;
       option.dataset.volume = section.volume;
       option.dataset.distributed = section.distributed;
       option.dataset.remainder = section.remainder;
       element.append(option);
     }
+  }
+
+  // Выбрать секцию
+  selectSection(e) {
+    console.log(e.target.value);
+    const section = e.target;
+    const sectionID = e.target.value;
+    const part = e.target.closest('.order-supply-undistributed-part');
+    const sectionRemainder = part.querySelector('input[name="u-section-remainder"]');
+    const partRemainder = part.querySelector('input[name="u-part-remainder"]');
+    const volume = Number(part.querySelector('.volume').textContent);
+    const load = part.querySelector('input[name="u-part-load"]');
+    const sectionData = this.getSectionsStartDistribution(e).
+      find(section => section.id === sectionID);
+    console.log(sectionData);
+    sectionRemainder.value = sectionData.remainder;
+    partRemainder.value = volume;
+
+  }
+
+  handleEndDistribution(e) {
+    console.log(e.target);
+    const part = e.target.closest('.modal-order-supply');
+    const sectionID = part.querySelector('select[name="u-part-section"]').value;
+    const containerOrderSupplyParts = part.querySelector(`div[data-id="${sectionID}"] .order-supply-parts`);
+    console.log(containerOrderSupplyParts);
+    containerOrderSupplyParts.append(this.distributedPart.cloneNode(true));
+// `div[data-id="${tank.id}"]`
   }
 
   // Получаем контейнер приложения

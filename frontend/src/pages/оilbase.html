@@ -652,7 +652,7 @@
             <div class="field">
               <label class="label">Остаток в секции (л)</label>
               <div class="control">
-                <input type="text" name="u-part-remainder" class="input input-order" value="" autocomplete="off"
+                <input type="text" name="u-section-remainder" class="input input-order" value="" autocomplete="off"
                   disabled>
               </div>
             </div>
@@ -667,20 +667,20 @@
               </div>
             </div>
           </div>
-          <!-- Остаток в заявке -->
+          <!-- Загрузить -->
           <div class="column is-2">
             <div class="field">
               <label class="label">Загрузить (л)</label>
               <div class="control">
-                <input type="text" name="u-part-remainder" class="input input-order" value="" autocomplete="off">
+                <input type="text" name="u-part-load" class="input input-order" value="" autocomplete="off">
               </div>
             </div>
           </div>
           <!-- Кнопки -->
           <div class="column is-1 volume">
-            <button type="button" class="button btn-orders btn-brand has-background-white">
-              <span class="icon">
-                <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+            <button type="button" class="button btn-orders btn-brand has-background-white btn-end-distribution">
+              <span class="icon btn-end-distribution">
+                <i class="fa fa-long-arrow-right btn-end-distribution" aria-hidden="true"></i>
               </span>
             </button>
           </div>
@@ -701,9 +701,26 @@
   <template id="order-supply-section">
     <div class="column is-12 order-supply-section">
       <div class="columns">
-        <div class="column is-10">
-          <h5 class="is-5 title">Секция 1</h5>
+        <div class="column is-10 is-flex">
+
+          <h5 class="is-5 title is-hidden">Секция 1</h5>
+
+          <!-- Поле ввода "Имя секции" -->
+          <div class="field">
+            <div class="control">
+              <input type="text" name="order-supply-name-section" class="input input-order" value="" autocomplete="off"
+                placeholder="Имя секции">
+            </div>
+          </div>
+
+          <button type="button" class="button btn-orders btn-brand has-background-white btn-rename-section ml-2">
+            <span class="icon btn-rename-section">
+              <i class="fa fa-pencil btn-rename-section" aria-hidden="true"></i>
+            </span>
+          </button>
+
         </div>
+
         <div class="column is-clickable has-text-right">
           <i class="fa fa-lg fa-trash icon-hover btn-del-section" aria-hidden="true"></i>
         </div>
@@ -726,33 +743,21 @@
 
       </div>
       <div class="fild ">
+        <!-- Контейнер для распределенных заявок -->
         <div class="order-supply-parts">
-          <div class="order-supply-part columns has-text-right" data-number-dispatch='0000000123'>
-            <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-            <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-            <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-            <span class="column is-2 has-text-weight-bold volume-dispatch">5000</span>
-          </div>
-          <div class="order-supply-part columns has-text-right" data-number-dispatch='0000000123'>
-            <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-            <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-            <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-            <span class="column is-2 has-text-weight-bold volume-dispatch">5000</span>
-          </div>
+
         </div>
       </div>
     </div>
   </template>
 
   <!-- Шаблон распределенной части заявки в секции -->
-  <template>
-    <div class="order-supply-parts">
-      <div class="order-supply-part columns has-text-right">
-        <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-        <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-        <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-        <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
-      </div>
+  <template id="order-supply-distributed-part">
+    <div class="order-supply-distributed-part columns has-text-right">
+      <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
+      <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
+      <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
+      <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
     </div>
   </template>
 
