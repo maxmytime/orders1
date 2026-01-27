@@ -35,7 +35,7 @@ export class AppModel { // Выполняет инициализацию при�
                 if (order.id_order === DistributePart.id_order &&
                     order.num_address === DistributePart.num_address &&
                     order.num_basis === DistributePart.num_basis) {
-                    // console.log(DistributePart);
+                    console.log(order);
 
                     // Добавляем недастающие поля в распределенную заявку
                     DistributePart.id = order.id;
@@ -385,44 +385,48 @@ export class AppModel { // Выполняет инициализацию при�
             // console.log(order.kind_order);
             order.array_addresses.forEach(addres => {     // В заявке находим список адресов и перебераем его
                 addres.array_basises.forEach(basis => {   // В адресе находим список базисов и перебераем его
-                    console.log(basis.array_counteragents);
-                    if (basis.status_logistic != 2) { // basis.status_logistic не пропускаем отгруженые заявки
-                        // console.log(order);
-                        listParts.push({
-                            "id": this.helpers.getID(),
-                            "number": '',
-                            "type_dispatch": '',
-                            "code_tank": '',
-                            "date_income": "",
-                            "date_dispatch": "",
-                            "client": {
-                                "name_client": order.kind_order === 2 ? 'ООО "ТК ГЛАДОС"' : order.client.name_client,
-                                "code_client": order.kind_order === 2 ? '00-00000181' : order.client.code_client,
-                                "type_client": ""
-                            },
-                            "product": {
-                                "name_product": basis.name_product,
-                                "code_product": basis.code_product
-                            },
-                            "id_order": order.number,
-                            "num_address": addres.num_address,
-                            "num_basis": basis.num_basis,
-                            // "startVolume": basis.volume.start_volume,
-                            "volume": basis.volume.start_volume,
-                            "endVolume": basis.volume.end_volume,
-                            "weight": basis.weight,
-                            "density": basis.density,
-                            "nameBasis": order.kind_order === 2 ? order.name_base : basis.name_basis,
-                            "dateStart": this.helpers.convertDateToInput(order.date_order.date_start),
-                            "dateEnd": this.helpers.convertDateToInput(order.date_order.date_end),
-                            "basisDateStart": this.helpers.convertDateToInput(basis.date_basis.date_start),
-                            "basisDateEnd": this.helpers.convertDateToInput(basis.date_basis.date_end),
-                            "kind_order": order.kind_order,
-                            "commentary": "",
-                            "author": "site",
-                            "type_order": order.type_order,
-                        });
-                    }
+                    // console.log(basis.array_counteragents);
+                    basis.array_counteragents.forEach(conteragent => {
+                        if (basis.status_logistic != 2) { // basis.status_logistic не пропускаем отгруженые заявки
+                            console.log(conteragent.guid);
+                            listParts.push({
+                                "id": this.helpers.getID(),
+                                "guid": conteragent.guid,
+                                "number": '',
+                                "type_dispatch": '',
+                                "code_tank": '',
+                                "date_income": "",
+                                "date_dispatch": "",
+                                "client": {
+                                    "name_client": order.kind_order === 2 ? 'ООО "ТК ГЛАДОС"' : order.client.name_client,
+                                    "code_client": order.kind_order === 2 ? '00-00000181' : order.client.code_client,
+                                    "type_client": ""
+                                },
+                                "product": {
+                                    "name_product": basis.name_product,
+                                    "code_product": basis.code_product
+                                },
+                                "id_order": order.number,
+                                "num_address": addres.num_address,
+                                "num_basis": basis.num_basis,
+                                // "startVolume": basis.volume.start_volume,
+                                "volume": basis.volume.start_volume,
+                                "endVolume": basis.volume.end_volume,
+                                "weight": basis.weight,
+                                "density": basis.density,
+                                "nameBasis": order.kind_order === 2 ? order.name_base : basis.name_basis,
+                                "dateStart": this.helpers.convertDateToInput(order.date_order.date_start),
+                                "dateEnd": this.helpers.convertDateToInput(order.date_order.date_end),
+                                "basisDateStart": this.helpers.convertDateToInput(basis.date_basis.date_start),
+                                "basisDateEnd": this.helpers.convertDateToInput(basis.date_basis.date_end),
+                                "kind_order": order.kind_order,
+                                "commentary": "",
+                                "author": "site",
+                                "type_order": order.type_order,
+                            });
+                        }
+                    })
+
 
 
                     // console.log(basis.status_logistic);

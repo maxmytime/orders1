@@ -6093,6 +6093,10 @@ window.addEventListener('DOMContentLoaded', () => {
         statusLogistic.value = 1;
         statusBuh.value = 1;
         // numberOrder.dataset.number =
+        const order = e.target.closest('.js-app');
+        order.querySelectorAll('select[name="order-address-basis-legal-entity"]')
+            .forEach(el => el.dataset.guid = '');
+        setNewGUID(order, 'select[name="order-address-basis-legal-entity"]');
         copy = true;
     })
 

@@ -420,7 +420,7 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title has-text-weight-bold">Отгрузка/Загрузка</p>
+          <p class="modal-card-title has-text-weight-bold">Заявка-снабжения</p>
           <button class="delete delete-modal" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
@@ -492,18 +492,28 @@
                 </div>
               </div>
 
-              <!-- Количество -->
+              <!-- Количество в емкости -->
+              <div class="column is-3">
+                <div class="field">
+                  <label class="label">Объем в емкости (л)</label>
+                  <div class="control">
+                    <input type="text" name="startVolume" class="input input-order" autocomplete="off" disabled>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Количество в заявке снабжения -->
               <div class="column is-3">
                 <div class="field">
                   <label class="label">Объем (л)</label>
                   <div class="control">
-                    <input type="text" name="startVolume" class="input input-order" autocomplete="off">
+                    <input type="text" name="supply-volume" class="input input-order" autocomplete="off">
                   </div>
                 </div>
               </div>
 
               <!-- Дата загрузки/дата прихода -->
-              <div class="column is-4">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Загрузка/Приход</label>
                   <div class="control">
@@ -513,7 +523,7 @@
               </div>
 
               <!-- Масса -->
-              <div class="column is-4">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Масса (т)</label>
                   <div class="control">
@@ -523,7 +533,7 @@
               </div>
 
               <!-- Плотность -->
-              <div class="column is-4">
+              <div class="column is-3">
                 <div class="field">
                   <label class="label">Плотность</label>
                   <div class="control">
@@ -619,6 +629,7 @@
         <div class="columns">
           <div class="column date-of-shipment">20.12-21.12</div>
           <div class="column name-client" data-code="">Нефтесиб</div>
+          <div class="column name-client">Контрагент</div>
           <div class="column name-product">ДТз-К5 ВПК</div>
           <div class="column volume">10000</div>
           <div class="column is-1 volume">
@@ -701,12 +712,12 @@
   <template id="order-supply-section">
     <div class="column is-12 order-supply-section">
       <div class="columns">
-        <div class="column is-10 is-flex">
+        <div class="column is-10 is-flex is-align-items-center">
 
-          <h5 class="is-5 title is-hidden">Секция 1</h5>
+          <h5 class="is-5 title is-hidden mb-0 mr-5">Секция 1</h5>
 
           <!-- Поле ввода "Имя секции" -->
-          <div class="field">
+          <div class="field mb-0">
             <div class="control">
               <input type="text" name="order-supply-name-section" class="input input-order" value="" autocomplete="off"
                 placeholder="Имя секции">

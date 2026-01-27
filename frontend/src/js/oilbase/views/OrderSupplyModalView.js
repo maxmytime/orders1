@@ -34,15 +34,15 @@ export class OrderSupplyModalView extends AppView {
     // Базис
     this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
 
-    // Список емкостей
+    // Имя емкости
     this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
 
     // Продукт
     this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
     this.modalOrderSupply.querySelector('input[name="product"]').dataset.code = tank.product.code_product;
 
-    // Загрузка/Приход
-    // this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+    // Объем в емкости
+    this.modalOrderSupply.querySelector('input[name="startVolume"]').value = tank.volume;
 
     // Масса (т)
     this.modalOrderSupply.querySelector('input[name="weight"]').value = tank.weight;
@@ -133,6 +133,7 @@ export class OrderSupplyModalView extends AppView {
     const section = e.target.closest('.order-supply-section');
     const input = section.querySelector('input[name="order-supply-name-section"]');
     const title = section.querySelector('.title');
+    input.value = title.textContent;
     title.classList.toggle('is-hidden');
     input.classList.toggle('is-hidden');
 
@@ -298,7 +299,15 @@ export class OrderSupplyModalView extends AppView {
     const containerOrderSupplyParts = part.querySelector(`div[data-id="${sectionID}"] .order-supply-parts`);
     console.log(containerOrderSupplyParts);
     containerOrderSupplyParts.append(this.distributedPart.cloneNode(true));
-// `div[data-id="${tank.id}"]`
+
+    const uPart = e.target.closest('.order-supply-undistributed-part');
+    const btnOpen = uPart.querySelector('.open');
+    const btnClose = uPart.querySelector('.close');
+    btnOpen.classList.remove('is-hidden');
+    btnClose.classList.add('is-hidden');
+
+    const formDistribution = e.target.closest('.form-of-distribution');
+    formDistribution.classList.add('is-hidden');
   }
 
   // Получаем контейнер приложения
