@@ -27,6 +27,7 @@ export class OrderSupplyModalView extends AppView {
     // Базис id
     this.modalOrderSupply.dataset.basisId = basisID;
 
+
     //Список не распределенных частей заявок
     const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
     divPartsList.appendChild(this.creatingListOfParts(partsList));
@@ -36,6 +37,7 @@ export class OrderSupplyModalView extends AppView {
 
     // Имя емкости
     this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').dataset.id = tank.id;
 
     // Продукт
     this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
@@ -54,10 +56,104 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.classList.add('is-active');
   }
 
+
+  // Открыть модальное окно для редактирования заявки снабжения
+  edit(tank, basisID, partsList, supplyOrder) {
+    console.log(tank, basisID, partsList, supplyOrder);
+
+    // Базис ID
+    this.modalOrderSupply.dataset.basisId = basisID;
+    // Заявка снабжения ID
+    this.modalOrderSupply.dataset.supplyOrderId = supplyOrder.id;
+
+    //Список не распределенных частей заявок
+    const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
+    divPartsList.appendChild(this.creatingListOfParts(partsList));
+
+    // Базис
+    this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
+
+    // Имя емкости
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').dataset.id = tank.id;
+
+    // Продукт
+    this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
+    this.modalOrderSupply.querySelector('input[name="product"]').dataset.code = tank.product.code_product;
+
+    // Объем в емкости
+    this.modalOrderSupply.querySelector('input[name="startVolume"]').value = tank.volume;
+
+    // Объем (л)
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.volume;
+
+    // Загрузка/Приход
+    this.modalOrderSupply.
+      querySelector('input[name="date_dispatch"]').
+        value = this.helpers.convertDateToInput(supplyOrder.date_income);
+
+    // Масса (т)
+    this.modalOrderSupply.querySelector('input[name="weight"]').value = tank.weight;
+
+    // Плотность
+    this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
+
+    //Список не распределенных частей заявок
+    const divSection = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
+    for (const section of supplyOrder.array_sections) {
+      const tplSection = this.orderSupplySection.cloneNode(true);
+      // Имя секции
+      tplSection.querySelector('.title').textContent = section.name_section;
+      tplSection.querySelector('.title').classList.remove('is-hidden');
+      tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
+      // Объем
+      tplSection.querySelector('input[name="order-supply-volume"]').value = section.volume_section;
+
+      // Блоки заявки
+      const divBlocks = tplSection.querySelector('.order-supply-parts');
+      for (const block of section.array_dispatch) {
+        const tplBlock = this.distributedPart.cloneNode(true);
+        const part = partsList.find(part => part.guid === block.guid_orderblock);
+        console.log(part);
+        // guid
+        tplBlock.dataset.guid = block.guid_orderblock
+        // Дата
+        tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
+        // Клиент
+        tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
+        // Продукт
+        tplBlock.querySelector('.part-product').textContent = part.product.name_product;
+        // Распределенный объем
+        tplBlock.querySelector('.part-remainder').textContent = block.volume_dispatch;
+        divBlocks.append(tplBlock);
+      }
+
+      //Распределено
+      const inputSupplytplDistributed = tplSection.querySelector('input[name="order-supply-distributed"]');
+      divBlocks.querySelectorAll('.part-remainder').forEach(remainder => {
+        console.log(remainder);
+        inputSupplytplDistributed.value = Number(inputSupplytplDistributed.value) + Number(remainder.textContent);
+      })
+
+      // Остаток
+      tplSection.querySelector('input[name="order-supply-remainder"]').value
+        = Number(tplSection.querySelector('input[name="order-supply-volume"]').value)
+        - Number(inputSupplytplDistributed.value)
+
+      divSection.appendChild(tplSection);
+    }
+
+
+    // this.openAddNewOrderSupply();
+    this.modalOrderSupply.classList.add('is-active');
+  }
+
   // Закрыть модальное окно
   close() {
     const listParts = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
     listParts.textContent = '';
+    const sections = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
+    sections.textContent = '';
   }
 
   // Открываем модальное окно для добавления нововой заявки снабжения
@@ -70,12 +166,15 @@ export class OrderSupplyModalView extends AppView {
     const fragment = document.createDocumentFragment();
     for (const part of partsList) {
       const templatePart = this.undistributedPart.cloneNode(true);
-      templatePart.dataset.id = part.id
+      templatePart.dataset.id = part.id;
+      templatePart.dataset.guid = part.guid;
       templatePart.querySelector('.date-of-shipment').textContent = this.getDateShipment(part.basisDateStart, part.basisDateEnd);
       templatePart.querySelector('.name-client').dataset.code = part.client.code_client;
       templatePart.querySelector('.name-client').textContent = part.client.name_client;
       templatePart.querySelector('.name-product').textContent = part.product.name_product;
       templatePart.querySelector('.volume').textContent = part.volume;
+      // console.log(part);
+      templatePart.querySelector('.volume-distributed').textContent = part.volume_distributed;
 
       fragment.appendChild(templatePart);
     }
@@ -168,7 +267,7 @@ export class OrderSupplyModalView extends AppView {
         "name_product": modal.querySelector('input[name="product"]').value,
         "code_product": modal.querySelector('input[name="product"]').dataset.code
       },
-      "volume": Number(modal.querySelector('input[name="startVolume"]').value),
+      "volume": Number(modal.querySelector('input[name="supply-volume"]').value),
       "weight": Number(modal.querySelector('input[name="weight"]').value),         // disabled расчет из volume и density
       "density": Number(modal.querySelector('input[name="density"]').value),       // Возможно нужно получить из емкости
       "sort_number": 1,     // Как то получаю от дамира
@@ -183,19 +282,22 @@ export class OrderSupplyModalView extends AppView {
   // Получаем секции
   getSections(modal) {
     const sectionsNode = [...modal.querySelectorAll('.order-supply-section')];
+    console.log(sectionsNode);
     const section = sectionsNode.map(sectionNode => {
       return {
         "order_section": 1,
         "name_section": sectionNode.querySelector('.title').textContent,
         "volume_section": sectionNode.querySelector('input[name="order-supply-volume"]').value,
-        "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-part')].map(part => {
+        "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-distributed-part')].map(part => {
           return {
-            "number_dispatch": part.dataset.numberDispatch,
-            "volume_dispatch": part.querySelector('.volume-dispatch').textContent
+            "number_dispatch": part.dataset.numberDispatch || '',
+            "volume_dispatch": part.querySelector('.part-remainder').textContent,
+            "guid": part.dataset.guid,
           }
         })
       }
     });
+    console.log(section);
     return section;
   }
 
@@ -209,6 +311,11 @@ export class OrderSupplyModalView extends AppView {
     return element.querySelector(selector).value;
   }
 
+  // Получаем id элемента
+  getElementID(element, selector) {
+    return element.querySelector(selector).dataset.id;
+  }
+
   // Распределить заявку в секцию
   handleStartDistribution(e) {
     console.log(e);
@@ -217,6 +324,9 @@ export class OrderSupplyModalView extends AppView {
     const selectSection = formOfDistribution.querySelector('select[name="u-part-section"]');
     const btnOpen = uPart.querySelector('.open');
     const btnClose = uPart.querySelector('.close');
+
+    // Блокировка кнопки распределить
+    this.lockDistributeButton(e);
 
     // Начинаем или завершаем распределение
     if (formOfDistribution.classList.contains('is-hidden')) {
@@ -230,6 +340,9 @@ export class OrderSupplyModalView extends AppView {
 
       formOfDistribution.classList.remove('is-hidden');
     } else {
+      uPart.querySelector('input[name="u-section-remainder"]').value = '';
+      uPart.querySelector('input[name="u-part-remainder"]').value = '';
+      uPart.querySelector('input[name="u-part-load"]').value = '';
       btnOpen.classList.remove('is-hidden');
       btnClose.classList.add('is-hidden');
       formOfDistribution.classList.add('is-hidden');
@@ -240,19 +353,39 @@ export class OrderSupplyModalView extends AppView {
   // Получить секции в заявке-снабжения для начала распределения
   getSectionsStartDistribution(e) {
     const orderSupply = e.target.closest('.modal-order-supply');
-    console.log(orderSupply);
-    const sections = [ ...orderSupply.querySelectorAll('.order-supply-section') ].map(section => {
-        return {
-          'id': section.dataset.id,
-          'name': section.querySelector('.title').textContent,
-          'volume': Number(section.querySelector('input[name="order-supply-volume"]').value),
-          'distributed': Number(section.querySelector('input[name="order-supply-distributed"]').value),
-          'remainder': Number(section.querySelector('input[name="order-supply-remainder"]').value),
-        }
+    // console.log(orderSupply);
+    const sections = [...orderSupply.querySelectorAll('.order-supply-section')].map(section => {
+      return {
+        'id': section.dataset.id,
+        'name': section.querySelector('.title').textContent,
+        'volume': Number(section.querySelector('input[name="order-supply-volume"]').value),
+        'distributed': Number(section.querySelector('input[name="order-supply-distributed"]').value),
+        'remainder': Number(section.querySelector('input[name="order-supply-remainder"]').value),
+      }
     });
 
     return sections;
 
+  }
+
+  // Блокировка кнопки распределение
+  // Если возможный остаток отгрузки 0 или '' кнопка блокируется
+  // Событие срабатывает при открытии формы распределение,
+  // при вводе данных в поле загрузить, выборе секции
+  lockDistributeButton(e) {
+    console.log('lockDistributeButton(e)');
+    const uPart = e.target.closest('.order-supply-undistributed-part');
+    const formOfDistribution = uPart.querySelector('.form-of-distribution');
+    const inputLoad = formOfDistribution.querySelector('input[name="u-part-load"]');
+    const btnDistribution = formOfDistribution.querySelector('button.btn-end-distribution');
+    console.log(btnDistribution, inputLoad.value);
+    if (Number(inputLoad.value) === 0 || inputLoad.value === '') {
+      console.log('lock');
+      btnDistribution.disabled = true;
+    } else {
+      console.log('unlock');
+      btnDistribution.disabled = false;
+    }
   }
 
   // Формируем список секций
@@ -283,31 +416,142 @@ export class OrderSupplyModalView extends AppView {
     const sectionRemainder = part.querySelector('input[name="u-section-remainder"]');
     const partRemainder = part.querySelector('input[name="u-part-remainder"]');
     const volume = Number(part.querySelector('.volume').textContent);
+    const volumeDistributed = Number(part.querySelector('.volume-distributed').textContent);
     const load = part.querySelector('input[name="u-part-load"]');
+
+
+
+    if (sectionID === '-') {
+      sectionRemainder.value = '';
+      partRemainder.value = '';
+      load.value = '';
+      this.lockDistributeButton(e);
+      return;
+    }
+
     const sectionData = this.getSectionsStartDistribution(e).
       find(section => section.id === sectionID);
     console.log(sectionData);
     sectionRemainder.value = sectionData.remainder;
-    partRemainder.value = volume;
+    partRemainder.value = volume - volumeDistributed;
+
+    if (Number(sectionData.remainder) <= Number(volume - volumeDistributed)) {
+      load.value = sectionData.remainder;
+    } else {
+      load.value = volume - volumeDistributed;
+    }
+
+    // Блокировка кнопки распределить
+    this.lockDistributeButton(e);
 
   }
 
-  handleEndDistribution(e) {
-    console.log(e.target);
-    const part = e.target.closest('.modal-order-supply');
-    const sectionID = part.querySelector('select[name="u-part-section"]').value;
-    const containerOrderSupplyParts = part.querySelector(`div[data-id="${sectionID}"] .order-supply-parts`);
-    console.log(containerOrderSupplyParts);
-    containerOrderSupplyParts.append(this.distributedPart.cloneNode(true));
+  // Ввод объема в секции
+  volumeInputSection(e) {
+    const section = e.target.closest('.order-supply-section');
+    const inputVolume = section.querySelector('input[name="order-supply-volume"]');
+    const inputDistributed = section.querySelector('input[name="order-supply-distributed"]');
+    const inputRemainder = section.querySelector('input[name="order-supply-remainder"]');
+    // console.log(volume, inputDistributed);
+    if (Number.isNaN((Number(inputVolume.value) - Number(inputDistributed.value)))) return;
+    inputRemainder.value = Number(inputVolume.value) - Number(inputDistributed.value);
+  }
 
+  // Валидация поля Загрузка
+  validationUploadField(e) {
+    const form = e.target.closest('.form-of-distribution');
+    const partLoad = Number(e.target.value);
+    const sectionSelectValue = form.querySelector('select[name="u-part-section"]').value;
+    const sectionRemainder = Number(form.querySelector('input[name="u-section-remainder"]').value);
+    const partRemainder = Number(form.querySelector('input[name="u-part-remainder"]').value);
+
+    if (sectionSelectValue === '-') return;
+
+    if (sectionRemainder <= partRemainder) {
+      if (partLoad > sectionRemainder) e.target.value = sectionRemainder;
+    } else {
+      if (partLoad > partRemainder) e.target.value = partRemainder;
+    }
+
+    this.lockDistributeButton(e);
+  }
+
+  // Конец распределения объема в секцию, в секции создается или обнавляется
+  // существующий блок заявки
+  handleEndDistribution(e, part) {
+    console.log(part);
+    const modal = e.target.closest('.modal-order-supply');
+    const undistributedPart = e.target.closest('.order-supply-undistributed-part');
+    const sectionID = undistributedPart.querySelector('select[name="u-part-section"]').value;
+    const containerOrderSupplyParts = modal.querySelector(`div[data-id="${sectionID}"] .order-supply-parts`);
+    const volumeLoad = e.target.closest('.form-of-distribution').
+      querySelector('input[name="u-part-load"]').value;
+    const guid = e.target.closest('.order-supply-undistributed-part').dataset.guid
+
+    // Наполняем шаблон распределенного блока заявки даннми и вставляем его в секцию
+    this.distributedVolume(guid, containerOrderSupplyParts, part, volumeLoad);
+
+    // Обновляем поле Распределено в секции
+    const section = modal.querySelector(`div[data-id="${sectionID}"]`);
+    const inputVolume = section.querySelector('input[name="order-supply-volume"]');
+    const inputDistributed = section.querySelector('input[name="order-supply-distributed"]');
+    const inputRemainder = section.querySelector('input[name="order-supply-remainder"]');
+    inputDistributed.value = Number(inputDistributed.value) + Number(volumeLoad);
+    // console.log(volume, inputDistributed);
+    if (Number.isNaN((Number(inputVolume.value) - Number(inputDistributed.value)))) return;
+    inputRemainder.value = Number(inputVolume.value) - Number(inputDistributed.value);
+
+    // Скрываем форму распределения и очищаем поля
     const uPart = e.target.closest('.order-supply-undistributed-part');
+    uPart.querySelector('input[name="u-section-remainder"]').value = '';
+    uPart.querySelector('input[name="u-part-remainder"]').value = '';
+    uPart.querySelector('input[name="u-part-load"]').value = '';
     const btnOpen = uPart.querySelector('.open');
     const btnClose = uPart.querySelector('.close');
     btnOpen.classList.remove('is-hidden');
     btnClose.classList.add('is-hidden');
-
     const formDistribution = e.target.closest('.form-of-distribution');
     formDistribution.classList.add('is-hidden');
+  }
+
+  // Добавить новый блок заявки в секциию, если такой блок уже существует в секции
+  // то прибавить распределяемый объем к объему блока в секции
+  distributedVolume(guid, container, partData, volumeLoad) {
+
+    // Если такой ублок уже распределен то обнавляем его остаток
+    const distributedBlocks = [ ...container.children ];
+    if (distributedBlocks.length) {
+      for (const block of distributedBlocks) {
+        if (block.dataset.guid === guid) {
+          const remainder = block.querySelector('.part-remainder').textContent;
+          block.querySelector('.part-remainder').textContent = Number(remainder) + Number(volumeLoad);
+          return;
+        }
+      }
+    }
+
+    // Если болка нет то добавляем его в секцию
+    const distributedPart = this.distributedPart.cloneNode(true);
+    distributedPart.dataset.guid = guid;
+    distributedPart.querySelector('.part-date').textContent = this.getDateShipment(partData.basisDateStart,
+                                                                                    partData.basisDateEnd)
+    distributedPart.querySelector('.part-partner').textContent = partData.client.name_client;
+    distributedPart.querySelector('.part-product').textContent = partData.product.name_product;
+    distributedPart.querySelector('.part-remainder').textContent = volumeLoad;
+    container.append(distributedPart);
+  }
+
+  // Удаляем распределенный блок из секции
+  handleDeletBlock(e) {
+    const block = e.target.closest('.order-supply-distributed-part');
+    const blockRemainder = Number(block.querySelector('.part-remainder').textContent);
+    const section = e.target.closest('.order-supply-section');
+    const sectionDistributed = section.querySelector('input[name="order-supply-distributed"]');
+    const sectionRemainder = section.querySelector('input[name="order-supply-remainder"]');
+    sectionDistributed.value = Number(sectionDistributed.value) - blockRemainder;
+    sectionRemainder.value = Number(sectionRemainder.value) + blockRemainder;
+
+    block.remove();
   }
 
   // Получаем контейнер приложения

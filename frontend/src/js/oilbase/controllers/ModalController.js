@@ -97,7 +97,9 @@ export class ModalController {
             e.target.name === 'cost_management_tonn' ||
             e.target.name === 'cost_price_tonn' ||
             e.target.name === 'startVolume' ||
-            e.target.name === 'weight_fact'
+            e.target.name === 'weight_fact' ||
+            e.target.name === 'u-part-load' ||
+            e.target.name === 'order-supply-volume'
         ) {
             this.view.isNumber(e);
         }
@@ -367,7 +369,7 @@ export class ModalController {
             'id_order': part.id_order,                    //номер заказа менеджера
             'num_address': part.num_address,              //номер адреса в заявке
             'num_basis': part.num_basis,                  //номер базиса в заявке
-            'volume': part.volume,                   //объем
+            'volume': part.volume,                        //объем
             'weight': part.weight,                        //вес
             'density': part.density,                      //плотность
             'commentary': part.commentary,

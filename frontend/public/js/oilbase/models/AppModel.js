@@ -16,10 +16,10 @@ export class AppModel { // Выполняет инициализацию при�
         const listTanks = tanks;
         const listDistributeParts = distributeParts;
         const listSuplOrders = suplOrders;
-        // console.log(listDistributeParts);
-
         this.listPartsOriginal = structuredClone(listParts);
-        // console.log(this.listPartsOriginal);
+        this.listSuplOrders = suplOrders;
+        console.log(listSuplOrders);
+        console.log(listParts);
 
         // Добавляем к базисам недоставющие поля
         this.#listBasiss.forEach(basis => {
@@ -29,15 +29,42 @@ export class AppModel { // Выполняет инициализацию при�
             basis.visible = false;
         })
 
+        // Добавляем в список частей заявок распределенный объем
+
+        listSuplOrders.forEach(suplOrder => {
+            suplOrder.array_sections.forEach(section => {
+                section.array_dispatch.forEach(block => {
+                    listParts.forEach(part => {
+                        if (block.guid_orderblock === part.guid) {
+                            // console.log(part.guid);
+                            // console.log(block.guid_orderblock);
+                            part.volume_distributed = part.volume_distributed + Number(block.volume_dispatch);
+                        }
+                    })
+                })
+            })
+        })
+
+
+        // listParts.forEach(part => {
+        //     if (part.volume_distributed > 0) {
+        //         console.log(part);
+        //     }
+        // })
+
         // Подготавливаем список распределенных и не распределенных частей заявок
         listDistributeParts.forEach((DistributePart, i) => {
             for (const [i, order] of listParts.entries()) {
+                // if (order.id_order === '000003840') console.log(order);
                 if (order.id_order === DistributePart.id_order &&
                     order.num_address === DistributePart.num_address &&
                     order.num_basis === DistributePart.num_basis) {
-                    console.log(order);
+                    // console.log(order);
 
                     // Добавляем недастающие поля в распределенную заявку
+                    // DistributePart.guid_orderblock = order.guid;
+                    DistributePart.guid = order.guid || '';
+                    DistributePart.volume_distributed = order.volume_distributed;
                     DistributePart.id = order.id;
                     // DistributePart.volume = order.volume;
                     // DistributePart.endVolume = order.endVolume;
@@ -244,6 +271,11 @@ export class AppModel { // Выполняет инициализацию при�
         return false;
     }
 
+    // Получаем заявку снабжения по ID
+    getSupplyOrder(id) {
+        return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
+    }
+
     // Получаем список всех базисов
     getBasiss() {
         const basiss = [];
@@ -388,7 +420,7 @@ export class AppModel { // Выполняет инициализацию при�
                     // console.log(basis.array_counteragents);
                     basis.array_counteragents.forEach(conteragent => {
                         if (basis.status_logistic != 2) { // basis.status_logistic не пропускаем отгруженые заявки
-                            console.log(conteragent.guid);
+                            // console.log(conteragent.guid);
                             listParts.push({
                                 "id": this.helpers.getID(),
                                 "guid": conteragent.guid,
@@ -411,6 +443,7 @@ export class AppModel { // Выполняет инициализацию при�
                                 "num_basis": basis.num_basis,
                                 // "startVolume": basis.volume.start_volume,
                                 "volume": basis.volume.start_volume,
+                                "volume_distributed": 0,
                                 "endVolume": basis.volume.end_volume,
                                 "weight": basis.weight,
                                 "density": basis.density,
@@ -472,6 +505,40 @@ export class AppModel { // Выполняет инициализацию при�
                             'listTanks': basis.listOfTanks,
                             'tankID': tank.id,
                             'basisSupplier': basis.supplier
+                        };
+                    }
+                }
+
+            }
+        }
+        return null;
+    }
+
+    // Получаем часть заявки по ID
+    getPartGuid(guid) {
+        for (const basis of this.#listBasiss) {
+            if (basis.listOfUndistributedApplications) {
+                const foundApplication = basis.listOfUndistributedApplications.find(
+                    app => app.guid === guid
+                );
+                if (foundApplication) {
+                    // console.log(basis);
+                    return {
+                        'part': foundApplication
+                    };
+                }
+            }
+
+            if (basis.listOfTanks) {
+                for (const tank of basis.listOfTanks) {
+                    const foundApplication = tank.listOfDistributedApplications.find(
+                        app => app.guid === guid
+                    );
+
+                    if (foundApplication) {
+                        // console.log(tank.id);
+                        return {
+                            'part': foundApplication,
                         };
                     }
                 }

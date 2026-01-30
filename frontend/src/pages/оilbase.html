@@ -631,8 +631,12 @@
           <div class="column name-client" data-code="">Нефтесиб</div>
           <div class="column name-client">Контрагент</div>
           <div class="column name-product">ДТз-К5 ВПК</div>
-          <div class="column volume">10000</div>
-          <div class="column is-1 volume">
+          <div class="column">
+            <span class="volume-distributed">50</span>
+            <span>/</span>
+            <span class="volume">10000</span>
+          </div>
+          <div class="column is-1">
             <button type="button" class="button btn-orders btn-brand has-background-white btn-start-distribution">
               <span class="icon btn-start-distribution">
                 <i class="fa fa-plus btn-start-distribution open" aria-hidden="true"></i>
@@ -745,11 +749,23 @@
         </div>
         <div class="control">
           <label class="label">Распределено</label>
-          <input type="text" name="order-supply-distributed" class="input input-order" value="" autocomplete="off">
+          <input
+            type="text"
+            name="order-supply-distributed"
+            class="input input-order"
+            value="0"
+            autocomplete="off"
+            disabled>
         </div>
         <div class="control">
           <label class="label">Остаток</label>
-          <input type="text" name="order-supply-remainder" class="input input-order" value="" autocomplete="off">
+          <input
+            type="text"
+            name="order-supply-remainder"
+            class="input input-order"
+            value=""
+            autocomplete="off"
+            disabled>
         </div>
 
       </div>
@@ -764,11 +780,14 @@
 
   <!-- Шаблон распределенной части заявки в секции -->
   <template id="order-supply-distributed-part">
-    <div class="order-supply-distributed-part columns has-text-right">
-      <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
+    <div class="order-supply-distributed-part columns has-text-right is-align-items-center">
+      <span class="column is-2 is-offset-1 has-text-weight-bold part-date">20.12</span>
       <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
       <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
       <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
+      <span class="column is-1 is-clickable has-text-right">
+        <i class="fa fa-lg fa-trash icon-hover btn-del-block" aria-hidden="true"></i>
+      </span>
     </div>
   </template>
 

@@ -83,7 +83,7 @@ export class BasisController {
             console.log('editPart(e)');
             const element = e.target.closest('[data-id]');
             const part = this.model.getPart(element.dataset.id);
-            console.log(part);
+            console.log(part.part);
             const basiss = this.model.getBasiss();
             this.modalController.openModalEditPart(part.part, basiss, part.basisID, part.listTanks, part.tankID, part.basisSupplier);
             // this.validationMassFild();
@@ -122,7 +122,7 @@ export class BasisController {
     openModalAddEditOrderSupply(e) {
         if (e.target.classList.contains('bnt-edit-order-supply')) {
             // console.log('bnt-add-order-supply');
-            this.orderSupplyModalContoller.open(e);
+            this.orderSupplyModalContoller.edit(e);
         }
     }
 
