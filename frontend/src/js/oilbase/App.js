@@ -59,7 +59,8 @@ export class App {
             this.orderSupplyModalView,
             this.partDistributedModalController,
             this.helpers,
-            this.socket
+            this.socket,
+            this.orderSupplyControllerFactory
         );
 
         this.modalController = new ModalController(

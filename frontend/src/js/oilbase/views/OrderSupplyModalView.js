@@ -102,6 +102,8 @@ export class OrderSupplyModalView extends AppView {
     const divSection = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
     for (const section of supplyOrder.array_sections) {
       const tplSection = this.orderSupplySection.cloneNode(true);
+      // ID секции
+      tplSection.dataset.id = this.helpers.getID();
       // Имя секции
       tplSection.querySelector('.title').textContent = section.name_section;
       tplSection.querySelector('.title').classList.remove('is-hidden');
@@ -117,6 +119,8 @@ export class OrderSupplyModalView extends AppView {
         console.log(part);
         // guid
         tplBlock.dataset.guid = block.guid_orderblock
+        // number_dispatch
+        tplBlock.dataset.numberDispatch = block.number_dispatch
         // Дата
         tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
         // Клиент
@@ -287,11 +291,11 @@ export class OrderSupplyModalView extends AppView {
       return {
         "order_section": 1,
         "name_section": sectionNode.querySelector('.title').textContent,
-        "volume_section": sectionNode.querySelector('input[name="order-supply-volume"]').value,
+        "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
         "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-distributed-part')].map(part => {
           return {
             "number_dispatch": part.dataset.numberDispatch || '',
-            "volume_dispatch": part.querySelector('.part-remainder').textContent,
+            "volume_dispatch": Number(part.querySelector('.part-remainder').textContent),
             "guid": part.dataset.guid,
           }
         })
@@ -501,6 +505,11 @@ export class OrderSupplyModalView extends AppView {
     if (Number.isNaN((Number(inputVolume.value) - Number(inputDistributed.value)))) return;
     inputRemainder.value = Number(inputVolume.value) - Number(inputDistributed.value);
 
+    // Обновляем поле распределено в нераспределенной части заявки
+    const volumeDistributed = e.target.closest('.order-supply-undistributed-part')
+      .querySelector('.volume-distributed');
+    volumeDistributed.textContent = Number(volumeDistributed.textContent) + Number(volumeLoad);
+
     // Скрываем форму распределения и очищаем поля
     const uPart = e.target.closest('.order-supply-undistributed-part');
     uPart.querySelector('input[name="u-section-remainder"]').value = '';
@@ -518,7 +527,7 @@ export class OrderSupplyModalView extends AppView {
   // то прибавить распределяемый объем к объему блока в секции
   distributedVolume(guid, container, partData, volumeLoad) {
 
-    // Если такой ублок уже распределен то обнавляем его остаток
+    // Если такой блок уже распределен то обнавляем его остаток
     const distributedBlocks = [ ...container.children ];
     if (distributedBlocks.length) {
       for (const block of distributedBlocks) {

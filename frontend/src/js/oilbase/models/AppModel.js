@@ -53,48 +53,45 @@ export class AppModel { // Выполняет инициализацию при�
         // })
 
         // Подготавливаем список распределенных и не распределенных частей заявок
-        listDistributeParts.forEach((DistributePart, i) => {
-            for (const [i, order] of listParts.entries()) {
-                // if (order.id_order === '000003840') console.log(order);
-                if (order.id_order === DistributePart.id_order &&
-                    order.num_address === DistributePart.num_address &&
-                    order.num_basis === DistributePart.num_basis) {
-                    // console.log(order);
+        // listDistributeParts.forEach((DistributePart, i) => {
+        //     for (const [i, order] of listParts.entries()) {
+        //         // if (order.id_order === '000003840') console.log(order);
+        //         if (order.id_order === DistributePart.id_order &&
+        //             order.num_address === DistributePart.num_address &&
+        //             order.num_basis === DistributePart.num_basis) {
+        //             // console.log(order);
 
-                    // Добавляем недастающие поля в распределенную заявку
-                    // DistributePart.guid_orderblock = order.guid;
-                    DistributePart.guid = order.guid || '';
-                    DistributePart.volume_distributed = order.volume_distributed;
-                    DistributePart.id = order.id;
-                    // DistributePart.volume = order.volume;
-                    // DistributePart.endVolume = order.endVolume;
-                    DistributePart.nameBasis = order.nameBasis;
-                    DistributePart.dateStart = order.dateStart;
-                    DistributePart.dateEnd = order.dateEnd;
-                    DistributePart.basisDateStart = order.basisDateStart;
-                    DistributePart.basisDateEnd = order.basisDateEnd;
-                    DistributePart.kind_order = order.kind_order;
-                    DistributePart.date_dispatch = this.helpers.convertDateToInput(DistributePart.date_dispatch);
-                    DistributePart.differences = this.findDifferences(DistributePart, order);
-                    // --------------------------------------------------
+        //             // Добавляем недастающие поля в распределенную заявку
+        //             DistributePart.guid = order.guid || '';
+        //             DistributePart.volume_distributed = order.volume_distributed;
+        //             DistributePart.id = order.id;
+        //             DistributePart.nameBasis = order.nameBasis;
+        //             DistributePart.dateStart = order.dateStart;
+        //             DistributePart.dateEnd = order.dateEnd;
+        //             DistributePart.basisDateStart = order.basisDateStart;
+        //             DistributePart.basisDateEnd = order.basisDateEnd;
+        //             DistributePart.kind_order = order.kind_order;
+        //             DistributePart.date_dispatch = this.helpers.convertDateToInput(DistributePart.date_dispatch);
+        //             DistributePart.differences = this.findDifferences(DistributePart, order);
+        //             // --------------------------------------------------
 
 
-                    if (DistributePart.code_tank) {
-                        listParts.splice(i, 1);
-                    } else {
-                        listParts[i] = DistributePart;
-                    }
+        //             if (DistributePart.code_tank) {
+        //                 listParts.splice(i, 1);
+        //             } else {
+        //                 listParts[i] = DistributePart;
+        //             }
 
-                    break;
-                }
-            }
+        //             break;
+        //         }
+        //     }
 
-            if (!DistributePart.id) {
-                // console.log(DistributePart.id);
-            }
+        //     if (!DistributePart.id) {
+        //         // console.log(DistributePart.id);
+        //     }
 
 
-        })
+        // })
 
         // Добавляем в базисы не распределенные заявки
         this.#listBasiss.forEach(basis => {
@@ -273,7 +270,16 @@ export class AppModel { // Выполняет инициализацию при�
 
     // Получаем заявку снабжения по ID
     getSupplyOrder(id) {
-        return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
+        for (const basis of this.basiss) {
+            for (const tank of basis.listOfTanks) {
+                for (const orderSupply of tank.listOfOrderSupply) {
+                    if (orderSupply.id === id) return orderSupply;
+
+                }
+            }
+        }
+        // return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
+        return false;
     }
 
     // Получаем список всех базисов
@@ -722,7 +728,21 @@ export class AppModel { // Выполняет инициализацию при�
 
     // --------------------------------------------------------
 
+    // Добавить новую заявку снабжения в емкость
+    addOrderSupply(docObject) {
+        for (const basis of this.basiss) {
+            for (const tank of basis.listOfTanks) {
+                console.log(tank);
+                if (tank.code === docObject.code_tank) {
+                    tank.listOfOrderSupply.push(docObject);
+                    console.log(tank);
+                    return tank.id;
+                }
+            }
+        }
 
+        return false;
+    }
 
     get basiss() {
         return this.#listBasiss;

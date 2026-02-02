@@ -13,4 +13,8 @@ export class OrderSupplyController {
         return this.view.render(orderSupply);
     }
 
+    renderNewOrderSupply(docObject, tankID) {
+        this.view.renderNewOrderSupply(docObject, tankID);
+    }
+
 }

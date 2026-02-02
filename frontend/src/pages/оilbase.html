@@ -1293,7 +1293,11 @@
       <div class="column date-of-shipment"></div>
       <div class="column name-client" data-code=""></div>
       <div class="column name-product"></div>
-      <div class="column volume"></div>
+      <div class="column">
+        <span class="volume-distributed"></span>
+        <span>/</span>
+        <span class="volume"></span>
+      </div>
       <div class="column is-hidden"></div>
       <div class="column is-3 comment"></div>
     </div>
@@ -1359,8 +1363,7 @@
           </div>
         </div>
       </div>
-      <div class="column lock"><i class="fa fa-lg fa-lock is-hidden" aria-hidden="true"></i></div>
-      <div class="column is-2">
+      <div class="column">
         <div class="date">
           <span class="date_dispatch">25.04.2025</span>
           <div class="field date-input is-hidden is-relative">
@@ -1371,21 +1374,11 @@
           </div>
         </div>
       </div>
-      <div class="column date-of-shipment">7.05-8.05</div>
-      <div class="column name-client">ООО АЗС</div>
       <div class="column name-product">ДТе</div>
-      <div class="column">
-        <div class="quantity">
-          <span class="quantity-subtable volume">32,398</span>
-          <div class="field quantity-input is-relative is-hidden">
-            <div class="control">
-              <input type="number" class="input input-order">
-            </div>
-            <button class="delete" aria-label="close"></button>
-          </div>
-        </div>
-      </div>
-      <div class="column current-balance">-</div>
+      <div class="column volume">10000</div>
+      <div class="column volume-distributed">4000</div>
+      <div class="column planned-balance">6000</div>
+
       <div class="column is-3 comment">Lorem ipsum dolor sit amet.</div>
     </div>
   </template>
@@ -1401,9 +1394,6 @@
             <div class="column is-5 pl-5 is-flex-js">
               <i class="fa fa-angle-right fa-lg toggle-subtable is-clickable has-text-centered" aria-hidden="true"></i>
             </div>
-            <!-- <div class="column">
-                            <span class="provider">Поле не передается</span>
-                        </div> -->
           </div>
         </div>
         <div class="column">
@@ -1419,7 +1409,6 @@
           </button>
         </div>
         <div class="column is-1 product"></div>
-        <!-- <div class="column is-1 nomenclature">АИ-95</div> -->
         <div class="column is-1 density"></div>
         <div class="column is-1">
           <span class="management-сost"></span><br>
@@ -1433,7 +1422,6 @@
         <div class="column is-1 current-balance"></div>
         <div class="column is-1 planned-balance"></div>
         <div class="column is-1 has-text-centered">
-          <!-- <a class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand">Архив</a> -->
           <i class="fa fa-lg fa-trash delete-tank is-clickable" aria-hidden="true"></i>
         </div>
       </div>
@@ -1442,7 +1430,7 @@
         <!-- table-stayle-subtable -->
         <div class="columns is-multiline ">
 
-          <div class="column is-12 subtable-head color-border-top color-border-b-dark">
+          <!-- <div class="column is-12 subtable-head color-border-top color-border-b-dark">
             <div class="columns is-mobile is-multiline">
               <div class="column is-1 pl-5">
                 <div class="columns is-mobile">
@@ -1463,7 +1451,7 @@
               <div class="column">Остаток, плановый</div>
               <div class="column is-3">Комментарий</div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Блок для вставки распределенных заявок -->
           <div class="column is-12 subtable-rows">
@@ -1471,9 +1459,32 @@
 
           </div>
 
+          <!-- Шапка таблицы заявки снабжения -->
+          <div class="column is-12 subtable-head color-border-top color-border-b-dark">
+            <div class="columns is-mobile is-multiline">
+              <!-- <div class="column is-1 pl-5">
+                <div class="columns is-mobile">
+                  <div class="column">
+                    <span></span>
+                  </div>
+                  <div class="column">
+                    <span></span>
+                  </div>
+                </div>
+              </div> -->
+              <div class="column is-1"></div>
+              <div class="column">Дата загрузки/дата прихода</div>
+              <div class="column">Продукт</div>
+              <div class="column">Объем заявки</div>
+              <div class="column">Распределено</div>
+              <div class="column">Остаток, плановый</div>
+              <div class="column is-3">Комментарий</div>
+            </div>
+          </div>
+
           <!-- Контейнер для заявок снабжения -->
           <div class="column is-12 order-supply-container">
-            <h3 class="title is-5">Контейнер для заявок снабжения</h3>
+            <!-- <h3 class="title is-5">Контейнер для заявок снабжения</h3> -->
 
           </div>
 

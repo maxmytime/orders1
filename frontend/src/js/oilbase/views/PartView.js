@@ -105,6 +105,10 @@ export class PartView extends AppView {
         if (this.getDifferences(part.part.differences, 'product.name_product')) {
             template.querySelector('.name-product').classList.add('has-text-danger');
         }
+
+        // Количество распределенного объема
+        template.querySelector('.volume-distributed').textContent = Number(part.part.volume_distributed);
+
         // Количество
         template.querySelector('.volume').textContent = Number(part.part.volume).toFixed(0);
         if (this.getDifferences(part.part.differences, 'volume')) {

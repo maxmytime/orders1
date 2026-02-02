@@ -6,7 +6,8 @@ export class OrderSupplyModalContoller {
         orderSupplyModalView,
         partDistributedModalController,
         helpers,
-        socket) {
+        socket,
+        orderSupplyControllerFactory) {
         this.modelApp = modelApp;
         this.model = orderSupplyModalModel;
         this.view = orderSupplyModalView;
@@ -14,6 +15,8 @@ export class OrderSupplyModalContoller {
         this.api = new ApiClient();
         this.helpers = helpers;
         this.socket = socket.socket;
+        this.orderSupplyControllerFactory = orderSupplyControllerFactory;
+        this.dispatchList = [];
 
         // console.log('OrderSupplyModalContoller');
         // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -68,11 +71,68 @@ export class OrderSupplyModalContoller {
         // console.log(supplyOrderID);
         const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
         // console.log(supplyOrder);
+        // Запоминаем исходный список распределенных блоков заявки
+        this.dispatchList = this.createDispatchList(supplyOrder);
+
+
         this.view.edit(tank, basisID, partsList, supplyOrder);
+    }
+
+    // Создать список распределенных блоков заявки
+    createDispatchList(supplyOrder) {
+        let dispatchList = [];
+        supplyOrder.array_sections.forEach(section => {
+            section.array_dispatch.forEach(dispatch => {
+                dispatchList.push({
+                    'name_section': section.name_section,
+                    'number_dispatch': dispatch.number_dispatch,
+                    'volume_dispatch': dispatch.volume_dispatch
+                })
+
+            })
+        })
+        return dispatchList;
+    }
+
+    // Создание объекта для обновления списка распределенных блоков заявки
+    createObjectUpdate(oldDispatchList, newDispatchList) {
+        let objectUpdate = {
+            'delete': [],
+            'edit': [],
+            'create': []
+        }
+
+
+        // Определяем распределенные блоки заявки, которые нужно удалить
+        oldDispatchList.forEach(oldDispatch => {
+            console.log(oldDispatch);
+            const status = newDispatchList.find(newDispach =>
+                newDispach.number_dispatch === oldDispatch.number_dispatch);
+            if (!status) {
+                objectUpdate.delete.push(oldDispatch);
+            }
+        })
+
+        // Определяем блоки заявки, которые нужно обновить
+        oldDispatchList.forEach(oldDispatch => {
+            console.log(oldDispatch);
+            const newDispach = newDispatchList.find(newDispach =>
+                newDispach.number_dispatch === oldDispatch.number_dispatch &&
+                newDispach.volume_dispatch !== oldDispatch.volume_dispatch);
+            if (newDispach) {
+                objectUpdate.edit.push(newDispach);
+            }
+        })
+
+        // Определяем блоки заявки, которые нужно создать
+        objectUpdate.create = newDispatchList.filter(newDispach => newDispach.number_dispatch === '');
+
+        return objectUpdate;
     }
 
     close(e) {
         if (e.target.classList.contains('delete-modal')) {
+            this.dispatchList = [];
             const modal = e.target.closest('.modal-order-supply');
             if (modal) {
                 this.view.close();
@@ -159,19 +219,19 @@ export class OrderSupplyModalContoller {
         if (e.target.classList.contains('btn-create-order-supply')) {
             // console.log(e.target);
             const modal = this.view.getModal(e);  // Получаем узел модального окна
-
             const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
-            if (tankID === '-') return;      // Прекращаем выполнение функции если поле емкость не выбрано
             const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
             const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
-            console.log(docObject);
-            this.view.getSections(modal);
+            console.log(this.createDispatchList(docObject));
+            console.log(this.dispatchList);
+            console.log(this.createObjectUpdate(this.dispatchList, this.createDispatchList(docObject)));
+            // this.view.getSections(modal);
 
+            // Получаем number_dispach для распределенных блоков заявки
             for (const [index, section] of docObject.array_sections.entries()) {
-                // let i = 0;
                 for (const block of section.array_dispatch) {
-                    // console.log(this.modelApp.getPartGuid(block.guid));
 
+                    console.log(block.number_dispatch);
 
                     const dispatch = {
                         'number': '',                //только для изменений, номер распределенной части, присваивается при создании
@@ -180,7 +240,7 @@ export class OrderSupplyModalContoller {
                         'code_tank': '',      //код емкости docObject.code_tank
                         'date_income': "01010001",             //дата загрузки
                         'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
-                        'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,                                 //код клиента
+                        'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,   //код клиента
                         'code_product': docObject.product.code_product,    //код продукта
                         'id_order': this.modelApp.getPartGuid(block.guid).part.id_order,         //номер заказа менеджера
                         'num_address': this.modelApp.getPartGuid(block.guid).part.num_address,   //номер адреса в заявке
@@ -193,17 +253,14 @@ export class OrderSupplyModalContoller {
                         'guid_orderblock': block.guid
                     }
 
-                    console.log(dispatch);
-                    const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
-                    console.log(status.Data);
-                    block.number_dispatch = status.Data;
-                    // block.number_dispatch = ++i;
-
+                    // console.log(dispatch);
+                    // const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
+                    // console.log(status.Data);
+                    // block.number_dispatch = status.Data;
                 }
             }
-            console.log(docObject);
 
-
+            // Формируем объект для создания заявки снабжения
             const supply = {
                 "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
                 "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
@@ -211,9 +268,9 @@ export class OrderSupplyModalContoller {
                 "code_tank": docObject.code_tank, //код емкости
                 "date_income": docObject.date_income,  //дата загрузки
                 "code_product": docObject.product.code_product,  //код продукта
-                "volume": docObject.volume,  //объем
-                "weight": docObject.weight,  //вес
-                "density": docObject.density,  //плотность
+                "volume": docObject.volume,    // объем
+                "weight": docObject.weight,    // вес
+                "density": docObject.density,  // плотность
                 "commentary": docObject.commentary,
                 "array_sections": docObject.array_sections.map((section, index) => {
                     ++index;
@@ -239,11 +296,27 @@ export class OrderSupplyModalContoller {
                 }).flat(Infinity)
             }
 
-            console.log(supply);
+            // console.log(supply);
 
-            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
-            console.log(status);
+            // Отправляем данные для создания заявки снабжения
+            // const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            // console.log(status);
+
+            // Добавляем новую заявку снабжения в модель
+            // if (status.Status === 'OK') {
+            //     docObject.number = status.Data;
+            //     const tankID = this.modelApp.addOrderSupply(docObject);
+
+            //     // Рисуем новую заявку снабжения в емкости
+            //     if (tankID) {
+            //         const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
+            //         orderSupplyController.renderNewOrderSupply(docObject, tankID);
+            //     }
+            // }
         }
+
+        // this.dispatchList = [];
+        // this.view.close();
     }
 
     // Валидация поля Загрузка
