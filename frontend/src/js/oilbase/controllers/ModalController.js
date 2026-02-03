@@ -52,7 +52,7 @@ export class ModalController {
 
     // Выпадающий список для выбора
     async dropdown(e) {
-        if (e.target.name === 'basis') {   // Выбор базисов
+        if (e.target.name === 'basis' || e.target.name === 'os-filter-basis') {   // Выбор базисов
             const listBasiss = await this.api.fetchGetData(`/getbasises`);
             this.view.dropdownBasis(e, listBasiss);
         } else if (e.target.name === 'provider' || e.target.name === 'nameClient') {  // Выбор поставщиков

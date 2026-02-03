@@ -49,6 +49,8 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('input', this.volumeInputSection.bind(this));
         // Контроллер подписывается на событие удаления блока из секции
         this.view.getContainer().addEventListener('click', this.handleDeletBlock.bind(this));
+        // Контроллер подписывается на событие клика по элементу выпадающегося списка
+        this.view.getContainer().addEventListener('click', this.selectAnItem.bind(this));
 
     }
 
@@ -224,7 +226,7 @@ export class OrderSupplyModalContoller {
             const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
             console.log(this.createDispatchList(docObject));
             console.log(this.dispatchList);
-            console.log(this.createObjectUpdate(this.dispatchList, this.createDispatchList(docObject)));
+            // console.log(this.createObjectUpdate(this.dispatchList, this.createDispatchList(docObject)));
             // this.view.getSections(modal);
 
             // Получаем number_dispach для распределенных блоков заявки
@@ -253,10 +255,10 @@ export class OrderSupplyModalContoller {
                         'guid_orderblock': block.guid
                     }
 
-                    // console.log(dispatch);
-                    // const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
-                    // console.log(status.Data);
-                    // block.number_dispatch = status.Data;
+                    console.log(dispatch);
+                    const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
+                    console.log(status.Data);
+                    block.number_dispatch = status.Data;
                 }
             }
 
@@ -299,20 +301,20 @@ export class OrderSupplyModalContoller {
             // console.log(supply);
 
             // Отправляем данные для создания заявки снабжения
-            // const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
-            // console.log(status);
+            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            console.log(status);
 
             // Добавляем новую заявку снабжения в модель
-            // if (status.Status === 'OK') {
-            //     docObject.number = status.Data;
-            //     const tankID = this.modelApp.addOrderSupply(docObject);
+            if (status.Status === 'OK') {
+                docObject.number = status.Data;
+                const tankID = this.modelApp.addOrderSupply(docObject);
 
-            //     // Рисуем новую заявку снабжения в емкости
-            //     if (tankID) {
-            //         const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-            //         orderSupplyController.renderNewOrderSupply(docObject, tankID);
-            //     }
-            // }
+                // Рисуем новую заявку снабжения в емкости
+                if (tankID) {
+                    const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
+                    orderSupplyController.renderNewOrderSupply(docObject, tankID);
+                }
+            }
         }
 
         // this.dispatchList = [];
@@ -326,6 +328,15 @@ export class OrderSupplyModalContoller {
             this.view.validationUploadField(e);
         }
 
+    }
+
+    // Выбор элемента из выпадающего списка
+    selectAnItem(e) {
+        if (e.target.classList.contains('droplist-item') && e.target.closest('.modal-order-supply')) {
+            console.log('OK');
+            const partList = this.modelApp.getBasis(e.target.textContent).listOfUndistributedApplications;
+            this.view.updateListOfParts(e, partList);
+        }
     }
 
     // Открыть заявку для распределение

@@ -427,7 +427,23 @@
           <div class="columns is-multiline card-part">
             <!-- Список не распределенных заявок -->
             <div class="column is-12">
-              <h4 class="is-4 title">Не распределенные заявки</h4>
+
+              <div class="columns">
+                <div class="column is-6">
+                  <h4 class="is-4 title">Не распределенные заявки</h4>
+                </div>
+                <div class="column is-5">
+                  <div class="field">
+                    <!-- <label class="label">Базис</label> -->
+                    <div class="control">
+                      <div class="droplist-wrapper">
+                        <input type="text" name="os-filter-basis" class="input input-order" value="" autocomplete="off">
+                        <div class="droplist is-hidden"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div class="order-supply-list-undistributed-parts pb-5">
                 <!-- <div class="columns is-clickable order-supply-undistributed-part">
@@ -749,22 +765,12 @@
         </div>
         <div class="control">
           <label class="label">Распределено</label>
-          <input
-            type="text"
-            name="order-supply-distributed"
-            class="input input-order"
-            value="0"
-            autocomplete="off"
+          <input type="text" name="order-supply-distributed" class="input input-order" value="0" autocomplete="off"
             disabled>
         </div>
         <div class="control">
           <label class="label">Остаток</label>
-          <input
-            type="text"
-            name="order-supply-remainder"
-            class="input input-order"
-            value=""
-            autocomplete="off"
+          <input type="text" name="order-supply-remainder" class="input input-order" value="" autocomplete="off"
             disabled>
         </div>
 

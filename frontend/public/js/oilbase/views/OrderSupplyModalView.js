@@ -27,10 +27,12 @@ export class OrderSupplyModalView extends AppView {
     // Базис id
     this.modalOrderSupply.dataset.basisId = basisID;
 
+    // Фильтр по базисам
+    this.modalOrderSupply.querySelector('input[name="os-filter-basis"]').value = tank.name_base;
 
     //Список не распределенных частей заявок
     const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
-    divPartsList.appendChild(this.creatingListOfParts(partsList));
+    divPartsList.appendChild(this.creatingListOfParts(partsList, tank.product.name_product));
 
     // Базис
     this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
@@ -60,6 +62,9 @@ export class OrderSupplyModalView extends AppView {
   // Открыть модальное окно для редактирования заявки снабжения
   edit(tank, basisID, partsList, supplyOrder) {
     console.log(tank, basisID, partsList, supplyOrder);
+
+    // Фильтр по базисам
+    this.modalOrderSupply.querySelector('input[name="os-filter-basis"]').value = tank.name_base;
 
     // Базис ID
     this.modalOrderSupply.dataset.basisId = basisID;
@@ -166,24 +171,38 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Формируем список не распределенных заявок
-  creatingListOfParts(partsList) {
+  creatingListOfParts(partsList, product) {
     const fragment = document.createDocumentFragment();
     for (const part of partsList) {
-      const templatePart = this.undistributedPart.cloneNode(true);
-      templatePart.dataset.id = part.id;
-      templatePart.dataset.guid = part.guid;
-      templatePart.querySelector('.date-of-shipment').textContent = this.getDateShipment(part.basisDateStart, part.basisDateEnd);
-      templatePart.querySelector('.name-client').dataset.code = part.client.code_client;
-      templatePart.querySelector('.name-client').textContent = part.client.name_client;
-      templatePart.querySelector('.name-product').textContent = part.product.name_product;
-      templatePart.querySelector('.volume').textContent = part.volume;
-      // console.log(part);
-      templatePart.querySelector('.volume-distributed').textContent = part.volume_distributed;
+      console.log(product !== part.product.name_product)
+      if (product === part.product.name_product) {
+        const templatePart = this.undistributedPart.cloneNode(true);
+        templatePart.dataset.id = part.id;
+        templatePart.dataset.guid = part.guid;
+        templatePart.querySelector('.date-of-shipment').textContent = this.getDateShipment(part.basisDateStart, part.basisDateEnd);
+        templatePart.querySelector('.name-client').dataset.code = part.client.code_client;
+        templatePart.querySelector('.name-client').textContent = part.client.name_client;
+        templatePart.querySelector('.name-product').textContent = part.product.name_product;
+        templatePart.querySelector('.volume').textContent = part.volume;
+        // console.log(part);
+        templatePart.querySelector('.volume-distributed').textContent = part.volume_distributed;
 
-      fragment.appendChild(templatePart);
+        fragment.appendChild(templatePart);
+      }
+
     }
 
     return fragment;
+  }
+
+  // Обнавляем список не распределенных заявок после смены базиса
+  updateListOfParts(e, partsList) {
+    const modal = e.target.closest('.modal-order-supply');
+    const listUndistributedParts = modal.querySelector('.order-supply-list-undistributed-parts');
+    const product = modal.querySelector('input[name="product"]').value;
+    listUndistributedParts.textContent = '';
+    console.log(partsList, product);
+    listUndistributedParts.append(this.creatingListOfParts(partsList, product));
   }
 
   // Формирование списка емкостей
@@ -559,6 +578,12 @@ export class OrderSupplyModalView extends AppView {
     const sectionRemainder = section.querySelector('input[name="order-supply-remainder"]');
     sectionDistributed.value = Number(sectionDistributed.value) - blockRemainder;
     sectionRemainder.value = Number(sectionRemainder.value) + blockRemainder;
+
+    const modal = e.target.closest('.modal-order-supply');
+    const guid = block.dataset.guid;
+    const uPart = modal.querySelector(`.order-supply-list-undistributed-parts div[data-guid="${guid}"] .volume-distributed`);
+    console.log(modal, guid, uPart);
+    uPart.textContent = Number(uPart.textContent) - Number(blockRemainder);
 
     block.remove();
   }
