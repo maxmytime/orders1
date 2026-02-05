@@ -419,16 +419,29 @@
     <div class="modal modal-order-supply ">
       <div class="modal-background"></div>
       <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title has-text-weight-bold">Заявка-снабжения</p>
-          <button class="delete delete-modal" aria-label="close"></button>
+        <header class="modal-card-head is-flex-wrap-wrap">
+          <div class="column is-flex is-justify-content-space-between">
+            <p class="modal-card-title has-text-weight-bold">Заявка-снабжения</p>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="switch is-rounded">
+                <input type="checkbox" class="order-supply-to-your-warehouse" value="false">
+                <span class="check is-warning"></span>
+                <span class="control-label">На свой склад</span>
+              </label>
+            </div>
+          </div>
+          <div class="column has-text-right">
+            <button class="delete delete-modal" aria-label="close"></button>
+          </div>
         </header>
         <section class="modal-card-body">
           <div class="columns is-multiline card-part">
             <!-- Список не распределенных заявок -->
-            <div class="column is-12">
+            <div class="column is-12 undistributed-parts-wrapper">
 
-              <div class="columns">
+              <div class="columns is-align-items-center">
                 <div class="column is-6">
                   <h4 class="is-4 title">Не распределенные заявки</h4>
                 </div>
@@ -631,7 +644,7 @@
         <footer class="modal-card-foot ">
           <div class="buttons width-100 is-justify-content-end">
             <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-create-order-supply">Сохранить</button>
+              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-order-supply">Сохранить</button>
           </div>
         </footer>
       </div>
@@ -757,30 +770,108 @@
         </div>
       </div>
 
-      <div class="field is-flex is-justify-content-space-between">
+      <div class="column is-12 field is-flex is-justify-content-space-between">
 
-        <div class="control">
+        <div class="control width-100-pedding-right-9">
           <label class="label">Объем (л)</label>
           <input type="text" name="order-supply-volume" class="input input-order" value="" autocomplete="off">
         </div>
-        <div class="control">
+        <div class="control width-100-pedding-y-9">
           <label class="label">Распределено</label>
           <input type="text" name="order-supply-distributed" class="input input-order" value="0" autocomplete="off"
             disabled>
         </div>
-        <div class="control">
+        <div class="control width-100-pedding-left-9">
           <label class="label">Остаток</label>
           <input type="text" name="order-supply-remainder" class="input input-order" value="" autocomplete="off"
             disabled>
         </div>
 
       </div>
-      <div class="fild ">
+      <div class="column is-12 fild">
         <!-- Контейнер для распределенных заявок -->
         <div class="order-supply-parts">
 
         </div>
+        <!-- Контейнер для вставки складов -->
+        <div class="order-supply-warehouses">
+
+        </div>
       </div>
+      <div class="column is-12 has-text-right btn-add-warehouse-wrapper">
+        <button type="button" class="button btn-orders btn-brand has-background-white btn-add-warehouse">
+          <span class="icon btn-add-warehouse">
+            <i class="fa fa-plus btn-add-warehouse" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Шаблон собственного склада -->
+  <template id="order-supply-warehous">
+    <div class="order-supply-warehous columns is-align-items-center is-gapless">
+      <!-- Базис -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Базис</label>
+          <div class="control">
+            <div class="droplist-wrapper">
+              <input type="text" name="basis" class="input input-order border-radius-right-none" value=""
+                autocomplete="off">
+              <div class="droplist is-hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Емкость -->
+      <div class="column is-3">
+        <div class="field">
+          <label class="label lable-tank">Емкость</label>
+          <div class="control">
+            <div class="select width-100">
+              <select name="warehouse-tank-name" class="width-100 input-order js-type border-left-none border-radius-none">
+                <option value="0">Не распределена</option>
+                <option value="0">Не распределена</option>
+                <option value="0">Не распределена</option>
+                <option value="0">Не распределена</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Остаток плановый -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Остаток плановый</label>
+          <div class="control">
+            <input type="text" name="" class="input input-order border-left-none border-radius-none" value=""
+              autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <!-- Объем -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Объем</label>
+          <div class="control">
+            <input type="text" name="" class="input input-order border-left-none border-radius-none" value=""
+              autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <!-- Дата отгрузки -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Дата отгрузки</label>
+          <div class="control">
+            <input type="date" name="date_dispatch" class="input input-order border-radius-left-none border-left-none">
+          </div>
+        </div>
+      </div>
+      <span class="column is-clickable has-text-right">
+        <i class="fa fa-lg fa-trash icon-hover btn-del-warehous ml-2 mt-5" aria-hidden="true"></i>
+      </span>
     </div>
   </template>
 

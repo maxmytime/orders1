@@ -9,6 +9,7 @@ export class OrderSupplyModalView extends AppView {
     this.orderSupplySection = this.getTemplate('order-supply-section'); // Шаблон секции
     this.undistributedPart = this.getTemplate('order-supply-undistributed-part');  // Шаблон не распределенной части заявки
     this.distributedPart = this.getTemplate('order-supply-distributed-part');      // Шаблон распределенной части заявки
+    this.warehous = this.getTemplate('order-supply-warehous');      // Шаблон собственного склада
     this.helpers = new Helpers();
     // console.log('OrderSupplyModalView');
   }
@@ -22,7 +23,7 @@ export class OrderSupplyModalView extends AppView {
 
   // Открыть модальное окно
   open(tank, basisID, partsList) {
-    console.log(tank, basisID, partsList);
+    // console.log(tank, basisID, partsList);
 
     // Базис id
     this.modalOrderSupply.dataset.basisId = basisID;
@@ -54,6 +55,9 @@ export class OrderSupplyModalView extends AppView {
     // Плотность
     this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
 
+    // Кнопка сохранить
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.add('btn-create-order-supply');
+
     // this.openAddNewOrderSupply();
     this.modalOrderSupply.classList.add('is-active');
   }
@@ -73,7 +77,7 @@ export class OrderSupplyModalView extends AppView {
 
     //Список не распределенных частей заявок
     const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
-    divPartsList.appendChild(this.creatingListOfParts(partsList));
+    divPartsList.appendChild(this.creatingListOfParts(partsList, tank.product.name_product));
 
     // Базис
     this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
@@ -152,9 +156,35 @@ export class OrderSupplyModalView extends AppView {
       divSection.appendChild(tplSection);
     }
 
+    // Кнопка сохранить
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.add('btn-edit-order-supply');
 
     // this.openAddNewOrderSupply();
     this.modalOrderSupply.classList.add('is-active');
+  }
+
+  // Включаем тип заявки снабжения - отгрузка на свой склад
+  handleToYourWarehouse(e) {
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper').classList.toggle('is-hidden');
+    this.modalOrderSupply.querySelector('.order-supple-sections').classList.toggle('warehous');
+    this.modalOrderSupply.querySelector('.orderc-supple-sections-container').textContent = '';
+    // this.modalOrderSupply.querySelector('.order-supply-warehouses').textContent = '';
+    // this.handleDeletBlock(e);
+  }
+
+  // Кнопка добавить свой склад
+  handleAddWarehouse(e) {
+    const container = e.target.closest('.order-supply-section')
+      .querySelector('.order-supply-warehouses');
+    const tplWarehous = this.warehous.cloneNode(true);
+
+    container.append(tplWarehous);
+  }
+
+  // Кнопка удалить свой склад
+  handleDeleteWarehouse(e) {
+    const warehouse = e.target.closest('.order-supply-warehous');
+    warehouse.remove();
   }
 
   // Закрыть модальное окно
@@ -163,6 +193,9 @@ export class OrderSupplyModalView extends AppView {
     listParts.textContent = '';
     const sections = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
     sections.textContent = '';
+    // Кнопка сохранить
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-create-order-supply');
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-edit-order-supply');
   }
 
   // Открываем модальное окно для добавления нововой заявки снабжения
@@ -174,7 +207,7 @@ export class OrderSupplyModalView extends AppView {
   creatingListOfParts(partsList, product) {
     const fragment = document.createDocumentFragment();
     for (const part of partsList) {
-      console.log(product !== part.product.name_product)
+      // console.log(product !== part.product.name_product)
       if (product === part.product.name_product) {
         const templatePart = this.undistributedPart.cloneNode(true);
         templatePart.dataset.id = part.id;
@@ -206,21 +239,33 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Формирование списка емкостей
-  createListOfTanks(tanksList) {
+  createListOfTanks(tanksList, product) {
     const fragment = document.createDocumentFragment();
     const option = document.createElement('option');
     option.textContent = '-';
     fragment.appendChild(option);
 
     for (const tank of tanksList) {
-      const option = document.createElement('option');
-      option.value = tank.id;
-      option.textContent = tank.name;
-
-      fragment.appendChild(option);
+      if (product === tank.product.name_product) {
+        const option = document.createElement('option');
+        option.value = tank.id;
+        option.textContent = tank.name;
+        fragment.append(option);
+      }
     }
 
     return fragment;
+  }
+
+  // Обновляем список емкостей
+  updateListOfTanks(e, tanksList) {
+    console.log(e, tanksList);
+    const warehous = e.target.closest('.order-supply-warehous');
+    const product = e.target.closest('.modal-order-supply').querySelector('input[name="product"]').value;
+    const selectTank = warehous.querySelector('select[name="warehouse-tank-name"]');
+    selectTank.textContent = '';
+    selectTank.append(this.createListOfTanks(tanksList, product));
+
   }
 
   // Получить дату отгрузки

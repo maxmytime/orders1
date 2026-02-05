@@ -12,7 +12,7 @@ export class OrderSupplyView extends AppView {
     }
 
     render(orderSupply) {
-        console.log(orderSupply);
+        // console.log(orderSupply);
         const order = this.templateOrderSupply.cloneNode(true);
 
         // Устанавливаем ID
