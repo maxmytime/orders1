@@ -41,6 +41,7 @@ export class OrderSupplyModalView extends AppView {
     // Имя емкости
     this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
     this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').dataset.id = tank.id;
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').dataset.code = tank.code;
 
     // Продукт
     this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
@@ -62,10 +63,9 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.classList.add('is-active');
   }
 
-
   // Открыть модальное окно для редактирования заявки снабжения
   edit(tank, basisID, partsList, supplyOrder) {
-    console.log(tank, basisID, partsList, supplyOrder);
+    // console.log(tank, basisID, partsList, supplyOrder);
 
     // Фильтр по базисам
     this.modalOrderSupply.querySelector('input[name="os-filter-basis"]').value = tank.name_base;
@@ -74,6 +74,8 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.dataset.basisId = basisID;
     // Заявка снабжения ID
     this.modalOrderSupply.dataset.supplyOrderId = supplyOrder.id;
+    // Отгрузка на свой склад
+    this.modalOrderSupply.querySelector('.order-supply-to-your-warehouse').disabled = true;
 
     //Список не распределенных частей заявок
     const divPartsList = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
@@ -99,7 +101,7 @@ export class OrderSupplyModalView extends AppView {
     // Загрузка/Приход
     this.modalOrderSupply.
       querySelector('input[name="date_dispatch"]').
-        value = this.helpers.convertDateToInput(supplyOrder.date_income);
+      value = this.helpers.convertDateToInput(supplyOrder.date_income);
 
     // Масса (т)
     this.modalOrderSupply.querySelector('input[name="weight"]').value = tank.weight;
@@ -163,12 +165,132 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.classList.add('is-active');
   }
 
+  // Открыть модальное окно с типом заявки отгрузка на мой склад
+  editWarehouse(tank, basisID, partsList, supplyOrder) {
+    // console.log(tank, basisID, partsList, supplyOrder);
+
+    // Не распределенные заявки
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper').classList.add('is-hidden');
+    // Базис ID
+    this.modalOrderSupply.dataset.basisId = basisID;
+    // Заявка снабжения ID
+    this.modalOrderSupply.dataset.supplyOrderId = supplyOrder.id;
+    // Отгрузка на свой склад
+    this.modalOrderSupply.querySelector('.order-supply-to-your-warehouse').checked = true;
+    this.modalOrderSupply.querySelector('.order-supply-to-your-warehouse').disabled = true;
+
+    // Базис
+    this.modalOrderSupply.querySelector('input[name="basis"]').value = tank.name_base;
+    // Имя емкости
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').value = tank.name;
+    this.modalOrderSupply.querySelector('input[name="order-supple-tank-name"]').dataset.id = tank.id;
+    // Продукт
+    this.modalOrderSupply.querySelector('input[name="product"]').value = tank.product.name_product;
+    this.modalOrderSupply.querySelector('input[name="product"]').dataset.code = tank.product.code_product;
+    // Объем в емкости
+    this.modalOrderSupply.querySelector('input[name="startVolume"]').value = tank.volume;
+    // Объем (л)
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.volume;
+    // Загрузка/Приход
+    this.modalOrderSupply.
+      querySelector('input[name="date_dispatch"]').
+      value = this.helpers.convertDateToInput(supplyOrder.date_income);
+    // Масса (т)
+    this.modalOrderSupply.querySelector('input[name="weight"]').value = tank.weight;
+    // Плотность
+    this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
+
+    // Тип ЗС - отгрузка на свой склад
+    this.modalOrderSupply.querySelector('.order-supple-sections').classList.add('warehous');
+    //Список не распределенных частей заявок
+    const divSection = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
+    for (const section of supplyOrder.array_sections) {
+      const tplSection = this.orderSupplySection.cloneNode(true);
+      // ID секции
+      tplSection.dataset.id = this.helpers.getID();
+      // Имя секции
+      tplSection.querySelector('.title').textContent = section.name_section;
+      tplSection.querySelector('.title').classList.remove('is-hidden');
+      tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
+      // Объем
+      tplSection.querySelector('input[name="order-supply-volume"]').value = section.volume_section;
+
+
+
+      // Блоки заявки
+      const divBlocks = tplSection.querySelector('.order-supply-warehouses');
+      for (const block of section.array_tanks) {
+        const tplWarehous = this.warehous.cloneNode(true);
+      //   const part = partsList.find(part => part.guid === block.guid_orderblock);
+        console.log(block);
+        // Базис
+        tplWarehous.querySelector('input[name="os-warehous-basis"]').value = block.name_basis;
+        // Емкость
+        tplWarehous.querySelector('select[name="warehouse-tank-name"]')
+          .append(this.createListOfTanks(block.tanksList, tank.product.name_product));
+        tplWarehous.querySelector('select[name="warehouse-tank-name"]').value = block.code_tank;
+        // Объем
+        tplWarehous.querySelector('input[name="warehouse_volume"]').value = block.volume_dispatch;
+        // Дата
+        tplWarehous.querySelector('input[name="warehouse_date_dispatch"]').value = this.helpers.convertDateToInput(block.date_income);
+
+        divBlocks.append(tplWarehous);
+      }
+
+      //Распределено
+      const inputSupplytplDistributed = tplSection.querySelector('input[name="order-supply-distributed"]');
+      divBlocks.querySelectorAll('input[name="warehouse_volume"]').forEach(remainder => {
+        console.log(remainder);
+        inputSupplytplDistributed.value = Number(inputSupplytplDistributed.value) + Number(remainder.value);
+      })
+
+      // Остаток
+      tplSection.querySelector('input[name="order-supply-remainder"]').value
+        = Number(tplSection.querySelector('input[name="order-supply-volume"]').value)
+        - Number(inputSupplytplDistributed.value);
+
+      divSection.appendChild(tplSection);
+    }
+
+    // Кнопка сохранить
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.add('btn-edit-order-supply-warehouse');
+
+    // this.openAddNewOrderSupply();
+    this.modalOrderSupply.classList.add('is-active');
+  }
+
+  // Закрыть модальное окно
+  close() {
+    // Не распределенные заявки
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper').classList.remove('is-hidden');
+
+    const listParts = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
+    listParts.textContent = '';
+    const sections = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
+    sections.textContent = '';
+
+    // Тип ЗС - отгрузка на свой склад
+    this.modalOrderSupply.querySelector('.order-supple-sections').classList.remove('warehous');
+
+    // Отгрузка на свой склад
+    this.modalOrderSupply.querySelector('.order-supply-to-your-warehouse').checked = false;
+    this.modalOrderSupply.querySelector('.order-supply-to-your-warehouse').disabled = false;
+    // Кнопка сохранить
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-create-order-supply');
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-edit-order-supply');
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-edit-order-supply-warehouse');
+
+    this.modalOrderSupply.classList.remove('is-active');
+  }
+
   // Включаем тип заявки снабжения - отгрузка на свой склад
   handleToYourWarehouse(e) {
     this.modalOrderSupply.querySelector('.undistributed-parts-wrapper').classList.toggle('is-hidden');
     this.modalOrderSupply.querySelector('.order-supple-sections').classList.toggle('warehous');
     this.modalOrderSupply.querySelector('.orderc-supple-sections-container').textContent = '';
-    // this.modalOrderSupply.querySelector('.order-supply-warehouses').textContent = '';
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.toggle('btn-create-order-supply');
+    this.modalOrderSupply.querySelector('.btn-order-supply').classList.toggle('btn-create-order-supply-warehous');
+    this.totalSumVolumeOrderSupply();
     // this.handleDeletBlock(e);
   }
 
@@ -185,17 +307,6 @@ export class OrderSupplyModalView extends AppView {
   handleDeleteWarehouse(e) {
     const warehouse = e.target.closest('.order-supply-warehous');
     warehouse.remove();
-  }
-
-  // Закрыть модальное окно
-  close() {
-    const listParts = this.modalOrderSupply.querySelector('.order-supply-list-undistributed-parts');
-    listParts.textContent = '';
-    const sections = this.modalOrderSupply.querySelector('.orderc-supple-sections-container');
-    sections.textContent = '';
-    // Кнопка сохранить
-    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-create-order-supply');
-    this.modalOrderSupply.querySelector('.btn-order-supply').classList.remove('btn-edit-order-supply');
   }
 
   // Открываем модальное окно для добавления нововой заявки снабжения
@@ -248,7 +359,7 @@ export class OrderSupplyModalView extends AppView {
     for (const tank of tanksList) {
       if (product === tank.product.name_product) {
         const option = document.createElement('option');
-        option.value = tank.id;
+        option.value = tank.code;
         option.textContent = tank.name;
         fragment.append(option);
       }
@@ -276,7 +387,6 @@ export class OrderSupplyModalView extends AppView {
       `${start[2]}.${start[1]}` :
       `${start[2]}.${start[1]} - ${end[2]}.${end[1]}`;
   }
-
 
   // Добавить секциию
   addSection(e) {
@@ -319,16 +429,20 @@ export class OrderSupplyModalView extends AppView {
   // Удалить секцию
   delSection(e) {
     const section = e.target.closest('.order-supply-section');
+    const sections = e.target.closest('.order-supple-sections');
     section.remove();
+    this.totalSumVolumeOrderSupply();
+
   }
 
   // Получаем объект документа
   getDocObject(e, tankNumber) {
     const modal = e.target.closest('.modal-order-supply');
+    const checkedWarehouse = modal.querySelector('.order-supply-to-your-warehouse').checked;
     // console.log(orderSupply);
     const docObject = {
       "number": "",
-      "type_dispatch": 1,          // Как то должен меняться в зависимости от типа отгрузка или загрузка
+      "type_dispatch": '',          // Как то должен меняться в зависимости от типа отгрузка или загрузка
       "code_tank": tankNumber,     // Получить в контроллере
       "date_income": this.helpers.convertDateTo1С(modal.querySelector('input[name="date_dispatch"]').value),
       "product": {
@@ -341,7 +455,11 @@ export class OrderSupplyModalView extends AppView {
       "sort_number": 1,     // Как то получаю от дамира
       "commentary": modal.querySelector('textarea[name="comment"]').value,
       "author": "site",
-      "array_sections": [...this.getSections(modal)],
+      // "array_sections": [...this.getSectionsWarehouse(modal)],
+      // "array_sections": [...this.getSections(modal)],
+      "array_sections": checkedWarehouse
+                            ? [ ...this.getSectionsWarehouse(modal) ]
+                            : [ ...this.getSections(modal) ],
       "id": "mkkjftsnz6205o1fe1o"
     }
     return docObject;
@@ -361,6 +479,91 @@ export class OrderSupplyModalView extends AppView {
             "number_dispatch": part.dataset.numberDispatch || '',
             "volume_dispatch": Number(part.querySelector('.part-remainder').textContent),
             "guid": part.dataset.guid,
+          }
+        })
+      }
+    });
+    console.log(section);
+    return section;
+  }
+
+  // Получаем секции из ЗС с типом - отгрузка на свой склад для создания/обновления заявки на сервере
+  getSectionsWarehouse(modal) {
+    let section = [];
+    const sectionsNode = [...modal.querySelectorAll('.order-supply-section')];
+    console.log(sectionsNode);
+    sectionsNode.forEach((sectionNode, index) => {
+      ++index;
+      [ ...sectionNode.querySelectorAll('.order-supply-warehous')].forEach(warehouse => {
+        section.push({
+          "sort_number": index,
+          "name_section": sectionNode.querySelector('.title').textContent,
+          "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+          "name_basis": warehouse.querySelector('input[name="os-warehous-basis"]').value,
+          "code_tank": warehouse.querySelector('select[name="warehouse-tank-name"]').value,
+          "date_income": this.helpers.convertDateTo1С(warehouse.querySelector('input[name="warehouse_date_dispatch"]').value),
+          "volume_dispatch": Number(sectionNode.querySelector('input[name="warehouse_volume"]').value),
+        });
+      })
+    })
+    // const section = sectionsNode.map((sectionNode, index) => {
+    //   ++index;
+    //   return {
+    //     "order_section": 1,
+    //     "sort_number": index,
+    //     "name_section": sectionNode.querySelector('.title').textContent,
+    //     "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+    //     "code_tank": modal.querySelector('input[name="order-supple-tank-name"]').dataset.code,
+    //     "date_income": this.helpers.convertDateTo1С(modal.querySelector('input[name="date_dispatch"]').value),
+    //     "volume_dispatch": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+    //     "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-warehous')].map(warehouse => {
+    //       return {
+    //         "number_dispatch": warehouse.dataset.numberDispatch || '',
+    //         // "volume_dispatch": Number(part.querySelector('.part-remainder').textContent),
+    //         // "guid": part.dataset.guid,
+    //         "name_basis": warehouse.querySelector('input[name="basis"]').value,
+    //         "code_tank": warehouse.querySelector('select[name="warehouse-tank-name"]').value,
+    //         "date_income": this.helpers.convertDateTo1С(warehouse.querySelector('input[name="warehouse_date_dispatch"]').value),
+    //         "volume_dispatch": Number(sectionNode.querySelector('input[name="warehouse_volume"]').value),
+    //       }
+    //     })
+    //   }
+    // });
+    console.log(section);
+    return section;
+  }
+
+  // Получаем секции из ЗС с типом - отгрузка на свой склад для храненния в модели
+  getSectionsWarehouseToModel(modal) {
+    // let section = [];
+    const sectionsNode = [...modal.querySelectorAll('.order-supply-section')];
+    console.log(sectionsNode);
+    // sectionsNode.forEach((sectionNode, index) => {
+    //   ++index;
+    //   [ ...sectionNode.querySelectorAll('.order-supply-warehous')].forEach(warehouse => {
+    //     section.push({
+    //       "sort_number": index,
+    //       "name_section": sectionNode.querySelector('.title').textContent,
+    //       "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+    //       "name_basis": warehouse.querySelector('input[name="os-warehous-basis"]').value,
+    //       "code_tank": warehouse.querySelector('select[name="warehouse-tank-name"]').value,
+    //       "date_income": this.helpers.convertDateTo1С(warehouse.querySelector('input[name="warehouse_date_dispatch"]').value),
+    //       "volume_dispatch": Number(sectionNode.querySelector('input[name="warehouse_volume"]').value),
+    //     });
+    //   })
+    // })
+    const section = sectionsNode.map((sectionNode, index) => {
+      ++index;
+      return {
+        "order_section": index,
+        "name_section": sectionNode.querySelector('.title').textContent,
+        "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+        "array_tanks": [...sectionNode.querySelectorAll('.order-supply-warehous')].map(warehouse => {
+          return {
+            "name_basis": warehouse.querySelector('input[name="os-warehous-basis"]').value,
+            "code_tank": warehouse.querySelector('select[name="warehouse-tank-name"]').value,
+            "date_income": this.helpers.convertDateTo1С(warehouse.querySelector('input[name="warehouse_date_dispatch"]').value),
+            "volume_dispatch": Number(sectionNode.querySelector('input[name="warehouse_volume"]').value),
           }
         })
       }
@@ -523,6 +726,7 @@ export class OrderSupplyModalView extends AppView {
     // console.log(volume, inputDistributed);
     if (Number.isNaN((Number(inputVolume.value) - Number(inputDistributed.value)))) return;
     inputRemainder.value = Number(inputVolume.value) - Number(inputDistributed.value);
+    this.totalSumVolumeOrderSupply(e);
   }
 
   // Валидация поля Загрузка
@@ -592,7 +796,7 @@ export class OrderSupplyModalView extends AppView {
   distributedVolume(guid, container, partData, volumeLoad) {
 
     // Если такой блок уже распределен то обнавляем его остаток
-    const distributedBlocks = [ ...container.children ];
+    const distributedBlocks = [...container.children];
     if (distributedBlocks.length) {
       for (const block of distributedBlocks) {
         if (block.dataset.guid === guid) {
@@ -607,7 +811,7 @@ export class OrderSupplyModalView extends AppView {
     const distributedPart = this.distributedPart.cloneNode(true);
     distributedPart.dataset.guid = guid;
     distributedPart.querySelector('.part-date').textContent = this.getDateShipment(partData.basisDateStart,
-                                                                                    partData.basisDateEnd)
+      partData.basisDateEnd)
     distributedPart.querySelector('.part-partner').textContent = partData.client.name_client;
     distributedPart.querySelector('.part-product').textContent = partData.product.name_product;
     distributedPart.querySelector('.part-remainder').textContent = volumeLoad;
@@ -631,6 +835,30 @@ export class OrderSupplyModalView extends AppView {
     uPart.textContent = Number(uPart.textContent) - Number(blockRemainder);
 
     block.remove();
+  }
+
+  // Ввод объема в отгрузки на свой склад
+  volumeInputWarehouse(e) {
+    const section = e.target.closest('.order-supple-sections.warehous');
+    const sectionVolum = Number(section.querySelector('input[name="order-supply-volume"]').value);
+    const inputSectionDistributed = section.querySelector('input[name="order-supply-distributed"]');
+    const inputSectionRemainder = section.querySelector('input[name="order-supply-remainder"]');
+    const warehousesVolume = [ ...section.querySelectorAll('input[name="warehouse_volume"]') ]
+                                .reduce((total, warehouse) => {
+                                  return total + Number(warehouse.value);
+                                }, 0)
+    inputSectionDistributed.value = warehousesVolume;
+    inputSectionRemainder.value = sectionVolum - Number(inputSectionDistributed.value);
+  }
+
+  // Расчет объема ЗС суммируются все объемы в секциях для блоков и своих складов
+  totalSumVolumeOrderSupply() {
+    const modal = this.modalOrderSupply;
+    const totlaVolume = modal.querySelector('input[name="supply-volume"]');
+    const sectionsVolume = [...modal.querySelectorAll('input[name="order-supply-volume"]')];
+    totlaVolume.value = sectionsVolume.reduce((total, volume) => {
+      return total + Number(volume.value);
+    }, 0);
   }
 
   // Получаем контейнер приложения

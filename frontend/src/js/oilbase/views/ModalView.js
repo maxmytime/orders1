@@ -165,7 +165,7 @@ export class ModalView extends AppView {
     }
 
     modalTankActiveEdit(tank) {
-        console.log('modalview', tank);
+        // console.log('modalview', tank);
         this.modalTank.dataset.tankId = tank.tank.id;
         this.modalTank.dataset.basisName = tank.tank.name_base;
         this.modalTank.dataset.code = tank.tank.code;
@@ -308,7 +308,7 @@ export class ModalView extends AppView {
 
 
 
-        console.log(modal);
+        // console.log(modal);
         modal.classList.remove('is-active');
     }
 

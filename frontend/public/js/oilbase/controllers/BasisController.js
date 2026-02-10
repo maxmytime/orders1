@@ -69,7 +69,7 @@ export class BasisController {
         if (tank && !toggleSubtable && !deleteTank && !addOrderSupply) {
             const element = e.target.closest('[data-id]');
             const tank = this.model.getTank(element.dataset.id);
-            console.log('modalcontroller', tank);
+            // console.log('modalcontroller', tank);
             if (this.helpers.userRights(this.view.getContainer()) != 3) {
                 this.modalController.openModalEditTank(tank);
             }
@@ -80,10 +80,10 @@ export class BasisController {
     // Открть модальное окно для редактирования части заявки
     editPart(e) {
         if (e.target.classList.contains('open-modal')) {
-            console.log('editPart(e)');
+            // console.log('editPart(e)');
             const element = e.target.closest('[data-id]');
             const part = this.model.getPart(element.dataset.id);
-            console.log(part.part);
+            // console.log(part.part);
             const basiss = this.model.getBasiss();
             this.modalController.openModalEditPart(part.part, basiss, part.basisID, part.listTanks, part.tankID, part.basisSupplier);
             // this.validationMassFild();

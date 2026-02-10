@@ -52,7 +52,7 @@ export class ModalController {
 
     // Выпадающий список для выбора
     async dropdown(e) {
-        if (e.target.name === 'basis' || e.target.name === 'os-filter-basis') {   // Выбор базисов
+        if (e.target.name === 'basis' || e.target.name === 'os-filter-basis' || e.target.name === 'os-warehous-basis') {   // Выбор базисов
             const listBasiss = await this.api.fetchGetData(`/getbasises`);
             this.view.dropdownBasis(e, listBasiss);
         } else if (e.target.name === 'provider' || e.target.name === 'nameClient') {  // Выбор поставщиков
@@ -99,7 +99,8 @@ export class ModalController {
             e.target.name === 'startVolume' ||
             e.target.name === 'weight_fact' ||
             e.target.name === 'u-part-load' ||
-            e.target.name === 'order-supply-volume'
+            e.target.name === 'order-supply-volume' ||
+            e.target.name === 'warehouse_volume'
         ) {
             this.view.isNumber(e);
         }

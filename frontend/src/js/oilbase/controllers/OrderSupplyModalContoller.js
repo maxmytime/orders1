@@ -35,6 +35,10 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('click', this.createOrderSupply.bind(this));
         // Контроллер подписывается на событие клик по кнопке редактировать заявку снабжения
         this.view.getContainer().addEventListener('click', this.editOrderSupply.bind(this));
+        // Контроллер подписывается на событие клик по кнопке создать заявку снабжения с типом отгрузка на свой склад
+        this.view.getContainer().addEventListener('click', this.createOrderSupplyWarehouse.bind(this));
+        // Контроллер подписывается на событие клик по кнопке редактировать заявку снабжения с типом отгрузка на свой склад
+        this.view.getContainer().addEventListener('click', this.editOrderSupplyWarehouse.bind(this));
         // Контроллер подписывается на событие клик по кнопке начать распределение в секцию
         this.view.getContainer().addEventListener('click', this.handleStartDistribution.bind(this));
         // Контроллер подписывается на событие ввода именя секции
@@ -49,6 +53,8 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('input', this.validationUploadField.bind(this));
         // Контроллер подписывается на событие ввода данных в поле объем в секции
         this.view.getContainer().addEventListener('input', this.volumeInputSection.bind(this));
+        // Контроллер подписывается на событие ввода объема отгрузки на свой склад
+        this.view.getContainer().addEventListener('input', this.volumeInputWarehouse.bind(this));
         // Контроллер подписывается на событие удаления блока из секции
         this.view.getContainer().addEventListener('click', this.handleDeletBlock.bind(this));
         // Контроллер подписывается на событие клика по элементу выпадающегося списка
@@ -79,12 +85,24 @@ export class OrderSupplyModalContoller {
         const supplyOrderID = e.target.closest('.order-supply').dataset.id;
         // console.log(supplyOrderID);
         const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
-        // console.log(supplyOrder);
-        // Запоминаем исходный список распределенных блоков заявки
-        this.dispatchList = this.createDispatchList(supplyOrder);
+        console.log(supplyOrder);
 
+        if (supplyOrder.type_suplorder === 2) {
+            // Запоминаем исходный список распределенных блоков заявки
+            this.dispatchList = this.createDispatchList(supplyOrder);
+            this.view.edit(tank, basisID, partsList, supplyOrder);
+        }
 
-        this.view.edit(tank, basisID, partsList, supplyOrder);
+        if (supplyOrder.type_suplorder === 1) {
+            // Добавляем список емкостей
+            supplyOrder.array_sections.forEach(section => {
+                section.array_tanks.forEach(tank => {
+                    tank.tanksList = this.modelApp.getBasis(tank.name_basis).listOfTanks;
+                })
+            })
+            this.view.editWarehouse(tank, basisID, partsList, supplyOrder);
+        }
+
     }
 
     // Создать список распределенных блоков заявки
@@ -246,6 +264,14 @@ export class OrderSupplyModalContoller {
         }
     }
 
+    // Ввод объема в отгрузки на свой склад
+    volumeInputWarehouse(e) {
+        if (e.target.name === 'warehouse_volume') {
+            console.log('volumeInputWarehouse');
+            this.view.volumeInputWarehouse(e);
+        }
+    }
+
     // Создать заявку снабжение
     async createOrderSupply(e) {
         if (e.target.classList.contains('btn-create-order-supply')) {
@@ -253,6 +279,7 @@ export class OrderSupplyModalContoller {
             const modal = this.view.getModal(e);  // Получаем узел модального окна
             const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
             const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
+            console.log(tankNumber);
             const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
             console.log(this.createDispatchList(docObject));
             console.log(this.dispatchList);
@@ -269,7 +296,7 @@ export class OrderSupplyModalContoller {
                         'number': '',                //только для изменений, номер распределенной части, присваивается при создании
                         'type_action_dispatch': 1,   //аналогично type_action_order (1 - новая, 2 - обновить данные, 3 - отгрузить)
                         'type_dispatch': 2,          //тип заявки, 1 - приход, 2 - расход
-                        'code_tank': '',      //код емкости docObject.code_tank
+                        'code_tank': docObject.code_tank,      //код емкости docObject.code_tank
                         'date_income': "01010001",             //дата загрузки
                         'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
                         'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,   //код клиента
@@ -296,7 +323,7 @@ export class OrderSupplyModalContoller {
             const supply = {
                 "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
                 "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
-                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+                "type_suplorder": 2,  //тип заявки снабжения, 1 - приход, 2 - расход
                 "code_tank": docObject.code_tank, //код емкости
                 "date_income": docObject.date_income,  //дата загрузки
                 "code_product": docObject.product.code_product,  //код продукта
@@ -472,7 +499,7 @@ export class OrderSupplyModalContoller {
             const supply = {
                 "number": supplyOrder.number, //только для изменений, номер заявки снабжения, присваивается при создании
                 "type_action_suplorder": 2, //аналогично type_action_order (1 - новая, 2 - обновить данные)
-                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+                "type_suplorder": 2,  //тип заявки снабжения, 1 - приход, 2 - расход
                 "code_tank": docObject.code_tank, //код емкости
                 "date_income": docObject.date_income,  //дата загрузки
                 "code_product": docObject.product.code_product,  //код продукта
@@ -509,6 +536,104 @@ export class OrderSupplyModalContoller {
             // Отправляем данные для создания заявки снабжения
             const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
             console.log(status);
+        }
+    }
+
+    // Создать заявку снабжение с типом отгрузка на свой склад
+    async createOrderSupplyWarehouse(e) {
+        if (e.target.classList.contains('btn-create-order-supply-warehous')) {
+            const modal = this.view.getModal(e);  // Получаем узел модального окна
+            const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
+            const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
+            console.log(tankNumber);
+            const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
+
+            // Формируем объект для создания заявки снабжения
+            const supply = {
+                "number": "", //только для изменений, номер заявки снабжения, присваивается при создании
+                "type_action_suplorder": 1, //аналогично type_action_order (1 - новая, 2 - обновить данные)
+                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+                "code_tank": docObject.code_tank, //код емкости
+                "date_income": docObject.date_income,  //дата загрузки
+                "code_product": docObject.product.code_product,  //код продукта
+                "volume": docObject.volume,    // объем
+                "weight": docObject.weight,    // вес
+                "density": docObject.density,  // плотность
+                "commentary": docObject.commentary,
+                "array_sections": docObject.array_sections
+            }
+
+            console.log(supply);
+
+            // Отправляем данные для создания заявки снабжения
+            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            console.log(status);
+
+            // Добавляем новую заявку снабжения в модель
+            if (status.Status === 'OK') {
+                docObject.number = status.Data;
+                const tankID = this.modelApp.addOrderSupply(docObject);
+
+                // Рисуем новую заявку снабжения в емкости
+                if (tankID) {
+                    const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
+                    orderSupplyController.renderNewOrderSupply(docObject, tankID);
+                }
+            }
+        }
+
+        // this.dispatchList = [];
+        // this.view.close();
+    }
+
+    // Редактировать заявку снабжения с типом на свой склад
+    async editOrderSupplyWarehouse(e) {
+        if (e.target.classList.contains('btn-edit-order-supply-warehouse')) {
+            console.log('editOrderSupplyWarehouse');
+            const modal = this.view.getModal(e);  // Получаем узел модального окна
+            const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
+            const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
+            console.log(tankNumber);
+            const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
+            const supplyOrderID = modal.dataset.supplyOrderId;           // ID заявки снабжения
+            const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
+
+            // Формируем объект для создания заявки снабжения
+            const supply = {
+                "number": supplyOrder.number, //только для изменений, номер заявки снабжения, присваивается при создании
+                "type_action_suplorder": 2, //аналогично type_action_order (1 - новая, 2 - обновить данные)
+                "type_suplorder": 1,  //тип заявки снабжения, 1 - приход, 2 - расход
+                "code_tank": docObject.code_tank, //код емкости
+                "date_income": docObject.date_income,  //дата загрузки
+                "code_product": docObject.product.code_product,  //код продукта
+                "volume": docObject.volume,    // объем
+                "weight": docObject.weight,    // вес
+                "density": docObject.density,  // плотность
+                "commentary": docObject.commentary,
+                "array_sections": docObject.array_sections
+            }
+
+
+
+            // Отправляем данные для создания заявки снабжения
+            const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+            console.log(status);
+            console.log(supply);
+
+            // Добавляем новую заявку снабжения в модель
+            if (status.Status === 'OK') {
+                docObject.number = status.Data;
+                docObject.type_suplorder = 1;
+                docObject.array_sections = this.view.getSectionsWarehouseToModel(modal);
+                const tankID = this.modelApp.updateOrderSupply(docObject);
+
+                // Рисуем новую заявку снабжения в емкости
+                // if (tankID) {
+                //     const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
+                //     orderSupplyController.renderNewOrderSupply(docObject, tankID);
+                // }
+                this.view.close();
+            }
         }
     }
 

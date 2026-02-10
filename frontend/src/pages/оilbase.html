@@ -172,6 +172,7 @@
               <div class="columns is-mobile is-multiline">
                 <div class="column is-1">Дата</div>
                 <div class="column is-1">Время</div>
+                <div class="column is-1">Дата отгрузки</div>
                 <div class="column is-1">Базис</div>
                 <div class="column is-1">Емкость</div>
                 <div class="column is-1">Действие</div>
@@ -207,6 +208,7 @@
     <div class="columns is-mobile tank-history-point">
       <div class="column is-1 date"></div>
       <div class="column is-1 time"></div>
+      <div class="column is-1 date_dispatch"></div>
       <div class="column is-1 text_basis"></div>
       <div class="column is-1 text_tank"></div>
       <div class="column is-1 text_action"></div>
@@ -817,7 +819,7 @@
           <label class="label">Базис</label>
           <div class="control">
             <div class="droplist-wrapper">
-              <input type="text" name="basis" class="input input-order border-radius-right-none" value=""
+              <input type="text" name="os-warehous-basis" class="input input-order border-radius-right-none" value=""
                 autocomplete="off">
               <div class="droplist is-hidden"></div>
             </div>
@@ -831,10 +833,7 @@
           <div class="control">
             <div class="select width-100">
               <select name="warehouse-tank-name" class="width-100 input-order js-type border-left-none border-radius-none">
-                <option value="0">Не распределена</option>
-                <option value="0">Не распределена</option>
-                <option value="0">Не распределена</option>
-                <option value="0">Не распределена</option>
+                <!-- <option value="0">-</option> -->
               </select>
             </div>
           </div>
@@ -855,7 +854,7 @@
         <div class="field">
           <label class="label">Объем</label>
           <div class="control">
-            <input type="text" name="" class="input input-order border-left-none border-radius-none" value=""
+            <input type="text" name="warehouse_volume" class="input input-order border-left-none border-radius-none" value=""
               autocomplete="off">
           </div>
         </div>
@@ -865,7 +864,7 @@
         <div class="field">
           <label class="label">Дата отгрузки</label>
           <div class="control">
-            <input type="date" name="date_dispatch" class="input input-order border-radius-left-none border-left-none">
+            <input type="date" name="warehouse_date_dispatch" class="input input-order border-radius-left-none border-left-none">
           </div>
         </div>
       </div>

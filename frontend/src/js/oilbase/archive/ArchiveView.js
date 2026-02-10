@@ -40,6 +40,7 @@ export class ArchiveView extends AppView {
             const row = this.templatePoint.cloneNode(true);
             row.querySelector('.date').textContent = t.date;
             row.querySelector('.time').textContent = t.time;
+            row.querySelector('.date_dispatch').textContent = t.date_dispatch;
             row.querySelector('.text_basis').textContent = t.text_basis;
             row.querySelector('.text_tank').textContent = t.text_tank;
             row.querySelector('.text_action').textContent = t.text_action;

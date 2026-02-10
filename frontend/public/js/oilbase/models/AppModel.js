@@ -33,7 +33,7 @@ export class AppModel { // Выполняет инициализацию при�
 
         listSuplOrders.forEach(suplOrder => {
             suplOrder.array_sections.forEach(section => {
-                section.array_dispatch.forEach(block => {
+                section.array_dispatch?.forEach(block => {
                     listParts.forEach(part => {
                         if (block.guid_orderblock === part.guid) {
                             // console.log(part.guid);
@@ -265,20 +265,6 @@ export class AppModel { // Выполняет инициализацию при�
                 return basis;
             }
         }
-        return false;
-    }
-
-    // Получаем заявку снабжения по ID
-    getSupplyOrder(id) {
-        for (const basis of this.basiss) {
-            for (const tank of basis.listOfTanks) {
-                for (const orderSupply of tank.listOfOrderSupply) {
-                    if (orderSupply.id === id) return orderSupply;
-
-                }
-            }
-        }
-        // return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
         return false;
     }
 
@@ -728,6 +714,19 @@ export class AppModel { // Выполняет инициализацию при�
 
     // --------------------------------------------------------
 
+    // Получаем заявку снабжения по ID
+    getSupplyOrder(id) {
+        for (const basis of this.basiss) {
+            for (const tank of basis.listOfTanks) {
+                for (const orderSupply of tank.listOfOrderSupply) {
+                    if (orderSupply.id === id) return orderSupply;
+                }
+            }
+        }
+        // return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
+        return false;
+    }
+
     // Добавить новую заявку снабжения в емкость
     addOrderSupply(docObject) {
         for (const basis of this.basiss) {
@@ -737,6 +736,28 @@ export class AppModel { // Выполняет инициализацию при�
                     tank.listOfOrderSupply.push(docObject);
                     console.log(tank);
                     return tank.id;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // Добавить новую заявку снабжения в емкость
+    updateOrderSupply(docObject) {
+        for (const basis of this.basiss) {
+            for (const tank of basis.listOfTanks) {
+                console.log(tank);
+                if (tank.code === docObject.code_tank) {
+                    for (const [ index, orderSupply ] of tank.listOfOrderSupply.entries())
+                    if (orderSupply.number === docObject.number) {
+                        // docObject.id = orderSupply.id;
+                        orderSupply.array_sections = docObject.array_sections;
+                        // tank.listOfOrderSupply[index] = docObject;
+                        // console.log(tank);
+                        return tank.id;
+                    }
+
                 }
             }
         }
