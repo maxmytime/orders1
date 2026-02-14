@@ -10,8 +10,11 @@ export class OrderSupplyModalView extends AppView {
     this.undistributedPart = this.getTemplate('order-supply-undistributed-part');  // Шаблон не распределенной части заявки
     this.distributedPart = this.getTemplate('order-supply-distributed-part');      // Шаблон распределенной части заявки
     this.warehous = this.getTemplate('order-supply-warehous');      // Шаблон собственного склада
+    this.shipping = this.getTemplate('order-supply-shipping');      // Шаблон отгрузки
     this.helpers = new Helpers();
     // console.log('OrderSupplyModalView');
+
+
   }
 
   // Рендер модальных окон
@@ -19,11 +22,27 @@ export class OrderSupplyModalView extends AppView {
     // console.log('renderModal OrderSupply');
     this.modalOrderSupply = this.getTemplate('modal-order-supply').cloneNode(true);
     this.container.appendChild(this.modalOrderSupply);
+
+    this.modalOrderSupply.querySelector('.order-supply-parametrs')
+      .append(this.shipping.cloneNode(true));
+
+    this.orderSupplySection.querySelector('.order-supply-section-shipping')
+      .append(this.shipping.cloneNode(true));
+
+    this.distributedPart.querySelector('.order-supply-distributed-part-shipping')
+      .append(this.shipping.cloneNode(true));
+
+    this.warehous.querySelector('.order-supply-warehous-shipping')
+      .append(this.shipping.cloneNode(true));
   }
 
   // Открыть модальное окно
   open(tank, basisID, partsList) {
     // console.log(tank, basisID, partsList);
+
+    // Установка полей отгрузка
+    // this.modalOrderSupply.querySelector('.order-supply-parametrs')
+    //   .append(this.shipping.cloneNode(true));
 
     // Базис id
     this.modalOrderSupply.dataset.basisId = basisID;
@@ -66,6 +85,9 @@ export class OrderSupplyModalView extends AppView {
   // Открыть модальное окно для редактирования заявки снабжения
   edit(tank, basisID, partsList, supplyOrder) {
     // console.log(tank, basisID, partsList, supplyOrder);
+
+    // this.modalOrderSupply.querySelector('.order-supply-parametrs')
+    //   .append(this.shipping.cloneNode(true));
 
     // Фильтр по базисам
     this.modalOrderSupply.querySelector('input[name="os-filter-basis"]').value = tank.name_base;

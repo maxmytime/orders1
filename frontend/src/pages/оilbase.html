@@ -486,7 +486,7 @@
             </div>
 
             <!-- Параметры заявки снабжения -->
-            <div class="columns is-flex-wrap-wrap">
+            <div class="columns is-flex-wrap-wrap order-supply-parametrs">
               <!-- Базис -->
               <div class="column is-3">
                 <div class="field">
@@ -790,6 +790,12 @@
         </div>
 
       </div>
+
+      <div class="column is-12 order-supply-section-shipping">
+
+
+      </div>
+
       <div class="column is-12 fild">
         <!-- Контейнер для распределенных заявок -->
         <div class="order-supply-parts">
@@ -812,7 +818,7 @@
 
   <!-- Шаблон собственного склада -->
   <template id="order-supply-warehous">
-    <div class="order-supply-warehous columns is-align-items-center is-gapless">
+    <div class="order-supply-warehous columns is-align-items-center is-gapless is-flex-wrap-wrap">
       <!-- Базис -->
       <div class="column is-2">
         <div class="field">
@@ -832,7 +838,8 @@
           <label class="label lable-tank">Емкость</label>
           <div class="control">
             <div class="select width-100">
-              <select name="warehouse-tank-name" class="width-100 input-order js-type border-left-none border-radius-none">
+              <select name="warehouse-tank-name"
+                class="width-100 input-order js-type border-left-none border-radius-none">
                 <!-- <option value="0">-</option> -->
               </select>
             </div>
@@ -854,8 +861,8 @@
         <div class="field">
           <label class="label">Объем</label>
           <div class="control">
-            <input type="text" name="warehouse_volume" class="input input-order border-left-none border-radius-none" value=""
-              autocomplete="off">
+            <input type="text" name="warehouse_volume" class="input input-order border-left-none border-radius-none"
+              value="" autocomplete="off">
           </div>
         </div>
       </div>
@@ -864,19 +871,23 @@
         <div class="field">
           <label class="label">Дата отгрузки</label>
           <div class="control">
-            <input type="date" name="warehouse_date_dispatch" class="input input-order border-radius-left-none border-left-none">
+            <input type="date" name="warehouse_date_dispatch"
+              class="input input-order border-radius-left-none border-left-none">
           </div>
         </div>
       </div>
       <span class="column is-clickable has-text-right">
         <i class="fa fa-lg fa-trash icon-hover btn-del-warehous ml-2 mt-5" aria-hidden="true"></i>
       </span>
+      <div class="column is-12 order-supply-warehous-shipping">
+
+      </div>
     </div>
   </template>
 
   <!-- Шаблон распределенной части заявки в секции -->
   <template id="order-supply-distributed-part">
-    <div class="order-supply-distributed-part columns has-text-right is-align-items-center">
+    <div class="order-supply-distributed-part columns has-text-right is-align-items-center is-flex-wrap-wrap">
       <span class="column is-2 is-offset-1 has-text-weight-bold part-date">20.12</span>
       <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
       <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
@@ -884,6 +895,41 @@
       <span class="column is-1 is-clickable has-text-right">
         <i class="fa fa-lg fa-trash icon-hover btn-del-block" aria-hidden="true"></i>
       </span>
+      <div class="column is-12 order-supply-distributed-part-shipping">
+
+      </div>
+    </div>
+  </template>
+
+  <!-- Шаблон отгрузки -->
+  <template id="order-supply-shipping">
+    <div class="column is-12 order-supply-shipping">
+
+      <div class="columns">
+        <div class="column">
+          <div class="control">
+            <label class="label">Объем факт (л)</label>
+            <input type="text" name="volume_fact" class="input input-order" value="" autocomplete="off">
+          </div>
+        </div>
+        <div class="column">
+          <div class="control">
+            <label class="label">Вес факт (т)</label>
+            <input type="text" name="weight_fact" class="input input-order" value="0" autocomplete="off"
+              disabled>
+          </div>
+        </div>
+        <div class="column">
+          <div class="control">
+            <label class="label">Плотность факт</label>
+            <input type="text" name="density_fact" class="input input-order" value="" autocomplete="off"
+              disabled>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
   </template>
 
