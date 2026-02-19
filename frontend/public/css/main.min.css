@@ -23013,6 +23013,14 @@ body {
   display: none;
 }
 
+.order-supply-shipping {
+  display: none;
+}
+
+.shipping .order-supply-shipping {
+  display: block;
+}
+
 input.border-left-none,
 select.border-left-none {
   border-left: 0;

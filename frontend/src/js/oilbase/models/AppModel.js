@@ -750,13 +750,17 @@ export class AppModel { // Выполняет инициализацию при�
                 console.log(tank);
                 if (tank.code === docObject.code_tank) {
                     for (const [ index, orderSupply ] of tank.listOfOrderSupply.entries())
-                    if (orderSupply.number === docObject.number) {
-                        // docObject.id = orderSupply.id;
-                        orderSupply.array_sections = docObject.array_sections;
-                        // tank.listOfOrderSupply[index] = docObject;
-                        // console.log(tank);
-                        return tank.id;
-                    }
+                        if (orderSupply.id === docObject.id) {
+                            orderSupply.volume = docObject.volume,
+                            orderSupply.weight = docObject.weight,
+                            orderSupply.density = docObject.density,
+                            orderSupply.volume_fact = docObject.volume_fact,
+                            orderSupply.weight_fact = docObject.weight_fact,
+                            orderSupply.density_fact = docObject.density_fact,
+                            orderSupply.commentary = docObject.commentary,
+                            orderSupply.array_sections = docObject.array_sections;
+                            return tank.id;
+                        }
 
                 }
             }

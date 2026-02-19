@@ -65,6 +65,12 @@ export class OrderSupplyModalContoller {
         this.view.getContainer().addEventListener('click', this.handleAddWarehouse.bind(this));
         // Контроллер подписывается на событие нажата кнопка удалить свой слад
         this.view.getContainer().addEventListener('click', this.handleDeleteWarehouse.bind(this));
+        // Контроллер подписывается на событие нажата кнопка начало отгрузки
+        this.view.getContainer().addEventListener('click', this.handleShippingStart.bind(this));
+        // Контроллер подписывается на событие нажата кнопка отмена начало отгрузки
+        this.view.getContainer().addEventListener('click', this.handleShippingСancellation.bind(this));
+        // Контроллер подписывается на событие ввода фактически отгружаемго объема
+        this.view.getContainer().addEventListener('input', this.volumeInputFact.bind(this));
 
     }
 
@@ -83,7 +89,7 @@ export class OrderSupplyModalContoller {
         const { tank, basisID } = this.modelApp.getTank(tankID);
         const partsList = this.modelApp.getListUndistributedParts(basisID);
         const supplyOrderID = e.target.closest('.order-supply').dataset.id;
-        // console.log(supplyOrderID);
+        console.log(partsList);
         const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
         console.log(supplyOrder);
 
@@ -113,7 +119,10 @@ export class OrderSupplyModalContoller {
                 dispatchList.push({
                     'name_section': section.name_section,
                     'number_dispatch': dispatch.number_dispatch,
-                    'volume_dispatch': dispatch.volume_dispatch
+                    'volume_dispatch': dispatch.volume_dispatch,
+                    "volume_dispatch_fact": dispatch.volume_dispatch_fact,
+                    "weight_dispatch_fact": dispatch.weight_dispatch_fact,
+                    "density_dispatch_fact": dispatch.density_dispatch_fact,
                 })
 
             })
@@ -142,11 +151,15 @@ export class OrderSupplyModalContoller {
 
         // Определяем блоки заявки, которые нужно обновить
         oldDispatchList.forEach(oldDispatch => {
-            console.log(oldDispatch);
+
             const newDispach = newDispatchList.find(newDispach =>
                 newDispach.number_dispatch === oldDispatch.number_dispatch &&
-                newDispach.volume_dispatch !== oldDispatch.volume_dispatch);
+                newDispach.volume_dispatch !== oldDispatch.volume_dispatch ||
+                newDispach.number_dispatch === oldDispatch.number_dispatch &&
+                newDispach.volume_dispatch_fact !== oldDispatch.volume_dispatch_fact);
+                console.log(oldDispatch, newDispach);
             if (newDispach) {
+
                 objectUpdate.edit.push(newDispach);
             }
         })
@@ -272,6 +285,28 @@ export class OrderSupplyModalContoller {
         }
     }
 
+    // Кнопка начало отгрузки
+    handleShippingStart(e) {
+        if (e.target.classList.contains('btn-os-shipping-start')) {
+            this.view.handleShippingStart(e);
+        }
+    }
+
+    // Кнопка отмена начало отгрузки
+    handleShippingСancellation(e) {
+        if (e.target.classList.contains('btn-os-shipping-cancellation')) {
+            this.view.handleShippingСancellation(e);
+        }
+    }
+
+    // Ввод объема отгрузки факт
+    volumeInputFact(e) {
+        if (e.target.name === 'os-volume_fact') {
+            console.log('volumeInputFact(e)');
+            this.view.totalVolumeInputFact(e);
+        }
+    }
+
     // Создать заявку снабжение
     async createOrderSupply(e) {
         if (e.target.classList.contains('btn-create-order-supply')) {
@@ -299,17 +334,17 @@ export class OrderSupplyModalContoller {
                         'code_tank': docObject.code_tank,      //код емкости docObject.code_tank
                         'date_income': "01010001",             //дата загрузки
                         'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
-                        'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,   //код клиента
+                        'code_client': this.modelApp.getPartGuid(block.guid_orderblock).part.client.code_client,   //код клиента
                         'code_product': docObject.product.code_product,    //код продукта
-                        'id_order': this.modelApp.getPartGuid(block.guid).part.id_order,         //номер заказа менеджера
-                        'num_address': this.modelApp.getPartGuid(block.guid).part.num_address,   //номер адреса в заявке
-                        'num_basis': this.modelApp.getPartGuid(block.guid).part.num_basis,       //номер базиса в заявке
+                        'id_order': this.modelApp.getPartGuid(block.guid_orderblock).part.id_order,         //номер заказа менеджера
+                        'num_address': this.modelApp.getPartGuid(block.guid_orderblock).part.num_address,   //номер адреса в заявке
+                        'num_basis': this.modelApp.getPartGuid(block.guid_orderblock).part.num_basis,       //номер базиса в заявке
                         'volume': block.volume_dispatch,                   //объем
                         'weight': docObject.weight,                        //вес
                         'density': docObject.density,                      //плотность
                         'commentary': docObject.commentary,
                         'sort_number': index,
-                        'guid_orderblock': block.guid
+                        'guid_orderblock': block.guid_orderblock
                     }
 
                     console.log(dispatch);
@@ -340,7 +375,7 @@ export class OrderSupplyModalContoller {
                                 "sort_number": index,
                                 "name_section": section.name_section,
                                 "volume_section": section.volume_section,  //объем секции
-                                "number_dispatch": part.number_dispatch    //номер распределенного блока заявки
+                                "number_dispatch": part.number_dispatch,    //номер распределенного блока заявки
                             }
                         })
                     } else {
@@ -364,12 +399,15 @@ export class OrderSupplyModalContoller {
             // Добавляем новую заявку снабжения в модель
             if (status.Status === 'OK') {
                 docObject.number = status.Data;
+                docObject.type_suplorder = 2;
+                console.log(docObject);
                 const tankID = this.modelApp.addOrderSupply(docObject);
 
                 // Рисуем новую заявку снабжения в емкости
                 if (tankID) {
                     const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
                     orderSupplyController.renderNewOrderSupply(docObject, tankID);
+                    this.view.close();
                 }
             }
         }
@@ -420,9 +458,9 @@ export class OrderSupplyModalContoller {
                     // 'sort_number': index,
                     // 'guid_orderblock': block.guid_orderblock
                 }
-                console.log(dispatch);
+                // console.log(dispatch);
                 const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
-                console.log(status);
+                // console.log(status);
             }
 
             // Получаем number_dispach для новых блоков и обновляем
@@ -432,7 +470,7 @@ export class OrderSupplyModalContoller {
 
                     // Если поле number_dispatch === '', то новыйблок
                     if (block.number_dispatch === '') {
-                        console.log(block.number_dispatch);
+                        // console.log(block.number_dispatch);
 
                         const dispatch = {
                             'number': '',                //только для изменений, номер распределенной части, присваивается при создании
@@ -441,22 +479,25 @@ export class OrderSupplyModalContoller {
                             'code_tank': '',             //код емкости docObject.code_tank
                             'date_income': "01010001",             //дата загрузки
                             'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
-                            'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,   //код клиента
+                            'code_client': this.modelApp.getPartGuid(block.guid_orderblock).part.client.code_client,   //код клиента
                             'code_product': docObject.product.code_product,    //код продукта
-                            'id_order': this.modelApp.getPartGuid(block.guid).part.id_order,         //номер заказа менеджера
-                            'num_address': this.modelApp.getPartGuid(block.guid).part.num_address,   //номер адреса в заявке
-                            'num_basis': this.modelApp.getPartGuid(block.guid).part.num_basis,       //номер базиса в заявке
+                            'id_order': this.modelApp.getPartGuid(block.guid_orderblock).part.id_order,         //номер заказа менеджера
+                            'num_address': this.modelApp.getPartGuid(block.guid_orderblock).part.num_address,   //номер адреса в заявке
+                            'num_basis': this.modelApp.getPartGuid(block.guid_orderblock).part.num_basis,       //номер базиса в заявке
                             'volume': block.volume_dispatch,                   //объем
                             'weight': docObject.weight,                        //вес
                             'density': docObject.density,                      //плотность
                             'commentary': docObject.commentary,
                             'sort_number': index,
-                            'guid_orderblock': block.guid
+                            'guid_orderblock': block.guid_orderblock,
+                            "volume_fact": block.volume_dispatch_fact,
+                            "weight_fact": block.weight_dispatch_fact,
+                            "density_fact": block.density_dispatch_fact,
                         }
 
-                        console.log(dispatch);
+                        // console.log(dispatch);
                         const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
-                        console.log(status);
+                        // console.log(status);
                         block.number_dispatch = status.Data;
                     }
 
@@ -464,7 +505,7 @@ export class OrderSupplyModalContoller {
                     // то это заявка на редактирование
                     if (block.number_dispatch !== '' && objectUpdate.edit.filter(dispatch => dispatch.number_dispatch === block.number_dispatch)) {
 
-                        console.log(block.number_dispatch);
+                        console.log(block);
 
                         const dispatch = {
                             'number': block.number_dispatch, //только для изменений, номер распределенной части, присваивается при создании
@@ -473,22 +514,26 @@ export class OrderSupplyModalContoller {
                             'code_tank': '',             //код емкости docObject.code_tank
                             'date_income': "01010001",             //дата загрузки
                             'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
-                            'code_client': this.modelApp.getPartGuid(block.guid).part.client.code_client,   //код клиента
+                            'code_client': this.modelApp.getPartGuid(block.guid_orderblock).part.client.code_client,   //код клиента
                             'code_product': docObject.product.code_product,    //код продукта
-                            'id_order': this.modelApp.getPartGuid(block.guid).part.id_order,         //номер заказа менеджера
-                            'num_address': this.modelApp.getPartGuid(block.guid).part.num_address,   //номер адреса в заявке
-                            'num_basis': this.modelApp.getPartGuid(block.guid).part.num_basis,       //номер базиса в заявке
+                            'id_order': this.modelApp.getPartGuid(block.guid_orderblock).part.id_order,         //номер заказа менеджера
+                            'num_address': this.modelApp.getPartGuid(block.guid_orderblock).part.num_address,   //номер адреса в заявке
+                            'num_basis': this.modelApp.getPartGuid(block.guid_orderblock).part.num_basis,       //номер базиса в заявке
                             'volume': block.volume_dispatch,                   //объем
                             'weight': docObject.weight,                        //вес
                             'density': docObject.density,                      //плотность
                             'commentary': docObject.commentary,
                             'sort_number': index,
-                            'guid_orderblock': block.guid
+                            'guid_orderblock': block.guid_orderblock,
+                            "volume_fact": block.volume_dispatch_fact,
+                            "weight_fact": block.weight_dispatch_fact,
+                            "density_fact": block.density_dispatch_fact,
                         }
 
                         console.log(dispatch);
                         const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
                         console.log(status);
+                        // this.view.close();
                     }
 
 
@@ -507,16 +552,25 @@ export class OrderSupplyModalContoller {
                 "weight": docObject.weight,    // вес
                 "density": docObject.density,  // плотность
                 "commentary": docObject.commentary,
+                "volume_fact": docObject.volume_fact,
+                "weight_fact": docObject.weight_fact,
+                "density_fact": docObject.density_fact,
                 "array_sections": docObject.array_sections.map((section, index) => {
                     ++index;
                     if (section.array_dispatch.length) {
                         return section.array_dispatch.map(part => {
-                            console.log(part);
+                            // console.log(part);
                             return {
                                 "sort_number": index,
                                 "name_section": section.name_section,
                                 "volume_section": section.volume_section,  //объем секции
-                                "number_dispatch": part.number_dispatch    //номер распределенного блока заявки
+                                "volume_section_fact": section.volume_section_fact,
+                                "weight_section_fact": section.weight_section_fact,
+                                "density_section_fact": section.density_section_fact,
+                                "number_dispatch": part.number_dispatch,    //номер распределенного блока заявки
+                                "volume_dispatch_fact": part.volume_dispatch_fact,
+                                "weight_dispatch_fact": part.weight_dispatch_fact,
+                                "density_dispatch_fact": part.density_dispatch_fact,
                             }
                         })
                     } else {
@@ -524,6 +578,9 @@ export class OrderSupplyModalContoller {
                             "sort_number": index,
                             "name_section": section.name_section,
                             "volume_section": section.volume_section,  //объем секции
+                            "volume_section_fact": section.volume_section_fact,
+                            "weight_section_fact": section.weight_section_fact,
+                            "density_section_fact": section.density_section_fact,
                             "number_dispatch": ''    //номер распределенного блока заявки
                         }
                     }
@@ -531,11 +588,22 @@ export class OrderSupplyModalContoller {
                 }).flat(Infinity)
             }
 
-            // console.log(supply);
+            console.log(supply);
+            // console.log(docObject);
 
             // Отправляем данные для создания заявки снабжения
             const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
             console.log(status);
+
+            // Добавляем новую заявку снабжения в модель
+            if (status.Status === 'OK') {
+                docObject.number = status.Data;
+                docObject.type_suplorder = 2;
+                console.log(docObject);
+                const tankID = this.modelApp.updateOrderSupply(docObject);
+                console.log(tankID);
+                this.view.close();
+            }
         }
     }
 
@@ -563,7 +631,7 @@ export class OrderSupplyModalContoller {
                 "array_sections": docObject.array_sections
             }
 
-            console.log(supply);
+            // console.log(supply);
 
             // Отправляем данные для создания заявки снабжения
             const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
@@ -572,12 +640,15 @@ export class OrderSupplyModalContoller {
             // Добавляем новую заявку снабжения в модель
             if (status.Status === 'OK') {
                 docObject.number = status.Data;
+                docObject.type_suplorder = 1;
+                docObject.array_sections = this.view.getSectionsWarehouseToModel(modal);
                 const tankID = this.modelApp.addOrderSupply(docObject);
-
+                console.log(docObject);
                 // Рисуем новую заявку снабжения в емкости
                 if (tankID) {
                     const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
                     orderSupplyController.renderNewOrderSupply(docObject, tankID);
+                    this.view.close();
                 }
             }
         }
@@ -593,7 +664,7 @@ export class OrderSupplyModalContoller {
             const modal = this.view.getModal(e);  // Получаем узел модального окна
             const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
             const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
-            console.log(tankNumber);
+            // console.log(tankNumber);
             const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
             const supplyOrderID = modal.dataset.supplyOrderId;           // ID заявки снабжения
             const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
@@ -609,29 +680,28 @@ export class OrderSupplyModalContoller {
                 "volume": docObject.volume,    // объем
                 "weight": docObject.weight,    // вес
                 "density": docObject.density,  // плотность
+                "volume_fact": docObject.volume_fact,
+                "weight_fact": docObject.weight_fact,
+                "density_fact": docObject.density_fact,
                 "commentary": docObject.commentary,
                 "array_sections": docObject.array_sections
             }
 
 
-
-            // Отправляем данные для создания заявки снабжения
+            console.log(supply);
+            // Отправляем данные для обновления заявки снабжения
             const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
             console.log(status);
-            console.log(supply);
+
 
             // Добавляем новую заявку снабжения в модель
             if (status.Status === 'OK') {
                 docObject.number = status.Data;
                 docObject.type_suplorder = 1;
                 docObject.array_sections = this.view.getSectionsWarehouseToModel(modal);
+                console.log(docObject);
                 const tankID = this.modelApp.updateOrderSupply(docObject);
 
-                // Рисуем новую заявку снабжения в емкости
-                // if (tankID) {
-                //     const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-                //     orderSupplyController.renderNewOrderSupply(docObject, tankID);
-                // }
                 this.view.close();
             }
         }
@@ -661,15 +731,6 @@ export class OrderSupplyModalContoller {
             // console.log(tanksList);
         }
     }
-
-    // Открыть заявку для распределение
-    // openPartDistributed(e) {
-    //     const container = e.target.closest('.order-supply-undistributed-part');
-
-    //     if (container) {
-    //         this.partDistributedModalController.open();
-    //     }
-    // }
 
     // Инициализация модальных окон
     init() {

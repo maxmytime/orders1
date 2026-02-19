@@ -284,7 +284,7 @@ export class ModalView extends AppView {
         })
 
         // Очистка отгрузки
-        if (modal.classList.contains('modal-part')) {
+        if (modal?.classList.contains('modal-part')) {
             const modalPart = modal;
             modalPart.querySelector('.card-part')
                 .classList.remove('is-hidden');
@@ -309,7 +309,7 @@ export class ModalView extends AppView {
 
 
         // console.log(modal);
-        modal.classList.remove('is-active');
+        modal?.classList.remove('is-active');
     }
 
     modalTypeTank(e) {
