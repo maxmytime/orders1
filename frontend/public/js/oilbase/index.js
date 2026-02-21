@@ -39,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             distributeParts,
                             suplOrders);  // Создаем экземпляр модели приложения "AppModel"
         app.init();         // Инициализация приложения
+        
     }
 
     // Инициализация приложения
