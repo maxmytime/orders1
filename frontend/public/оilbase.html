@@ -646,11 +646,17 @@
         <footer class="modal-card-foot ">
           <div class="buttons width-100 is-justify-content-space-between">
             <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-os-shipping-start">Отгрузить</button>
+              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-os-shipping-start">Загрузить</button>
             <button
               class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-os-shipping-cancellation is-hidden">Отмена</button>
-            <button
-              class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-order-supply">Сохранить</button>
+
+            <div class="is-grouped">
+              <button
+                class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-order-supply-shipping is-hidden">Загрузить</button>
+              <button
+                class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-order-supply">Сохранить</button>
+            </div>
+
           </div>
         </footer>
       </div>
@@ -919,15 +925,13 @@
         <div class="column">
           <div class="control">
             <label class="label">Вес факт (т)</label>
-            <input type="text" name="os-weight_fact" class="input input-order" value="0" autocomplete="off"
-              disabled>
+            <input type="text" name="os-weight_fact" class="input input-order" value="0" autocomplete="off" disabled>
           </div>
         </div>
         <div class="column">
           <div class="control">
             <label class="label">Плотность факт</label>
-            <input type="text" name="os-density_fact" class="input input-order" value="" autocomplete="off"
-              disabled>
+            <input type="text" name="os-density_fact" class="input input-order" value="" autocomplete="off" disabled>
           </div>
         </div>
       </div>
