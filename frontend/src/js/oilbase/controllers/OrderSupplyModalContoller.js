@@ -1,4 +1,5 @@
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
+import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
 
 export class OrderSupplyModalContoller {
   constructor(modelApp,
@@ -17,6 +18,7 @@ export class OrderSupplyModalContoller {
     this.socket = socket.socket;
     this.orderSupplyControllerFactory = orderSupplyControllerFactory;
     this.dispatchList = [];
+    this.updatingView = new UpdatingView();
 
     // console.log('OrderSupplyModalContoller');
     // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -606,7 +608,7 @@ export class OrderSupplyModalContoller {
         console.log(tankID);
         this.view.close();
         console.log(supply);
-        return supply;
+        return {'data': supply, 'id': docObject.id};
       }
     }
   }
@@ -708,7 +710,7 @@ export class OrderSupplyModalContoller {
 
         this.view.close();
         // console.log(supply);
-        return supply;
+        return {'data': supply, 'id': docObject.id};
       }
     }
   }
@@ -716,7 +718,7 @@ export class OrderSupplyModalContoller {
   // Загрузка заявки снабжения
   async shippingOrderSupply(e) {
     if (e.target.classList.contains('btn-order-supply-shipping')) {
-      console.log('shippingOrderSupply(e)');
+      // console.log('shippingOrderSupply(e)');
       // Определяем тип ЗС: true - на свой склад, false - под клиента
       const typeOrderSupplyWarehous = this.view.modalOrderSupply.querySelector('.warehous') ? true : false;
       let supply = null;
@@ -727,11 +729,20 @@ export class OrderSupplyModalContoller {
         supply = await this.editOrderSupplyWarehouse(e, true);
       }
 
-      supply.type_action_suplorder = 3;
+      // Устанавливаем тип действия 3 - отгрузить заявку
+      // supply.type_action_suplorder = 3;
+
       console.log(supply);
       // Отправляем данные для обновления заявки снабжения
-      const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+      const status = await this.api.fetchPostData('/postupdatesuplorder', supply.data);
       console.log(status);
+
+      if (status.Status === 'OK') {
+        const id = supply.id;                    // Получаем ID заявки снабжения.
+        console.log(id);
+        this.modelApp.deleteOrderSupply(id);     // Удаляем заявку снабжения из модели.
+        this.updatingView.deleteElementByID(id); // Удаляем загруженную ЗС из интерфейса.
+      }
       
     }
   }

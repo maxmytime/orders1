@@ -670,7 +670,7 @@
         <div class="columns">
           <div class="column date-of-shipment">20.12-21.12</div>
           <div class="column name-client" data-code="">Нефтесиб</div>
-          <div class="column name-client">Контрагент</div>
+          <div class="column contaragent">Контрагент</div>
           <div class="column name-product">ДТз-К5 ВПК</div>
           <div class="column">
             <span class="volume-distributed">50</span>
@@ -755,7 +755,7 @@
 
   <!-- Шаблон секции -->
   <template id="order-supply-section">
-    <div class="column is-12 order-supply-section">
+    <div class="column is-12 order-supply-section section-style">
       <div class="columns">
         <div class="column is-10 is-flex is-align-items-center">
 
@@ -782,7 +782,7 @@
         </div>
       </div>
 
-      <div class="column is-12 field is-flex is-justify-content-space-between">
+      <div class="column is-12 field is-flex is-justify-content-space-between mb-0">
 
         <div class="control width-100-pedding-right-9">
           <label class="label">Объем (л)</label>
@@ -889,7 +889,7 @@
       <span class="column is-clickable has-text-right">
         <i class="fa fa-lg fa-trash icon-hover btn-del-warehous ml-2 mt-5" aria-hidden="true"></i>
       </span>
-      <div class="column is-12 order-supply-warehous-shipping">
+      <div class="column is-11 order-supply-warehous-shipping mb-5">
 
       </div>
     </div>
@@ -898,14 +898,16 @@
   <!-- Шаблон распределенной части заявки в секции -->
   <template id="order-supply-distributed-part">
     <div class="order-supply-distributed-part columns has-text-right is-align-items-center is-flex-wrap-wrap">
-      <span class="column is-2 is-offset-1 has-text-weight-bold part-date">20.12</span>
-      <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-      <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
+      <!-- is-offset-1 -->
+      <span class="column is-2 has-text-weight-bold part-date">20.12</span>
+      <span class="column is-2 has-text-weight-bold part-partner">Нефтесиб</span>
+      <span class="column is-3 has-text-weight-bold contaragent">Контрагент</span>
+      <span class="column is-2 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
       <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
       <span class="column is-1 is-clickable has-text-right">
         <i class="fa fa-lg fa-trash icon-hover btn-del-block" aria-hidden="true"></i>
       </span>
-      <div class="column is-12 order-supply-distributed-part-shipping">
+      <div class="column is-11 is-offset-1 order-supply-distributed-part-shipping">
 
       </div>
     </div>

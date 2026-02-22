@@ -23059,6 +23059,32 @@ select.border-radius-left-none {
   padding-left: 9px;
 }
 
+.section-style {
+  border: solid 2px #7e7e7e;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.order-supply-section-shipping {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+.order-supply-distributed-part-shipping {
+  padding-top: 0;
+}
+
+.order-supply-warehous-shipping .order-supply-shipping {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.order-supply-warehous-shipping {
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
 @media (max-width: 940px) {
   .order-header {
     width: 100%;

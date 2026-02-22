@@ -170,7 +170,7 @@ export class OrderSupplyModalView extends AppView {
       for (const block of section.array_dispatch) {
         const tplBlock = this.distributedPart.cloneNode(true);
         const part = partsList.find(part => part.guid === block.guid_orderblock);
-        console.log(block);
+        console.log(part);
         // guid
         tplBlock.dataset.guid = block.guid_orderblock;
         // number_dispatch
@@ -179,6 +179,8 @@ export class OrderSupplyModalView extends AppView {
         tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
         // Клиент
         tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
+        // Контрагент
+        tplBlock.querySelector('.contaragent').textContent = part.counteragent;
         // Продукт
         tplBlock.querySelector('.part-product').textContent = part.product.name_product;
         // Распределенный объем
@@ -333,6 +335,11 @@ export class OrderSupplyModalView extends AppView {
 
   // Закрыть модальное окно
   close() {
+    // Поле объем
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = '';
+    // Дата
+    this.modalOrderSupply.querySelector('input[name="date_dispatch"]').value = '';
+    
     this.modalOrderSupply.dataset.supplyOrderId = '';
     this.modalOrderSupply.classList.remove('shipping');
     this.modalOrderSupply.classList.remove('new');
@@ -400,6 +407,7 @@ export class OrderSupplyModalView extends AppView {
 
   // Формируем список не распределенных заявок
   creatingListOfParts(partsList, product) {
+    console.log(partsList);
     const fragment = document.createDocumentFragment();
     for (const part of partsList) {
       // console.log(product !== part.product.name_product)
@@ -410,6 +418,7 @@ export class OrderSupplyModalView extends AppView {
         templatePart.querySelector('.date-of-shipment').textContent = this.getDateShipment(part.basisDateStart, part.basisDateEnd);
         templatePart.querySelector('.name-client').dataset.code = part.client.code_client;
         templatePart.querySelector('.name-client').textContent = part.client.name_client;
+        templatePart.querySelector('.contaragent').textContent = part.counteragent;
         templatePart.querySelector('.name-product').textContent = part.product.name_product;
         templatePart.querySelector('.volume').textContent = part.volume;
         // console.log(part);
@@ -895,6 +904,7 @@ export class OrderSupplyModalView extends AppView {
     distributedPart.querySelector('.part-date').textContent = this.getDateShipment(partData.basisDateStart,
       partData.basisDateEnd)
     distributedPart.querySelector('.part-partner').textContent = partData.client.name_client;
+    distributedPart.querySelector('.contaragent').textContent = partData.counteragent;
     distributedPart.querySelector('.part-product').textContent = partData.product.name_product;
     distributedPart.querySelector('.part-remainder').textContent = volumeLoad;
     container.append(distributedPart);
