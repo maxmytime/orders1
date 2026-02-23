@@ -72,7 +72,7 @@ export class OrderSupplyModalContoller {
     // Контроллер подписывается на событие нажата кнопка отмена начало отгрузки
     this.view.getContainer().addEventListener('click', this.handleShippingСancellation.bind(this));
     // Контроллер подписывается на событие ввода фактически отгружаемго объема
-    this.view.getContainer().addEventListener('input', this.volumeInputFact.bind(this));
+    // this.view.getContainer().addEventListener('input', this.volumeInputFact.bind(this));
     // Контроллер подписывается на событие загрузка заявки снабжения
     this.view.getContainer().addEventListener('click', this.shippingOrderSupply.bind(this));
 
@@ -304,12 +304,12 @@ export class OrderSupplyModalContoller {
   }
 
   // Ввод объема отгрузки факт
-  volumeInputFact(e) {
-    if (e.target.name === 'os-volume_fact') {
-      console.log('volumeInputFact(e)');
-      this.view.totalVolumeInputFact(e);
-    }
-  }
+  // volumeInputFact(e) {
+  //   if (e.target.name === 'os-volume_fact') {
+  //     console.log('volumeInputFact(e)');
+  //     this.view.totalVolumeInputFact(e);
+  //   }
+  // }
 
   // Создать заявку снабжение
   async createOrderSupply(e) {

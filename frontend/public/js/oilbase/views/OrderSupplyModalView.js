@@ -943,7 +943,7 @@ export class OrderSupplyModalView extends AppView {
     // Пересчитываем общий объем заявки снабжения
     this.totalSumVolumeOrderSupply();
     // Пересчитываем фактически отгружаемый объем заявки снабжения
-    this.totalVolumeInputFact();
+    // this.totalVolumeInputFact();
 
 
   }
@@ -969,7 +969,7 @@ export class OrderSupplyModalView extends AppView {
     // Пересчитываем общий объем заявки снабжения
     this.totalSumVolumeOrderSupply();
     // Пересчитываем фактически отгружаемый объем заявки снабжения
-    this.totalVolumeInputFact();
+    // this.totalVolumeInputFact();
   }
 
   // Ввод объема в отгрузки на свой склад
@@ -1000,63 +1000,63 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Расчет объема фактической отгрузки в ЗС
-  totalVolumeInputFact(e) {
-    // Определяем тип ЗС true - на свой склад, false - под клиента
-    const typeOrderSupplyWarehous = this.modalOrderSupply.querySelector('.warehous') ? true : false;
+  // totalVolumeInputFact(e) {
+  //   // Определяем тип ЗС true - на свой склад, false - под клиента
+  //   const typeOrderSupplyWarehous = this.modalOrderSupply.querySelector('.warehous') ? true : false;
 
-    // Получае контейнер в ЗС фактической отгрузки
-    const containerShipping = this.modalOrderSupply.querySelector('.order-supply-shipping');
-    const volumeShipping = containerShipping.querySelector('input[name="os-volume_fact"]');  // Получаем поле фактически отгружаемого объема
-    volumeShipping.value = '';  // Очищаем значение фактически отгружаемого объема перед перерасчетом
+  //   // Получае контейнер в ЗС фактической отгрузки
+  //   const containerShipping = this.modalOrderSupply.querySelector('.order-supply-shipping');
+  //   const volumeShipping = containerShipping.querySelector('input[name="os-volume_fact"]');  // Получаем поле фактически отгружаемого объема
+  //   volumeShipping.value = '';  // Очищаем значение фактически отгружаемого объема перед перерасчетом
 
-    // Секция
-    const containersSection = this.modalOrderSupply.querySelectorAll('.order-supply-section');
-    containersSection.forEach(section => {
-      const containerSectionShipping = section.querySelector('.order-supply-section-shipping');
-      const volumeInputSection = containerSectionShipping.querySelector('input[name="os-volume_fact"]');
-      volumeInputSection.value = '';
+  //   // Секция
+  //   const containersSection = this.modalOrderSupply.querySelectorAll('.order-supply-section');
+  //   containersSection.forEach(section => {
+  //     const containerSectionShipping = section.querySelector('.order-supply-section-shipping');
+  //     const volumeInputSection = containerSectionShipping.querySelector('input[name="os-volume_fact"]');
+  //     volumeInputSection.value = '';
 
-      // Если тип отгрузки ЗС клиенту выполняется первая ветка
-      // Если тип отгрузки ЗС на свой склад выполняется вторая ветка
-      if (!typeOrderSupplyWarehous) { // Первая ветка
-        // Распределенные блок
-        const containersDistributedPartShipping = section.querySelectorAll('.order-supply-distributed-part-shipping');
-        containersDistributedPartShipping.forEach(distributedPartShipping => {
-          const volume = distributedPartShipping.querySelector('input[name="os-volume_fact"]').value;
-          const density = distributedPartShipping.querySelector('input[name="os-density_fact"]').value;
-          distributedPartShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
-          // Считаем общий отгружаемый объем секции по распределенным блокам
-          volumeInputSection.value = Number(volumeInputSection.value) + Number(volume);
-        })
-      } else if (typeOrderSupplyWarehous) { // Вторая ветка
-        // Отгрузки на свой склад
-        const containersWarehousShipping = section.querySelectorAll('.order-supply-warehous-shipping');
-        containersWarehousShipping.forEach(warehousShipping => {
-          const volume = warehousShipping.querySelector('input[name="os-volume_fact"]').value;
-          const density = warehousShipping.querySelector('input[name="os-density_fact"]').value;
-          console.log(volume, density);
-          warehousShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
-          // Считаем общий отгружаемый объем секции по распределенным блокам
-          volumeInputSection.value = Number(volumeInputSection.value) + Number(volume);
-        })
-      }
+  //     // Если тип отгрузки ЗС клиенту выполняется первая ветка
+  //     // Если тип отгрузки ЗС на свой склад выполняется вторая ветка
+  //     if (!typeOrderSupplyWarehous) { // Первая ветка
+  //       // Распределенные блок
+  //       const containersDistributedPartShipping = section.querySelectorAll('.order-supply-distributed-part-shipping');
+  //       containersDistributedPartShipping.forEach(distributedPartShipping => {
+  //         const volume = distributedPartShipping.querySelector('input[name="os-volume_fact"]').value;
+  //         const density = distributedPartShipping.querySelector('input[name="os-density_fact"]').value;
+  //         distributedPartShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
+  //         // Считаем общий отгружаемый объем секции по распределенным блокам
+  //         volumeInputSection.value = Number(volumeInputSection.value) + Number(volume);
+  //       })
+  //     } else if (typeOrderSupplyWarehous) { // Вторая ветка
+  //       // Отгрузки на свой склад
+  //       const containersWarehousShipping = section.querySelectorAll('.order-supply-warehous-shipping');
+  //       containersWarehousShipping.forEach(warehousShipping => {
+  //         const volume = warehousShipping.querySelector('input[name="os-volume_fact"]').value;
+  //         const density = warehousShipping.querySelector('input[name="os-density_fact"]').value;
+  //         console.log(volume, density);
+  //         warehousShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
+  //         // Считаем общий отгружаемый объем секции по распределенным блокам
+  //         volumeInputSection.value = Number(volumeInputSection.value) + Number(volume);
+  //       })
+  //     }
 
 
 
-      // Пересчитываем массу в секции
-      const volume = containerSectionShipping.querySelector('input[name="os-volume_fact"]').value;
-      const density = containerSectionShipping.querySelector('input[name="os-density_fact"]').value;
-      containerSectionShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
+  //     // Пересчитываем массу в секции
+  //     const volume = containerSectionShipping.querySelector('input[name="os-volume_fact"]').value;
+  //     const density = containerSectionShipping.querySelector('input[name="os-density_fact"]').value;
+  //     containerSectionShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
 
-      // Считаем общий отгружаемый объем заявки по секциям
-      volumeShipping.value = Number(volumeShipping.value) + Number(volume);
-    })
+  //     // Считаем общий отгружаемый объем заявки по секциям
+  //     volumeShipping.value = Number(volumeShipping.value) + Number(volume);
+  //   })
 
-    // Пересчитываем массу в ЗС
-    const volume = containerShipping.querySelector('input[name="os-volume_fact"]').value;
-    const density = containerShipping.querySelector('input[name="os-density_fact"]').value;
-    containerShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
-  }
+  //   // Пересчитываем массу в ЗС
+  //   const volume = containerShipping.querySelector('input[name="os-volume_fact"]').value;
+  //   const density = containerShipping.querySelector('input[name="os-density_fact"]').value;
+  //   containerShipping.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(volume, density);
+  // }
 
   // Кнопка начало отгрузки
   handleShippingStart(e) {
