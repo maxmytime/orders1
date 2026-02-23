@@ -1,5 +1,6 @@
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
+import { CalculatorsOrderSupply } from '/js/oilbase/services/CalculatorsOrderSupply.js';
 
 export class OrderSupplyModalContoller {
   constructor(modelApp,
@@ -19,6 +20,7 @@ export class OrderSupplyModalContoller {
     this.orderSupplyControllerFactory = orderSupplyControllerFactory;
     this.dispatchList = [];
     this.updatingView = new UpdatingView();
+    this.calculatorsOrderSupply = new CalculatorsOrderSupply();
 
     // console.log('OrderSupplyModalContoller');
     // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -46,7 +48,7 @@ export class OrderSupplyModalContoller {
     // Контроллер подписывается на событие ввода именя секции
     this.view.getContainer().addEventListener('input', this.enterNameSection.bind(this));
     // Контроллер подписывается на событие нажатия кнопки  переименовать секцию
-    this.view.getContainer().addEventListener('click', this.handleRenameSection.bind(this));
+    // this.view.getContainer().addEventListener('click', this.handleRenameSection.bind(this));
     // Контроллер подписывается на событие нажатия кнопки  закончить распределение в  секцию
     this.view.getContainer().addEventListener('click', this.handleEndDistribution.bind(this));
     // Контроллер подписывается на событие выбора секции
@@ -71,10 +73,12 @@ export class OrderSupplyModalContoller {
     this.view.getContainer().addEventListener('click', this.handleShippingStart.bind(this));
     // Контроллер подписывается на событие нажата кнопка отмена начало отгрузки
     this.view.getContainer().addEventListener('click', this.handleShippingСancellation.bind(this));
-    // Контроллер подписывается на событие ввода фактически отгружаемго объема
-    // this.view.getContainer().addEventListener('input', this.volumeInputFact.bind(this));
+    // Контроллер подписывается на событие ввода данных для расчета плотности
+    this.view.getContainer().addEventListener('input', this.calculatorsDensity.bind(this));
     // Контроллер подписывается на событие загрузка заявки снабжения
     this.view.getContainer().addEventListener('click', this.shippingOrderSupply.bind(this));
+    // Контроллер подписывается на событие распределения для фактической отгрузки
+    this.view.getContainer().addEventListener('click', this.distributionFact.bind(this));
 
   }
 
@@ -203,12 +207,12 @@ export class OrderSupplyModalContoller {
   }
 
   // Кнопка переименовать секцию
-  handleRenameSection(e) {
-    if (e.target.classList.contains('btn-rename-section')) {
-      console.log('handleRenameSection(e)');
-      this.view.handleRenameSection(e);
-    }
-  }
+  // handleRenameSection(e) {
+  //   if (e.target.classList.contains('btn-rename-section')) {
+  //     console.log('handleRenameSection(e)');
+  //     this.view.handleRenameSection(e);
+  //   }
+  // }
 
   // Удалить секцию
   delSection(e) {
@@ -769,6 +773,22 @@ export class OrderSupplyModalContoller {
       const tanksList = this.modelApp.getBasis(e.target.textContent).listOfTanks;
       this.view.updateListOfTanks(e, tanksList);
       // console.log(tanksList);
+    }
+  }
+
+  // Ввод данных в поля объем или вес - расчитывается плотность
+  calculatorsDensity(e) {
+    if (e.target.name === 'os-volume_fact' || e.target.name === 'os-weight_fact') {
+      this.calculatorsOrderSupply
+        .calculatorDensity(e.target.closest('.order-supply-shipping'));
+    }
+  }
+
+  // Распределение для фактической отгрузки
+  distributionFact(e) {
+    if (e.target.classList.contains('btn-shipping-distribution')) {
+      this.calculatorsOrderSupply
+        .distributionFact(e.target.closest('.modal-order-supply'));
     }
   }
 

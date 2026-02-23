@@ -425,7 +425,7 @@
           <div class="column is-flex is-justify-content-space-between">
             <p class="modal-card-title has-text-weight-bold">Заявка-снабжения</p>
           </div>
-          <div class="column">
+          <div class="column warehouse-switch">
             <div class="field">
               <label class="switch is-rounded">
                 <input type="checkbox" class="order-supply-to-your-warehouse" value="false">
@@ -579,46 +579,6 @@
 
               <h4 class="title is-4 border-top-3px pt-5">Секции</h4>
 
-              <!-- <div class="column is-12 order-supply-section">
-                <div class="columns">
-                  <div class="column is-10">
-                    <h5 class="is-5 title">Секция 1</h5>
-                  </div>
-                  <div class="column is-clickable has-text-right">
-                    <i class="fa fa-lg fa-trash icon-hover" aria-hidden="true"></i>
-                  </div>
-                </div>
-                <div class="field is-flex is-justify-content-space-between">
-
-                  <div class="control">
-                    <label class="label">Объем (л)</label>
-                    <input type="text" name="order-supply-volume" class="input input-order" value=""
-                      autocomplete="off">
-                  </div>
-                  <div class="control">
-                    <label class="label">Распределено</label>
-                    <input type="text" name="order-supply-distributed" class="input input-order" value=""
-                      autocomplete="off">
-                  </div>
-                  <div class="control">
-                    <label class="label">Остаток</label>
-                    <input type="text" name="order-supply-remainder" class="input input-order" value=""
-                      autocomplete="off">
-                  </div>
-
-                </div>
-                <div class="fild">
-                  <div class="order-supply-parts">
-                    <div class="order-supply-part columns has-text-right">
-                      <span class="column is-2 is-offset-2 has-text-weight-bold part-date">20.12</span>
-                      <span class="column is-3 has-text-weight-bold part-partner">Нефтесиб</span>
-                      <span class="column is-3 has-text-weight-bold part-product">ДТз-К5 ГПН</span>
-                      <span class="column is-2 has-text-weight-bold part-remainder">5000</span>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-
               <div class="columns orderc-supple-sections-container is-flex-wrap-wrap">
 
               </div>
@@ -660,6 +620,13 @@
           </div>
         </footer>
       </div>
+    </div>
+  </template>
+
+  <!-- Шаблон кнопки распределеить -->
+  <template id="btn-shipping-distribution-container">
+    <div class="column btn-shipping-distribution-container is-flex is-align-items-end">
+      <button class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-shipping-distribution">Распределить</button>
     </div>
   </template>
 
@@ -758,23 +725,7 @@
     <div class="column is-12 order-supply-section section-style">
       <div class="columns">
         <div class="column is-10 is-flex is-align-items-center">
-
-          <h5 class="is-5 title is-hidden mb-0 mr-5">Секция 1</h5>
-
-          <!-- Поле ввода "Имя секции" -->
-          <div class="field mb-0">
-            <div class="control">
-              <input type="text" name="order-supply-name-section" class="input input-order" value="" autocomplete="off"
-                placeholder="Имя секции">
-            </div>
-          </div>
-
-          <button type="button" class="button btn-orders btn-brand has-background-white btn-rename-section ml-2">
-            <span class="icon btn-rename-section">
-              <i class="fa fa-pencil btn-rename-section" aria-hidden="true"></i>
-            </span>
-          </button>
-
+          <h5 class="is-5 title mb-0 mr-5">Секция 1</h5>
         </div>
 
         <div class="column is-clickable has-text-right">
@@ -782,7 +733,7 @@
         </div>
       </div>
 
-      <div class="column is-12 field is-flex is-justify-content-space-between mb-0">
+      <div class="column is-12 field is-flex is-justify-content-space-between mb-0 param-section">
 
         <div class="control width-100-pedding-right-9">
           <label class="label">Объем (л)</label>
@@ -835,7 +786,9 @@
           <label class="label">Базис</label>
           <div class="control">
             <div class="droplist-wrapper">
-              <input type="text" name="os-warehous-basis" class="input input-order border-radius-right-none" value=""
+              <input type="text" name="os-warehous-basis" 
+                class="input input-order border-radius-right-none block-shipping" 
+                value=""
                 autocomplete="off">
               <div class="droplist is-hidden"></div>
             </div>
@@ -849,7 +802,7 @@
           <div class="control">
             <div class="select width-100">
               <select name="warehouse-tank-name"
-                class="width-100 input-order js-type border-left-none border-radius-none">
+                class="width-100 input-order js-type border-left-none border-radius-none block-shipping">
                 <!-- <option value="0">-</option> -->
               </select>
             </div>
@@ -861,7 +814,9 @@
         <div class="field">
           <label class="label">Остаток плановый</label>
           <div class="control">
-            <input type="text" name="" class="input input-order border-left-none border-radius-none" value=""
+            <input type="text" name="" 
+              class="input input-order border-left-none border-radius-none block-shipping" 
+              value=""
               autocomplete="off">
           </div>
         </div>
@@ -871,8 +826,10 @@
         <div class="field">
           <label class="label">Объем</label>
           <div class="control">
-            <input type="text" name="warehouse_volume" class="input input-order border-left-none border-radius-none"
-              value="" autocomplete="off">
+            <input type="text" name="warehouse_volume" 
+              class="input input-order border-left-none border-radius-none block-shipping"
+              value="" 
+              autocomplete="off">
           </div>
         </div>
       </div>
@@ -882,7 +839,7 @@
           <label class="label">Дата отгрузки</label>
           <div class="control">
             <input type="date" name="warehouse_date_dispatch"
-              class="input input-order border-radius-left-none border-left-none">
+              class="input input-order border-radius-left-none border-left-none block-shipping">
           </div>
         </div>
       </div>
@@ -927,7 +884,7 @@
         <div class="column">
           <div class="control">
             <label class="label">Вес факт (т)</label>
-            <input type="text" name="os-weight_fact" class="input input-order" value="0" autocomplete="off" disabled>
+            <input type="text" name="os-weight_fact" class="input input-order" value="0" autocomplete="off">
           </div>
         </div>
         <div class="column">

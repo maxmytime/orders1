@@ -9,8 +9,9 @@ export class OrderSupplyModalView extends AppView {
     this.orderSupplySection = this.getTemplate('order-supply-section'); // Шаблон секции
     this.undistributedPart = this.getTemplate('order-supply-undistributed-part');  // Шаблон не распределенной части заявки
     this.distributedPart = this.getTemplate('order-supply-distributed-part');      // Шаблон распределенной части заявки
-    this.warehous = this.getTemplate('order-supply-warehous');      // Шаблон собственного склада
-    this.shipping = this.getTemplate('order-supply-shipping');      // Шаблон отгрузки
+    this.warehous = this.getTemplate('order-supply-warehous');          // Шаблон собственного склада
+    this.shipping = this.getTemplate('order-supply-shipping');          // Шаблон отгрузки
+    this.btnShippingDistribution = this.getTemplate('btn-shipping-distribution-container');      // Шаблон кнопки распределить
     this.helpers = new Helpers();
     // console.log('OrderSupplyModalView');
 
@@ -25,6 +26,9 @@ export class OrderSupplyModalView extends AppView {
 
     this.modalOrderSupply.querySelector('.order-supply-parametrs')
       .append(this.shipping.cloneNode(true));
+
+    this.modalOrderSupply.querySelector('.order-supply-shipping .columns')
+      .append(this.btnShippingDistribution);
 
     this.orderSupplySection.querySelector('.order-supply-section-shipping')
       .append(this.shipping.cloneNode(true));
@@ -128,7 +132,11 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.querySelector('input[name="startVolume"]').value = tank.volume;
 
     // Объем (л)
-    this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.volume;
+    // this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.volume;
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.array_sections
+                                                                                  .reduce((total, section) => {
+                                                                                    return total + Number(section.volume_section);
+                                                                                  }, 0);
 
     // Загрузка/Приход
     this.modalOrderSupply.
@@ -142,7 +150,12 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
 
     // Факт
-    this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-volume_fact"]').value = supplyOrder.volume_fact || supplyOrder.volume;
+    this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-volume_fact"]').value 
+      = supplyOrder.volume_fact ? supplyOrder.volume_fact : supplyOrder.array_sections
+                                                              .reduce((total, section) => {
+                                                                return total + Number(section.volume_section);
+                                                              }, 0);
+
     this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-density_fact"]').value = supplyOrder.density_fact || supplyOrder.density;
     this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-weight_fact"]').value = supplyOrder.weight_fact ||
       this.weightCalculation(this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-volume_fact"]').value,
@@ -157,16 +170,26 @@ export class OrderSupplyModalView extends AppView {
       // Имя секции
       tplSection.querySelector('.title').textContent = section.name_section;
       tplSection.querySelector('.title').classList.remove('is-hidden');
-      tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
+      // tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
       // Объем
       tplSection.querySelector('input[name="order-supply-volume"]').value = section.volume_section;
       // Факт
-      tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]').value = section.volume_section_fact || section.volume_section;
-      tplSection.querySelector('.order-supply-section-shipping input[name="os-density_fact"]').value = section.density_section_fact || supplyOrder.density;
-      tplSection.querySelector('.order-supply-section-shipping input[name="os-weight_fact"]').value = this.weightCalculation(
-        tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]').value,
-        tplSection.querySelector('.order-supply-section-shipping input[name="os-density_fact"]').value
-      );
+      tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]')
+        .value = section.volume_section_fact
+      // tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]')
+      //   .value = section.volume_section_fact
+      //   || section.array_dispatch.reduce((total, dispatch) => {
+      //         return total + Number(dispatch.volume_dispatch);
+      //       }, 0);
+
+      tplSection.querySelector('.order-supply-section-shipping input[name="os-density_fact"]')
+        .value = section.density_section_fact || supplyOrder.density;
+
+      tplSection.querySelector('.order-supply-section-shipping input[name="os-weight_fact"]')
+        .value = this.weightCalculation(
+          tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]').value,
+          tplSection.querySelector('.order-supply-section-shipping input[name="os-density_fact"]').value
+        );
 
 
       // Блоки заявки
@@ -285,7 +308,7 @@ export class OrderSupplyModalView extends AppView {
       // Имя секции
       tplSection.querySelector('.title').textContent = section.name_section;
       tplSection.querySelector('.title').classList.remove('is-hidden');
-      tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
+      // tplSection.querySelector('input[name="order-supply-name-section"]').classList.add('is-hidden');
       // Объем
       tplSection.querySelector('input[name="order-supply-volume"]').value = section.volume_section;
       // Факт
@@ -357,6 +380,63 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = '';
     // Дата
     this.modalOrderSupply.querySelector('input[name="date_dispatch"]').value = '';
+
+    // Переключатель на свой склад
+    this.modalOrderSupply.querySelector('.warehouse-switch')
+      .classList.remove('is-hidden');
+
+    // Общий объем заявки
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').disabled = false;
+
+    // Кнопка удалить секцию
+    this.modalOrderSupply.querySelectorAll('.btn-del-section')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-warehous')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Кнопка добавить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-add-warehouse')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Объем (л)
+    this.modalOrderSupply.querySelectorAll('input[name="order-supply-volume"]')
+      .forEach(input => {
+        input.disabled = false;
+      })
+
+    // Параметры отгрузки
+    this.modalOrderSupply.querySelectorAll('.param-section')
+      .forEach(container => {
+        container.classList.remove('disabled');
+      })
+
+    // Блокировка полей при отгрузке
+    this.modalOrderSupply.querySelectorAll('.block-shipping')
+      .forEach(fild => {
+        fild.disabled = false;
+      })
+
+    // Кнопка добавить секцию
+    this.modalOrderSupply.querySelector('.btn-add-section')
+      .classList.remove('is-hidden');
+
+    // Список не распределенных заявок
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper')
+      .classList.remove('is-hidden');
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-block')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
 
     this.modalOrderSupply.dataset.supplyOrderId = '';
     this.modalOrderSupply.classList.remove('shipping');
@@ -506,6 +586,9 @@ export class OrderSupplyModalView extends AppView {
       querySelector('.orderc-supple-sections-container');
     const section = this.orderSupplySection.cloneNode(true);
     section.dataset.id = this.helpers.getID();
+    const title = section.querySelector('.title');
+    const sections = e.target.closest('.order-supple-sections').querySelectorAll('.order-supply-section').length;
+    title.textContent = 'Секция ' + (Number(sections) + 1);
     container.appendChild(section);
   }
 
@@ -518,15 +601,15 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Кнопка переименовать секцию
-  handleRenameSection(e) {
-    const section = e.target.closest('.order-supply-section');
-    const input = section.querySelector('input[name="order-supply-name-section"]');
-    const title = section.querySelector('.title');
-    input.value = title.textContent;
-    title.classList.toggle('is-hidden');
-    input.classList.toggle('is-hidden');
+  // handleRenameSection(e) {
+  //   const section = e.target.closest('.order-supply-section');
+  //   const input = section.querySelector('input[name="order-supply-name-section"]');
+  //   const title = section.querySelector('.title');
+  //   input.value = title.textContent;
+  //   title.classList.toggle('is-hidden');
+  //   input.classList.toggle('is-hidden');
 
-  }
+  // }
 
   // Получаем ID Базис
   getBasisID(e) {
@@ -843,7 +926,7 @@ export class OrderSupplyModalView extends AppView {
     if (sectionRemainder <= partRemainder) {
       if (partLoad > sectionRemainder) e.target.value = sectionRemainder;
     } else {
-      if (partLoad > partRemainder) e.target.value = partRemainder;
+      // if (partLoad > partRemainder) e.target.value = partRemainder;
     }
 
     this.lockDistributeButton(e);
@@ -1061,6 +1144,63 @@ export class OrderSupplyModalView extends AppView {
   // Кнопка начало отгрузки
   handleShippingStart(e) {
     this.modalOrderSupply.classList.add('shipping');
+    // Переключатель на свой склад
+    this.modalOrderSupply.querySelector('.warehouse-switch')
+      .classList.add('is-hidden');
+
+    // Общий объем заявки
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').disabled = true;
+
+    // Кнопка удалить секцию
+    this.modalOrderSupply.querySelectorAll('.btn-del-section')
+      .forEach(btn => {
+        btn.classList.add('is-hidden');
+      })
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-warehous')
+      .forEach(btn => {
+        btn.classList.add('is-hidden');
+      })
+
+    // Кнопка добавить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-add-warehouse')
+      .forEach(btn => {
+        btn.classList.add('is-hidden');
+      })
+
+    // Объем (л)
+    this.modalOrderSupply.querySelectorAll('input[name="order-supply-volume"]')
+      .forEach(input => {
+        input.disabled = true;
+      })
+
+    // Параметры отгрузки
+    this.modalOrderSupply.querySelectorAll('.param-section')
+      .forEach(container => {
+        container.classList.add('disabled');
+      })
+
+    // Блокировка полей при отгрузке
+    this.modalOrderSupply.querySelectorAll('.block-shipping')
+      .forEach(fild => {
+        fild.disabled = true;
+      })
+
+    // Кнопка добавить секцию
+    this.modalOrderSupply.querySelector('.btn-add-section')
+      .classList.add('is-hidden');
+
+    // Список не распределенных заявок
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper')
+      .classList.add('is-hidden');
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-block')
+      .forEach(btn => {
+        btn.classList.add('is-hidden');
+      })
+
     this.modalOrderSupply.querySelector('.btn-os-shipping-cancellation')
       .classList.remove('is-hidden');
     this.modalOrderSupply.querySelector('.btn-order-supply-shipping')
@@ -1071,6 +1211,63 @@ export class OrderSupplyModalView extends AppView {
   // Кнопка отмена начало отгрузки
   handleShippingСancellation(e) {
     this.modalOrderSupply.classList.remove('shipping');
+    // Переключатель на свой склад
+    this.modalOrderSupply.querySelector('.warehouse-switch')
+      .classList.remove('is-hidden');
+
+    // Общий объем заявки
+    this.modalOrderSupply.querySelector('input[name="supply-volume"]').disabled = false;
+
+    // Кнопка удалить секцию
+    this.modalOrderSupply.querySelectorAll('.btn-del-section')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-warehous')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Кнопка добавить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-add-warehouse')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
+    // Объем (л)
+    this.modalOrderSupply.querySelectorAll('input[name="order-supply-volume"]')
+      .forEach(input => {
+        input.disabled = false;
+      })
+
+    // Параметры отгрузки
+    this.modalOrderSupply.querySelectorAll('.param-section')
+      .forEach(container => {
+        container.classList.remove('disabled');
+      })
+
+    // Блокировка полей при отгрузке
+    this.modalOrderSupply.querySelectorAll('.block-shipping')
+      .forEach(fild => {
+        fild.disabled = false;
+      })
+
+    // Кнопка добавить секцию
+    this.modalOrderSupply.querySelector('.btn-add-section')
+      .classList.remove('is-hidden');
+
+    // Список не распределенных заявок
+    this.modalOrderSupply.querySelector('.undistributed-parts-wrapper')
+      .classList.remove('is-hidden');
+
+    // Кнопка удалить свой склад
+    this.modalOrderSupply.querySelectorAll('.btn-del-block')
+      .forEach(btn => {
+        btn.classList.remove('is-hidden');
+      })
+
     this.modalOrderSupply.querySelector('.btn-os-shipping-start')
       .classList.remove('is-hidden');
     this.modalOrderSupply.querySelector('.btn-order-supply-shipping')
