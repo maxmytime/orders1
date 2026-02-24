@@ -698,6 +698,7 @@ export class OrderSupplyModalContoller {
       }
 
 
+      console.log(docObject);
       console.log(supply);
       // Отправляем данные для обновления заявки снабжения
       const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
