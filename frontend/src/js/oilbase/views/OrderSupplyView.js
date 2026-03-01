@@ -1,51 +1,68 @@
 import { AppView } from '/js/oilbase/views/AppView.js'
 
 export class OrderSupplyView extends AppView {
-    constructor(helpers) {
-        super();
-        this.container = document.querySelector('.app-oilbase');        // Контейнер приложения. На текущий момент на него вешаются все события
-        this.templateOrderSupply = this.getTemplate('order-supply');    // Шаблон Заявки снабжения в базисе
+  constructor(helpers) {
+    super();
+    this.container = document.querySelector('.app-oilbase');        // Контейнер приложения. На текущий момент на него вешаются все события
+    this.templateOrderSupply = this.getTemplate('order-supply');    // Шаблон Заявки снабжения в базисе
 
-        this.helpers = helpers;
+    this.helpers = helpers;
 
-        // console.log('OrderSupplyView');
-    }
+    // console.log('OrderSupplyView');
+  }
 
-    render(orderSupply) {
-        // console.log(orderSupply);
-        const order = this.templateOrderSupply.cloneNode(true);
+  render(data) {
+    // console.log(orderSupply);
+    const order = this.templateOrderSupply.cloneNode(true);
+    this.templateFfilling(order, data);
+    return order;
+  }
 
-        // Устанавливаем ID
-        order.dataset.id = orderSupply.id;
-        // Продукт
-        order.querySelector('.name-product').textContent = orderSupply.product.name_product;
-        // Количество
-        order.querySelector('.volume').textContent = orderSupply.volume;
-        // Распределено
-        order.querySelector('.volume-distributed').textContent = '-';
-        // Остаток, плановый
-        order.querySelector('.planned-balance').textContent = '-';
+  renderNewOrderSupply(data, tankID) {
+    const container = document.querySelector(`div[data-id="${tankID}"] .order-supply-container`);
+    const order = this.templateOrderSupply.cloneNode(true);
+    this.templateFfilling(order, data);
+    container.append(order);
+  }
 
-        return order;
-    }
+  updateOrderSupply(data) {
+    const orderSupplyNode = document.querySelector(`div[data-id="${data.id}"]`);
+    this.templateFfilling(orderSupplyNode, data);
+  }
 
-    renderNewOrderSupply(docObject, tankID) {
-        const container = document.querySelector(`div[data-id="${tankID}"] .order-supply-container`);
-        const tplOrderSupply = this.templateOrderSupply.cloneNode(true);
+  // --- Вспомогательные методы ---
 
-        // Устанавливаем ID
-        tplOrderSupply.dataset.id = docObject.id;
+  // --- Расчет распределенного объема в заявке снабжения ---
+  totalVolumeDistributed = (orderSupply) => {
+    const itemsArrayName = orderSupply.type_suplorder === 1 ? 'array_tanks' : 'array_dispatch';
 
-        // Дата
-        // tplOrderSupply.querySelector('.date_dispatch').textContent = docObject.date_income;
-        // Клиент
-        // tplOrderSupply.querySelector('.name-client').textContent =
-        // Продукт
-        // tplOrderSupply.querySelector('.name-product').textContent = docObject.name_product;
-        // Количество
-        // tplOrderSupply.querySelector('.volume').textContent = docObject.volume;
+    const totalVolume = orderSupply.array_sections.reduce((sum, section) => {
+      const items = section[itemsArrayName] || [];
+      return sum + items.reduce((s, item) => s + Number(item.volume_dispatch), 0);
+    }, 0);
 
-        container.append(tplOrderSupply);
-    }
+    return totalVolume;
+  }
+
+  // --- Заполнение шаблона данными ---
+  templateFfilling(template, data) {
+    // Устанавливаем ID
+    template.dataset.id = data.id;
+    // Устанавливаем тип заявки
+    template.dataset.type = data.type_suplorder;
+    // Дата
+    template.querySelector('.date_dispatch').textContent = data.date_income;
+    // Продукт
+    template.querySelector('.name-product').textContent = data.product.name_product;
+    // Количество
+    template.querySelector('.volume').textContent = data.volume;
+    // Распределено
+    template.querySelector('.volume-distributed').textContent = this.totalVolumeDistributed(data);
+    // Остаток, плановый
+    template.querySelector('.planned-balance').textContent = '-';
+    // Комментарий
+    template.querySelector('.comment').textContent = data.commentary;
+  }
+
 
 }

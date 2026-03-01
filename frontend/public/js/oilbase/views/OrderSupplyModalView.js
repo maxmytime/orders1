@@ -1057,7 +1057,7 @@ export class OrderSupplyModalView extends AppView {
 
   // Ввод объема в отгрузки на свой склад
   volumeInputWarehouse(e) {
-    const section = e.target.closest('.order-supple-sections.warehous');
+    const section = e.target.closest('.order-supply-section');
     const sectionVolum = Number(section.querySelector('input[name="order-supply-volume"]').value);
     const inputSectionDistributed = section.querySelector('input[name="order-supply-distributed"]');
     const inputSectionRemainder = section.querySelector('input[name="order-supply-remainder"]');

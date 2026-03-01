@@ -1,6 +1,7 @@
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
 import { CalculatorsOrderSupply } from '/js/oilbase/services/CalculatorsOrderSupply.js';
+import { Validation } from '/js/oilbase/services/Validation.js';
 
 export class OrderSupplyModalContoller {
   constructor(modelApp,
@@ -21,6 +22,7 @@ export class OrderSupplyModalContoller {
     this.dispatchList = [];
     this.updatingView = new UpdatingView();
     this.calculatorsOrderSupply = new CalculatorsOrderSupply();
+    this.validation = new Validation();
 
     // console.log('OrderSupplyModalContoller');
     // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -415,6 +417,11 @@ export class OrderSupplyModalContoller {
         if (tankID) {
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
           orderSupplyController.renderNewOrderSupply(docObject, tankID);
+          const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
+          // Делает расчет планового остатка
+          this.updatingView.tankСalculationPlannedBalance(tankNode);
+          // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
+          this.updatingView.updateOrderNumbers(tankNode);
           this.view.close();
         }
       }
@@ -607,12 +614,15 @@ export class OrderSupplyModalContoller {
       if (status.Status === 'OK') {
         docObject.number = status.Data;
         docObject.type_suplorder = 2;
-        console.log(docObject);
-        const tankID = this.modelApp.updateOrderSupply(docObject);
-        console.log(tankID);
+        const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
+        orderSupplyController.updateOrderSupply(docObject, tankID);
+        const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
+        // Делает расчет планового остатка
+        this.updatingView.tankСalculationPlannedBalance(tankNode);
+        // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
+        this.updatingView.updateOrderNumbers(tankNode);
         this.view.close();
-        console.log(supply);
-        return {'data': supply, 'id': docObject.id};
+        return { 'data': supply, 'id': docObject.id };
       }
     }
   }
@@ -658,6 +668,11 @@ export class OrderSupplyModalContoller {
         if (tankID) {
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
           orderSupplyController.renderNewOrderSupply(docObject, tankID);
+          const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
+          // Делает расчет планового остатка
+          this.updatingView.tankСalculationPlannedBalance(tankNode);
+          // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
+          this.updatingView.updateOrderNumbers(tankNode);
           this.view.close();
         }
       }
@@ -712,10 +727,17 @@ export class OrderSupplyModalContoller {
         docObject.array_sections = this.view.getSectionsWarehouseToModel(modal);
         console.log(docObject);
         const tankID = this.modelApp.updateOrderSupply(docObject);
+        const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
 
+        orderSupplyController.updateOrderSupply(docObject);
+        const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
+        // Делает расчет планового остатка
+        this.updatingView.tankСalculationPlannedBalance(tankNode);
+        // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
+        this.updatingView.updateOrderNumbers(tankNode);
         this.view.close();
         // console.log(supply);
-        return {'data': supply, 'id': docObject.id};
+        return { 'data': supply, 'id': docObject.id };
       }
     }
   }
@@ -723,6 +745,10 @@ export class OrderSupplyModalContoller {
   // Загрузка заявки снабжения
   async shippingOrderSupply(e) {
     if (e.target.classList.contains('btn-order-supply-shipping')) {
+
+      this.validation.validationDistributedVolume(e.target.closest('.modal-order-supply'));
+      // _validationSection(section, '.order-supply-warehous-shipping input[name="os-volume_fact"]');
+
       // console.log('shippingOrderSupply(e)');
       // Определяем тип ЗС: true - на свой склад, false - под клиента
       const typeOrderSupplyWarehous = this.view.modalOrderSupply.querySelector('.warehous') ? true : false;
@@ -748,9 +774,14 @@ export class OrderSupplyModalContoller {
         this.modelApp.deleteOrderSupply(id);     // Удаляем заявку снабжения из модели.
         this.updatingView.deleteElementByID(id); // Удаляем загруженную ЗС из интерфейса.
       }
-      
+
     }
   }
+
+  
+
+
+
 
   // Валидация поля Загрузка
   validationUploadField(e) {

@@ -17,4 +17,8 @@ export class OrderSupplyController {
         this.view.renderNewOrderSupply(docObject, tankID);
     }
 
+    updateOrderSupply(docObject) {
+        this.view.updateOrderSupply(docObject);
+    }
+
 }

@@ -122,15 +122,9 @@ export class AppModel { // Выполняет инициализацию при�
       // Дата из части заявки, которая будет вставлена в массив
       const [yearB, monthB, dayB] = part.date_dispatch.split('-').map(Number);
       const dateB = new Date(yearB, monthB - 1, dayB);
-      // console.log(yearB, monthB - 1, dayB);
-      // console.log(yearB, monthB, dayB);
       if (dateB < dateA) {
-        // console.log('Дата меньше');
-        // console.log(part.basisDateStart);
         return { 'part': part, 'index': index };
       } else if (array.length - 1 === index) {
-        // console.log('Конец массива');
-        // console.log(part.basisDateStart);
         return { 'part': part, 'index': index + 1 };
       }
     }
