@@ -80,29 +80,6 @@ export class Validation {
       }
     });
 
-
-
-
-
-    // --- Валидация фактически распределенного обьема и веса внутри секции ---
-    // const _validationSection = (section, selector) => {
-    //   const volumeSectionFact = $('input[name="os-volume_fact"]', section);
-    //   const blocks = $$(selector, section);
-
-    //   if (!volumeSectionFact || blocks.length === 0) {
-    //     console.warn('_validationSection: не найдены основные поля');
-    //   }
-
-    //   const sumVolumes = blocks.reduce((total, block) => {
-    //     total += Number(block.value);
-    //   }, 0)
-
-    //   // Валидация поля объем секции
-    //   if (volumeSectionFact.value !== sumVolumes) {
-    //     volumeSectionFact.classList.add('is-err');
-    //   } else {
-    //     volumeSectionFact.classList.remove('is-err');
-    //   }
-    // }
+    return !($$('.is-err').length === 0);
   }
 }

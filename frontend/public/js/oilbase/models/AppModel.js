@@ -30,7 +30,6 @@ export class AppModel { // Выполняет инициализацию при�
     })
 
     // Добавляем в список частей заявок распределенный объем
-
     listSuplOrders.forEach(suplOrder => {
       suplOrder.array_sections.forEach(section => {
         section.array_dispatch?.forEach(block => {
@@ -74,17 +73,12 @@ export class AppModel { // Выполняет инициализацию при�
     // Добавляем распределенные части заявок в емкости
     this.#listBasiss.forEach(basis => {
       basis.listOfTanks.forEach(tank => {
-        // console.log(tank);
         listDistributeParts.forEach(distributePart => {
           if (tank.code == distributePart.code_tank && distributePart.id) {
-            // console.log(distributePart.id);
-            // tank.listOfDistributedApplications.push(distributePart);
-            // console.log(basis);
             const partObj = this.sortParts(tank.listOfDistributedApplications, distributePart);
             tank.listOfDistributedApplications.splice(partObj.index, 0, partObj.part);
           }
         })
-        // console.log(tank.listOfDistributedApplications);
         tank.listOfDistributedApplications.sort((a, b) => a.sort_number - b.sort_number);
       })
     })
@@ -99,6 +93,10 @@ export class AppModel { // Выполняет инициализацию при�
             return order;
           }
         });
+        tank.listOfOrderSupply.sort((a, b) => {
+          return this.helpers.parseDate(a.date_income) - this.helpers.parseDate(b.date_income);
+        }
+        );
       })
     })
   }
@@ -110,7 +108,6 @@ export class AppModel { // Выполняет инициализацию при�
       // console.log(part.basisDateStart);
       return { 'part': part, 'index': 0 };
     }
-
 
     for (const [index, element] of array.entries()) {
 
@@ -128,7 +125,6 @@ export class AppModel { // Выполняет инициализацию при�
         return { 'part': part, 'index': index + 1 };
       }
     }
-
   }
 
   // Сравниваем 2 объекта и проверяем есть ли в их значения отличия
@@ -589,31 +585,21 @@ export class AppModel { // Выполняет инициализацию при�
   // Добавить часть заявки в емкость
   addPart(part, basisName, tankID = 0) {
     console.log('addPart()', part, basisName, tankID);
-    // console.log(part, basisName, tankID);
     if (tankID != '0') {
       for (const basis of this.basiss) {
-        // if (basisName === basis.name) {
-        // console.log(basis);
         for (const tank of basis.listOfTanks) {
           if (tankID === tank.id) {
-            // console.log(part);
             const partObj = this.sortParts(tank.listOfDistributedApplications, part);
-            // console.log(partObj);
-            // partObj.part.density = tank.density;
             tank.listOfDistributedApplications.splice(partObj.index, 0, partObj.part);
-            // tank.listOfDistributedApplications.push(part);
-            // console.log(tank.listOfDistributedApplications);
             return partObj.index;
           }
         }
-        // }
       }
     } else {
       for (const basis of this.basiss) {
         if (basisName === basis.name) {
           const partObj = this.sortParts(basis.listOfUndistributedApplications, part);
           basis.listOfUndistributedApplications.splice(partObj.index, 0, partObj.part);
-          // basis.listOfUndistributedApplications.push(part);
           console.log(basis.name);
           return partObj.index;
         }
@@ -658,21 +644,47 @@ export class AppModel { // Выполняет инициализацию при�
     return false;
   }
 
+  // --------------------------------------
+  // Метод поддержания списка ЗС в отсортерованном виде
+  sortOrderSupply(listOfOrderSupply, docObject) {
+    if (listOfOrderSupply.length === 0) {
+      return { 'docObject': docObject, 'index': 0 };
+    }
+
+    for (const [index, element] of listOfOrderSupply.entries()) {
+
+      // Дата из части заявки, которая уже находится в массиве
+      const [dayA, monthA, yearA] = element.date_income.split('.').map(Number);
+      const dateA = new Date(yearA, monthA - 1, dayA);
+
+      // Дата из части заявки, которая будет вставлена в массив
+      const [dayB, monthB, yearB] = docObject.date_income.split('.').map(Number);
+      const dateB = new Date(yearB, monthB - 1, dayB);
+      if (dateB < dateA) {
+        return index;
+      } else if (listOfOrderSupply.length - 1 === index) {
+        return index + 1;
+      }
+    }
+  }
+
   // Добавить новую заявку снабжения в емкость
   addOrderSupply(docObject) {
     for (const basis of this.basiss) {
       for (const tank of basis.listOfTanks) {
         console.log(tank);
         if (tank.code === docObject.code_tank) {
-          tank.listOfOrderSupply.push(docObject);
+          const index = this.sortOrderSupply(tank.listOfOrderSupply, docObject);
+          tank.listOfOrderSupply.splice(index, 0, docObject);
           console.log(tank);
-          return tank.id;
+          return [tank.id, index];
         }
       }
     }
 
     return false;
   }
+  // --------------------------------------
 
   // Обновить новую заявку снабжения в емкости
   updateOrderSupply(docObject) {
@@ -682,17 +694,11 @@ export class AppModel { // Выполняет инициализацию при�
         if (tank.code === docObject.code_tank) {
           for (const [index, orderSupply] of tank.listOfOrderSupply.entries())
             if (orderSupply.id === docObject.id) {
-              orderSupply.volume = docObject.volume,
-                orderSupply.weight = docObject.weight,
-                orderSupply.density = docObject.density,
-                orderSupply.volume_fact = docObject.volume_fact,
-                orderSupply.weight_fact = docObject.weight_fact,
-                orderSupply.density_fact = docObject.density_fact,
-                orderSupply.commentary = docObject.commentary,
-                orderSupply.array_sections = docObject.array_sections;
-              return tank.id;
+              tank.listOfOrderSupply.splice(index, 1);
+              const [tankID, indexNew] = this.addOrderSupply(docObject);
+              console.log(orderSupply);
+              return [tankID, indexNew];
             }
-
         }
       }
     }

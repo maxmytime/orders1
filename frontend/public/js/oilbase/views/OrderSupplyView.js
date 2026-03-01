@@ -18,12 +18,32 @@ export class OrderSupplyView extends AppView {
     return order;
   }
 
-  renderNewOrderSupply(data, tankID) {
+  renderNewOrderSupply(data, tankID, index) {
+    console.log(data, tankID, index);
+    // Находим контейнер
     const container = document.querySelector(`div[data-id="${tankID}"] .order-supply-container`);
+    if (!container) return;
+
+    // Создаем новый элемент заявки снабжения и наполняем его данными
     const order = this.templateOrderSupply.cloneNode(true);
     this.templateFfilling(order, data);
-    container.append(order);
-  }
+
+    // Получаем все дочерние элементы с классом "item" в виде массива
+    const items = [...container.children].filter(child => child.classList.contains('order-supply'));
+
+    // Вставляем в нужное место
+    if (index < 0) {
+      // Отрицательный индекс – в начало
+      container.prepend(order);
+    } else if (index >= items.length) {
+      // Индекс больше или равен количеству – в конец
+      container.appendChild(order);
+    } else {
+      // Иначе перед элементом с указанным индексом
+      container.insertBefore(order, items[index]);
+    }
+  };
+
 
   updateOrderSupply(data) {
     const orderSupplyNode = document.querySelector(`div[data-id="${data.id}"]`);
