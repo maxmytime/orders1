@@ -86,6 +86,7 @@ export class OrderSupplyModalContoller {
 
   // Открыть модальное окно для создания новой заявки снабжения
   open(e) {
+    console.log('open');
     const tankID = this.view.getTankID(e);
     const { tank, basisID } = this.modelApp.getTank(tankID);
     const partsList = this.modelApp.getListUndistributedParts(basisID);
@@ -180,6 +181,70 @@ export class OrderSupplyModalContoller {
     objectUpdate.create = newDispatchList.filter(newDispach => newDispach.number_dispatch === '');
 
     return objectUpdate;
+  }
+
+  // Обновление распределенного объема в заявках в model и view
+  updatingDistributedVolume(object) {
+    // Вспомогательные функции
+    // Обновляет значение распределенного объема у Part в модели
+    // возвращает список обновленных Parts
+    const _updatingModal = (object, key, OPERATION) => {
+      let arrayParts = [];
+      const items = object[key];
+      items.forEach(item => {
+        const part = this.modelApp.getPartGuid(item.guid_orderblock);
+        if (part) {
+
+          if (OPERATION.DELETE === key) {
+            part.part.volume_distributed -= item.volume_dispatch;
+            arrayParts.push(part.part);
+
+          } else if (OPERATION.EDIT === key) {
+            part.part.volume_distributed += item.volume;
+            arrayParts.push(part.part);
+
+          } else if (OPERATION.CREATE === key) {
+            part.part.volume_distributed += item.volume_dispatch;
+            arrayParts.push(part.part);
+          }
+
+        }
+        
+      })
+      return arrayParts;
+    }
+    // Обновляет значение распределенного объема у Part в интерфесе
+    const _updatingView = (parts) => {
+      this.updatingView.updatingDistributedVolume(parts);
+    }
+
+    // Типы операций
+    const OPERATION = {
+      'DELETE': 'delete',
+      'EDIT': 'edit',
+      'CREATE': 'create'
+    }
+
+    // Обновление распределенного объема
+    for (const key in object) {
+      if (!Object.hasOwn(object, key)) continue;
+      console.log(key);
+      if (key === OPERATION.DELETE) {
+        const parts = _updatingModal(object, key, OPERATION);
+        _updatingView(parts);
+        // console.log(parts);
+      } else if (key === OPERATION.EDIT) {
+        console.log(object);
+        const parts = _updatingModal(object, key, OPERATION);
+        _updatingView(parts);
+        console.log(parts);
+      } else if (key === OPERATION.CREATE) {
+        const parts = _updatingModal(object, key, OPERATION);
+        _updatingView(parts);
+        // console.log(parts);
+      }
+
+    }
   }
 
   close(e) {
@@ -328,12 +393,13 @@ export class OrderSupplyModalContoller {
       const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
       console.log(tankNumber);
       const docObject = this.view.getDocObject(e, tankNumber);     // Получаем объект документа
-      
+
       const objectUpdate = this.createObjectUpdate(this.dispatchList,
         this.createDispatchList(docObject));
-      
-        console.log(objectUpdate);
-      
+
+      console.log(objectUpdate);
+
+
 
       // Получаем number_dispach для распределенных блоков заявки
       for (const [index, section] of docObject.array_sections.entries()) {
@@ -425,6 +491,8 @@ export class OrderSupplyModalContoller {
           this.updatingView.tankСalculationPlannedBalance(tankNode);
           // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
           this.updatingView.updateOrderNumbers(tankNode);
+          // Обновление распределенного объема в заявках в model и view
+          this.updatingDistributedVolume(objectUpdate);
           this.view.close();
         }
       }
@@ -449,7 +517,8 @@ export class OrderSupplyModalContoller {
       const objectUpdate = this.createObjectUpdate(this.dispatchList,
         this.createDispatchList(docObject));
 
-      console.log(objectUpdate);
+      // console.log(objectUpdate);
+      // this.updatingDistributedVolume(objectUpdate);
 
       // Удаляем распределенные блоки
       for (const block of objectUpdate.delete) {
@@ -596,6 +665,8 @@ export class OrderSupplyModalContoller {
           this.updatingView.tankСalculationPlannedBalance(tankNode);
           // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
           this.updatingView.updateOrderNumbers(tankNode);
+          // Обновление распределенного объема в заявках в model и view
+          this.updatingDistributedVolume(objectUpdate);
           this.view.close();
           return { 'data': supply, 'id': docObject.id };
         }
@@ -705,6 +776,7 @@ export class OrderSupplyModalContoller {
         const [tankID, index] = this.modelApp.updateOrderSupply(docObject);
 
         if (tankID) {
+          this.updatingView.deleteElementByID(docObject.id);
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
           orderSupplyController.renderNewOrderSupply(docObject, tankID, index);
           const tankNode = document.querySelector(`div[data-id="${tankID}"]`);

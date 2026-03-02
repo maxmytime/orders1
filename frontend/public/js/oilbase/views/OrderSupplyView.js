@@ -12,7 +12,7 @@ export class OrderSupplyView extends AppView {
   }
 
   render(data) {
-    // console.log(orderSupply);
+    // if (!data.array_sections) console.log(data);
     const order = this.templateOrderSupply.cloneNode(true);
     this.templateFfilling(order, data);
     return order;
@@ -54,6 +54,10 @@ export class OrderSupplyView extends AppView {
 
   // --- Расчет распределенного объема в заявке снабжения ---
   totalVolumeDistributed = (orderSupply) => {
+    if (orderSupply.volume_dispatch) {
+      return orderSupply.volume_dispatch;
+    }
+
     const itemsArrayName = orderSupply.type_suplorder === 1 ? 'array_tanks' : 'array_dispatch';
 
     const totalVolume = orderSupply.array_sections.reduce((sum, section) => {
@@ -68,6 +72,10 @@ export class OrderSupplyView extends AppView {
   templateFfilling(template, data) {
     // Устанавливаем ID
     template.dataset.id = data.id;
+    // Часть заявки снабжения с типом отгрузка на свой склад
+    if (data.warehouse_part) {
+      template.dataset.warehousePart = data.warehouse_part;
+    }
     // Устанавливаем тип заявки
     template.dataset.type = data.type_suplorder;
     // Дата

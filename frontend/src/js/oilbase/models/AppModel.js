@@ -19,7 +19,8 @@ export class AppModel { // Выполняет инициализацию при�
     this.listPartsOriginal = structuredClone(listParts);
     this.listSuplOrders = suplOrders;
     console.log(listSuplOrders);
-    console.log(listParts);
+    console.log(listTanks);
+    // this.listSuplOrders[0].code_tank = '000000060';
 
     // Добавляем к базисам недоставющие поля
     this.#listBasiss.forEach(basis => {
@@ -87,10 +88,28 @@ export class AppModel { // Выполняет инициализацию при�
     this.#listBasiss.forEach(basis => {
       basis.listOfTanks.forEach(tank => {
         // console.log(listSuplOrders);
-        tank.listOfOrderSupply = listSuplOrders.filter(order => {
+        listSuplOrders.forEach(order => {
           if (order.code_tank === tank.code) {
             order.id = this.helpers.getID();
-            return order;
+
+            if (order.type_suplorder === 1) {
+              order.array_sections.forEach(section => {
+                section.array_tanks.forEach(tank => {
+                  const orderWarehouse = {
+                    'id': order.id,
+                    "code_tank": tank.code_tank,
+                    "date_income": tank.date_income,
+                    "product": order.product,
+                    "volume_dispatch": tank.volume_dispatch,
+                    "warehouse_part": true,
+                  }
+
+                  this.addOrderSupply(orderWarehouse);
+                })
+              })
+            };
+
+            tank.listOfOrderSupply.push(order);
           }
         });
         tank.listOfOrderSupply.sort((a, b) => {
@@ -648,7 +667,7 @@ export class AppModel { // Выполняет инициализацию при�
   // Метод поддержания списка ЗС в отсортерованном виде
   sortOrderSupply(listOfOrderSupply, docObject) {
     if (listOfOrderSupply.length === 0) {
-      return { 'docObject': docObject, 'index': 0 };
+      return 0;
     }
 
     for (const [index, element] of listOfOrderSupply.entries()) {
@@ -672,11 +691,11 @@ export class AppModel { // Выполняет инициализацию при�
   addOrderSupply(docObject) {
     for (const basis of this.basiss) {
       for (const tank of basis.listOfTanks) {
-        console.log(tank);
+        // console.log(tank);
         if (tank.code === docObject.code_tank) {
           const index = this.sortOrderSupply(tank.listOfOrderSupply, docObject);
           tank.listOfOrderSupply.splice(index, 0, docObject);
-          console.log(tank);
+          // console.log(index, docObject);
           return [tank.id, index];
         }
       }
@@ -690,7 +709,7 @@ export class AppModel { // Выполняет инициализацию при�
   updateOrderSupply(docObject) {
     for (const basis of this.basiss) {
       for (const tank of basis.listOfTanks) {
-        console.log(tank);
+        // console.log(tank);
         if (tank.code === docObject.code_tank) {
           for (const [index, orderSupply] of tank.listOfOrderSupply.entries())
             if (orderSupply.id === docObject.id) {
