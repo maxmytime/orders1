@@ -20,7 +20,6 @@ export class AppModel { // Выполняет инициализацию при�
     this.listSuplOrders = suplOrders;
     console.log(listSuplOrders);
     console.log(listTanks);
-    // this.listSuplOrders[0].code_tank = '000000060';
 
     // Добавляем к базисам недоставющие поля
     this.#listBasiss.forEach(basis => {
@@ -28,6 +27,15 @@ export class AppModel { // Выполняет инициализацию при�
       basis.listOfUndistributedApplications = [];
       basis.listOfTanks = [];
       basis.visible = false;
+    })
+
+    // Добавляем в заявках снабжения на свой склад id_warehouse
+    listSuplOrders.forEach(supplyOrder => {
+      if (supplyOrder.type_suplorder === 1) {
+        supplyOrder.array_sections.forEach(section => {
+          section.array_tanks.forEach(tank => tank.id_warehouse = this.helpers.getID());
+        })
+      }
     })
 
     // Добавляем в список частей заявок распределенный объем
@@ -96,7 +104,8 @@ export class AppModel { // Выполняет инициализацию при�
               order.array_sections.forEach(section => {
                 section.array_tanks.forEach(tank => {
                   const orderWarehouse = {
-                    'id': order.id,
+                    'id': '',
+                    'parent_id': order.id,
                     "code_tank": tank.code_tank,
                     "date_income": tank.date_income,
                     "product": order.product,
@@ -118,6 +127,7 @@ export class AppModel { // Выполняет инициализацию при�
         );
       })
     })
+
   }
 
   // Метод поддержания списка частей заявок в отсортерованном виде
@@ -659,7 +669,6 @@ export class AppModel { // Выполняет инициализацию при�
         }
       }
     }
-    // return this.listSuplOrders.find(supplyOrder => supplyOrder.id === id);
     return false;
   }
 

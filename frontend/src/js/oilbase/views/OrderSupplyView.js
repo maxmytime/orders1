@@ -72,6 +72,8 @@ export class OrderSupplyView extends AppView {
   templateFfilling(template, data) {
     // Устанавливаем ID
     template.dataset.id = data.id;
+    // Устанавливаем parntID
+    template.dataset.parentId = data?.parent_id || '';
     // Часть заявки снабжения с типом отгрузка на свой склад
     if (data.warehouse_part) {
       template.dataset.warehousePart = data.warehouse_part;

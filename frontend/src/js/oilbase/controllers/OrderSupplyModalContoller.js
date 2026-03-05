@@ -20,6 +20,7 @@ export class OrderSupplyModalContoller {
     this.socket = socket.socket;
     this.orderSupplyControllerFactory = orderSupplyControllerFactory;
     this.dispatchList = [];
+    this.warehouseList = [];
     this.updatingView = new UpdatingView();
     this.calculatorsOrderSupply = new CalculatorsOrderSupply();
     this.validation = new Validation();
@@ -87,7 +88,7 @@ export class OrderSupplyModalContoller {
   // Открыть модальное окно для создания новой заявки снабжения
   open(e) {
     console.log('open');
-    const tankID = this.view.getTankID(e);
+    const tankID = e.target.closest('.tank').dataset.id;
     const { tank, basisID } = this.modelApp.getTank(tankID);
     const partsList = this.modelApp.getListUndistributedParts(basisID);
     this.view.open(tank, basisID, partsList);
@@ -95,20 +96,33 @@ export class OrderSupplyModalContoller {
 
   // Открыть модальное окно для редактирования заявки снабжения
   edit(e) {
+    // --- Вспомогательные функции ---
+    // Получаем ID заявки снабжения
+    const _getSupplyOrderID = (e) => {
+      const supplyOrderID = e.target.closest('.order-supply').dataset.id;
+      const supplyOrderParentID = e.target.closest('.order-supply').dataset.parentId;
+      return supplyOrderID || supplyOrderParentID;
+    }
+
     console.log('edit');
-    const tankID = this.view.getTankID(e);
+    const supplyOrderID = _getSupplyOrderID(e);
+    const tankID = this.view.getTankID(supplyOrderID);
     const { tank, basisID } = this.modelApp.getTank(tankID);
     const partsList = this.modelApp.getListUndistributedParts(basisID);
-    const supplyOrderID = e.target.closest('.order-supply').dataset.id;
     const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
 
+    // Тип ЗС - под клиента
     if (supplyOrder.type_suplorder === 2) {
       // Запоминаем исходный список распределенных блоков заявки
       this.dispatchList = this.createDispatchList(supplyOrder);
       this.view.edit(tank, basisID, partsList, supplyOrder);
     }
 
+    // Тип ЗС - на свой склад
     if (supplyOrder.type_suplorder === 1) {
+      // Запоминаем исходный список своих складов
+      this.warehouseList = this.createWarehouseList(supplyOrder);
+      console.log(this.warehouseList);
       // Добавляем список емкостей
       supplyOrder.array_sections.forEach(section => {
         section.array_tanks.forEach(tank => {
@@ -209,7 +223,7 @@ export class OrderSupplyModalContoller {
           }
 
         }
-        
+
       })
       return arrayParts;
     }
@@ -246,6 +260,75 @@ export class OrderSupplyModalContoller {
 
     }
   }
+
+  // Создание списка своих складов
+  createWarehouseList(supplyOrder) {
+    let warehouseList = [];
+    supplyOrder.array_sections.forEach(section => {
+      section.array_tanks.forEach(tank => {
+        warehouseList.push({
+          'name_section': section.name_section,
+          'code_tank': tank.code_tank,
+          'date_income': tank.date_income,
+          'id_warehouse': tank.id_warehouse,
+          'name_basis': tank.name_basis,
+          'volume_dispatch': tank.volume_dispatch,
+        })
+      })
+    })
+    return warehouseList;
+  }
+
+  // Создание обьекта для обновления списка своих складов
+  createObjectUpdateWarehouse(oldWarehouseList, newWarehouseList) {
+    let objectUpdate = {
+      'delete': [],
+      'edit': [],
+      'create': []
+    }
+
+    // Определяем склады, которые нужно удалить
+    oldWarehouseList.forEach(oldWarehouse => {
+      const status = newWarehouseList.find(newWarehouse =>
+        newWarehouse.id_warehouse === oldWarehouse.id_warehouse);
+      if (!status) {
+        objectUpdate.delete.push(oldWarehouse);
+      }
+    })
+
+    // Определяем склады которые нужно обновить
+    oldWarehouseList.forEach(oldWarehouse => {
+      const newWarehouse = newWarehouseList.find(newWarehouse =>
+        newWarehouse.id_warehouse === oldWarehouse.id_warehouse &&
+        newWarehouse.volume_dispatch !== oldWarehouse.volume_dispatch ||
+        newWarehouse.id_warehouse === oldWarehouse.id_warehouse &&
+        newWarehouse.date_income !== oldWarehouse.date_income
+      );
+
+      if (newWarehouse) {
+        const newEntry = { ...newWarehouse };
+        objectUpdate.edit.push(newEntry);
+      }
+    })
+
+    // Определяем склады, которые нужно создать
+    newWarehouseList.forEach(newWarehouse => {
+      const status = oldWarehouseList.find(oldWarehouse =>
+        oldWarehouse.id_warehouse === newWarehouse.id_warehouse);
+      if (!status) {
+        objectUpdate.create.push(newWarehouse);
+      }
+    })
+
+    console.log(oldWarehouseList, newWarehouseList);
+    return objectUpdate;
+  }
+
+  // Обновление складов в model и view
+  updatingWarehouse(object) {
+    console.log(object);
+  }
+
 
   close(e) {
     if (e.target.classList.contains('delete-modal')) {
@@ -784,6 +867,12 @@ export class OrderSupplyModalContoller {
           this.updatingView.tankСalculationPlannedBalance(tankNode);
           // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
           this.updatingView.updateOrderNumbers(tankNode);
+          // Создаем обьект для обновления своих складов
+          const objectUpdateWarehouse = this.createObjectUpdateWarehouse(
+            this.warehouseList,
+            this.createWarehouseList(docObject)
+          );
+          this.updatingWarehouse(objectUpdateWarehouse);
           this.view.close();
           // console.log(supply);
           return { 'data': supply, 'id': docObject.id };

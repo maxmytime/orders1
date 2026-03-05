@@ -176,11 +176,6 @@ export class OrderSupplyModalView extends AppView {
       // Факт
       tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]')
         .value = section.volume_section_fact
-      // tplSection.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]')
-      //   .value = section.volume_section_fact
-      //   || section.array_dispatch.reduce((total, dispatch) => {
-      //         return total + Number(dispatch.volume_dispatch);
-      //       }, 0);
 
       tplSection.querySelector('.order-supply-section-shipping input[name="os-density_fact"]')
         .value = section.density_section_fact || supplyOrder.density;
@@ -325,7 +320,8 @@ export class OrderSupplyModalView extends AppView {
       const divBlocks = tplSection.querySelector('.order-supply-warehouses');
       for (const block of section.array_tanks) {
         const tplWarehous = this.warehous.cloneNode(true);
-        //   const part = partsList.find(part => part.guid === block.guid_orderblock);
+        // .id_warehouse
+        tplWarehous.dataset.idWarehous = block.id_warehouse;
         console.log(block);
         // Базис
         tplWarehous.querySelector('input[name="os-warehous-basis"]').value = block.name_basis;
@@ -488,6 +484,7 @@ export class OrderSupplyModalView extends AppView {
     const container = e.target.closest('.order-supply-section')
       .querySelector('.order-supply-warehouses');
     const tplWarehous = this.warehous.cloneNode(true);
+    tplWarehous.dataset.idWarehous = this.helpers.getID();
     tplWarehous.querySelector('input[name="os-density_fact"]').value = this.modalOrderSupply.querySelector('input[name="os-density_fact"]').value;
 
     container.append(tplWarehous);
@@ -617,8 +614,9 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Получаем ID Базис
-  getTankID(e) {
-    return e.target.closest('.tank').dataset.id;
+  getTankID(supplyOrderID) {
+    const supplyOrderElement = document.querySelector(`div[data-id="${supplyOrderID}"]`);
+    return supplyOrderElement.closest('.tank').dataset.id;
   }
 
   // Получаем объект документа
@@ -748,11 +746,11 @@ export class OrderSupplyModalView extends AppView {
             "weight_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-weight_fact"]').value),
             "density_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-density_fact"]').value),
             "volume_dispatch": Number(warehouse.querySelector('input[name="warehouse_volume"]').value),
+            "id_warehouse": warehouse.dataset.idWarehous,
           }
         })
       }
     });
-    console.log(section);
     return section;
   }
 
