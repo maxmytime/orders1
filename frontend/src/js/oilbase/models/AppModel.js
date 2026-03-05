@@ -105,6 +105,7 @@ export class AppModel { // Выполняет инициализацию при�
                 section.array_tanks.forEach(tank => {
                   const orderWarehouse = {
                     'id': '',
+                    'id_warehouse': tank.id_warehouse,
                     'parent_id': order.id,
                     "code_tank": tank.code_tank,
                     "date_income": tank.date_income,
@@ -752,12 +753,52 @@ export class AppModel { // Выполняет инициализацию при�
     return false;
   }
 
+  // Методы обработки своих складов в заявке снабжения
+  deleteWarehouse(id) {
+    for (const basis of this.basiss) {
+      for (const tank of basis.listOfTanks) {
+        // console.log(tank);
+        for (const [index, orderSupply] of tank.listOfOrderSupply.entries()) {
+          console.log(orderSupply, orderSupply.id, id);
+          if (orderSupply.id_warehouse === id) {
+            console.log(id);
+            tank.listOfOrderSupply.splice(index, 1);
+            console.log('deleteWarehouse: Склад найден и удален');
+            return true;
+          }
+        }
+      }
+    }
+    console.log('deleteWarehouse: Склад не найден');
+    return false;
+  }
 
+  createWarehouse(warehouse) {
+    console.log(warehouse);
+    const orderWarehouse = {
+      'id': warehouse.id_warehouse,
+      'parent_id': warehouse.parent_id,
+      "code_tank": warehouse.code_tank,
+      "date_income": warehouse.date_income,
+      "product": warehouse.product,
+      "volume_dispatch": warehouse.volume_dispatch,
+      "warehouse_part": warehouse.warehouse_part,
+    }
+    const status = this.addOrderSupply(orderWarehouse);
+    
+    if (status) return status;
+  }
+
+  editWarehouse(warehouse, id) {
+    console.log(warehouse, id);
+    this.deleteWarehouse(id);
+    const status = this.createWarehouse(warehouse);
+    if (status) return status;
+  }
 
   get basiss() {
     return this.#listBasiss;
   }
-
 
   deletePartNew(basisID, tankID, partID) {
     // Перебераем массив с базисами и ищем нужный базис по ID

@@ -60,7 +60,7 @@ export class OrderSupplyView extends AppView {
 
     const itemsArrayName = orderSupply.type_suplorder === 1 ? 'array_tanks' : 'array_dispatch';
 
-    const totalVolume = orderSupply.array_sections.reduce((sum, section) => {
+    const totalVolume = orderSupply.array_sections?.reduce((sum, section) => {
       const items = section[itemsArrayName] || [];
       return sum + items.reduce((s, item) => s + Number(item.volume_dispatch), 0);
     }, 0);
@@ -71,15 +71,16 @@ export class OrderSupplyView extends AppView {
   // --- Заполнение шаблона данными ---
   templateFfilling(template, data) {
     // Устанавливаем ID
-    template.dataset.id = data.id;
+    template.dataset.id = data.id || '';
     // Устанавливаем parntID
     template.dataset.parentId = data?.parent_id || '';
     // Часть заявки снабжения с типом отгрузка на свой склад
     if (data.warehouse_part) {
+      template.dataset.idWarehouse = data.id_warehouse;
       template.dataset.warehousePart = data.warehouse_part;
     }
     // Устанавливаем тип заявки
-    template.dataset.type = data.type_suplorder;
+    template.dataset.type = data.type_suplorder || '';
     // Дата
     template.querySelector('.date_dispatch').textContent = data.date_income;
     // Продукт

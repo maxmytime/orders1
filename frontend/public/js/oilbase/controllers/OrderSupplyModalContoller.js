@@ -273,6 +273,9 @@ export class OrderSupplyModalContoller {
           'id_warehouse': tank.id_warehouse,
           'name_basis': tank.name_basis,
           'volume_dispatch': tank.volume_dispatch,
+          'parent_id': supplyOrder.id,
+          'product': supplyOrder.product,
+          "warehouse_part": true,
         })
       })
     })
@@ -302,7 +305,9 @@ export class OrderSupplyModalContoller {
         newWarehouse.id_warehouse === oldWarehouse.id_warehouse &&
         newWarehouse.volume_dispatch !== oldWarehouse.volume_dispatch ||
         newWarehouse.id_warehouse === oldWarehouse.id_warehouse &&
-        newWarehouse.date_income !== oldWarehouse.date_income
+        newWarehouse.date_income !== oldWarehouse.date_income ||
+        newWarehouse.id_warehouse === oldWarehouse.id_warehouse &&
+        newWarehouse.code_tank !== oldWarehouse.code_tank
       );
 
       if (newWarehouse) {
@@ -327,6 +332,48 @@ export class OrderSupplyModalContoller {
   // Обновление складов в model и view
   updatingWarehouse(object) {
     console.log(object);
+    // Типы операций
+    const OPERATION = {
+      'DELETE': 'delete',
+      'EDIT': 'edit',
+      'CREATE': 'create'
+    }
+
+    // Обновление распределенного объема
+    for (const key in object) {
+      if (!Object.hasOwn(object, key)) continue;
+      console.log(key);
+      if (key === OPERATION.DELETE) {
+
+        object[key].forEach(warehouse => {
+          this.modelApp.deleteWarehouse(warehouse.id_warehouse);
+          this.updatingView.deleteWarehouseByID(warehouse.id_warehouse);
+        })
+
+      } else if (key === OPERATION.EDIT) {
+
+        object[key].forEach(warehouse => {
+          const [tankID, index] = this.modelApp.editWarehouse(warehouse, warehouse.id_warehouse);
+          this.updatingView.deleteWarehouseByID(warehouse.id_warehouse);
+          const orderSupplyController = this.orderSupplyControllerFactory.create(warehouse);
+          orderSupplyController.renderNewOrderSupply(warehouse, tankID, index);
+          this.updatingView.addElementWarehouse(warehouse.id_warehouse);
+        })
+        
+      } else if (key === OPERATION.CREATE) {
+
+        object[key].forEach(warehouse => {
+          const [tankID, index] =  this.modelApp.createWarehouse(warehouse);
+          const orderSupplyController = this.orderSupplyControllerFactory.create(warehouse);
+          orderSupplyController.renderNewOrderSupply(warehouse, tankID, index);
+          this.updatingView.addElementWarehouse(warehouse.id_warehouse);
+          console.log(tankID, index);
+        })
+
+      }
+
+    }
+
   }
 
 

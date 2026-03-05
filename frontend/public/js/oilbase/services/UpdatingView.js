@@ -1,5 +1,6 @@
 export class UpdatingView {
 
+  // Удаляет элемент со странице по ID
   deleteElementByID(id) {
     document.querySelector(`div[data-id="${id}"]`).remove();
   }
@@ -14,7 +15,10 @@ export class UpdatingView {
     const mainPlannedBalance = $('.planned-balance');
     const ordersSupply = $$('.order-supply');
 
-    if (ordersSupply.length === 0) return;
+    if (ordersSupply.length === 0) {
+      mainPlannedBalance.textContent = mainCurrentBalance;
+      return;
+    }
 
     ordersSupply.forEach(orderSupply => {
       // const type = orderSupply.dataset.type;
@@ -24,16 +28,16 @@ export class UpdatingView {
         return;
       }
       const volumeDistributed = Number(ElVolumeDistributed.textContent);
-  
+
       // Уточняем является ли ЗС частью другой ЗС с типом "Отгрузка на свой склад"
       const warehousePart = Boolean(orderSupply.dataset.warehousePart);
-      
+
       if (warehousePart) {
         mainCurrentBalance += volumeDistributed;
       } else {
         mainCurrentBalance -= volumeDistributed;
       }
-      
+
 
       $('.planned-balance', orderSupply).textContent = mainCurrentBalance;
 
@@ -64,7 +68,7 @@ export class UpdatingView {
   updatingDistributedVolume(parts) {
     console.log(parts);
     parts.forEach(part => {
-      const elementPart =  document.querySelector(`.oilbasis div[data-id="${part.id}"]`);
+      const elementPart = document.querySelector(`.oilbasis div[data-id="${part.id}"]`);
       console.log(elementPart);
 
       if (!elementPart) {
@@ -85,4 +89,22 @@ export class UpdatingView {
 
     })
   }
+
+  // Удаляет элемент свой склад который приходует объем
+  deleteWarehouseByID(id) {
+    const warehous = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
+    const tank = warehous.closest('.tank');
+    warehous.remove();
+    this.tankСalculationPlannedBalance(tank);
+    this.updateOrderNumbers(tank);
+  }
+
+  // Добавляем элемент свой склад который приходует объем
+  addElementWarehouse(id) {
+    const warehous = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
+    const tank = warehous.closest('.tank');
+    this.tankСalculationPlannedBalance(tank);
+    this.updateOrderNumbers(tank);
+  }
+
 }
