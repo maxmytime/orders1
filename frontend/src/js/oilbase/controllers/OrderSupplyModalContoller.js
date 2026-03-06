@@ -2,6 +2,7 @@ import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
 import { CalculatorsOrderSupply } from '/js/oilbase/services/CalculatorsOrderSupply.js';
 import { Validation } from '/js/oilbase/services/Validation.js';
+import { Preloader } from '/js/oilbase/services/Preloader.js';
 
 export class OrderSupplyModalContoller {
   constructor(modelApp,
@@ -24,6 +25,7 @@ export class OrderSupplyModalContoller {
     this.updatingView = new UpdatingView();
     this.calculatorsOrderSupply = new CalculatorsOrderSupply();
     this.validation = new Validation();
+    this.preloader = new Preloader();
 
     // console.log('OrderSupplyModalContoller');
     // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -106,10 +108,13 @@ export class OrderSupplyModalContoller {
 
     console.log('edit');
     const supplyOrderID = _getSupplyOrderID(e);
-    const tankID = this.view.getTankID(supplyOrderID);
+    const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
+    // const tankID = this.view.getTankID(supplyOrderID);
+    const tankID = this.modelApp.getTankIDByNumber(supplyOrder.code_tank)
     const { tank, basisID } = this.modelApp.getTank(tankID);
     const partsList = this.modelApp.getListUndistributedParts(basisID);
-    const supplyOrder = this.modelApp.getSupplyOrder(supplyOrderID);
+    
+
 
     // Тип ЗС - под клиента
     if (supplyOrder.type_suplorder === 2) {
@@ -359,11 +364,11 @@ export class OrderSupplyModalContoller {
           orderSupplyController.renderNewOrderSupply(warehouse, tankID, index);
           this.updatingView.addElementWarehouse(warehouse.id_warehouse);
         })
-        
+
       } else if (key === OPERATION.CREATE) {
 
         object[key].forEach(warehouse => {
-          const [tankID, index] =  this.modelApp.createWarehouse(warehouse);
+          const [tankID, index] = this.modelApp.createWarehouse(warehouse);
           const orderSupplyController = this.orderSupplyControllerFactory.create(warehouse);
           orderSupplyController.renderNewOrderSupply(warehouse, tankID, index);
           this.updatingView.addElementWarehouse(warehouse.id_warehouse);
@@ -518,6 +523,10 @@ export class OrderSupplyModalContoller {
   async createOrderSupply(e) {
     if (e.target.classList.contains('btn-create-order-supply')) {
       // console.log(e.target);
+
+      // Активируем прелод
+      this.preloader.activatePreload(e.target);
+
       const modal = this.view.getModal(e);  // Получаем узел модального окна
       const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
       const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
@@ -624,8 +633,12 @@ export class OrderSupplyModalContoller {
           // Обновление распределенного объема в заявках в model и view
           this.updatingDistributedVolume(objectUpdate);
           this.view.close();
+          // Деактивируем прелоад
+          this.preloader.deactivatePreload(e.target);
         }
       }
+      // Деактивируем прелоад
+      this.preloader.deactivatePreload(e.target);
     }
 
     // this.dispatchList = [];
@@ -635,6 +648,8 @@ export class OrderSupplyModalContoller {
   // Редактироваnm заявкe снабжения
   async editOrderSupply(e, status = false) {
     if (e.target.classList.contains('btn-edit-order-supply') || status) {
+      // Активируем прелод
+      this.preloader.activatePreload(e.target);
       console.log('editOrderSupply(e)');
       // supply-order-id
       const modal = this.view.getModal(e);  // Получаем узел модального окна
@@ -797,16 +812,26 @@ export class OrderSupplyModalContoller {
           this.updatingView.updateOrderNumbers(tankNode);
           // Обновление распределенного объема в заявках в model и view
           this.updatingDistributedVolume(objectUpdate);
+          // Закрываем модальное окно
           this.view.close();
+          // Деактивируем прелод
+          this.preloader.deactivatePreload(e.target);
+
           return { 'data': supply, 'id': docObject.id };
         }
       }
+      // Деактивируем прелод
+      this.preloader.deactivatePreload(e.target);
     }
   }
 
   // Создать заявку снабжение с типом отгрузка на свой склад
   async createOrderSupplyWarehouse(e) {
     if (e.target.classList.contains('btn-create-order-supply-warehous')) {
+
+      // Активируем прелод
+      this.preloader.activatePreload(e.target);
+
       const modal = this.view.getModal(e);  // Получаем узел модального окна
       const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
       const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
@@ -850,9 +875,20 @@ export class OrderSupplyModalContoller {
           this.updatingView.tankСalculationPlannedBalance(tankNode);
           // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
           this.updatingView.updateOrderNumbers(tankNode);
+          // Создаем обьект для обновления своих складов
+          const objectUpdateWarehouse = this.createObjectUpdateWarehouse(
+            this.warehouseList,
+            this.createWarehouseList(docObject)
+          );
+          this.updatingWarehouse(objectUpdateWarehouse);
           this.view.close();
+
+          // Деактивируем прелод
+          this.preloader.deactivatePreload(e.target);
         }
       }
+      // Деактивируем прелод
+      this.preloader.deactivatePreload(e.target);
     }
 
     // this.dispatchList = [];
@@ -863,6 +899,10 @@ export class OrderSupplyModalContoller {
   async editOrderSupplyWarehouse(e, status = false) {
     if (e.target.classList.contains('btn-edit-order-supply-warehouse') || status) {
       console.log('editOrderSupplyWarehouse');
+
+      // Активируем прелод
+      this.preloader.activatePreload(e.target);
+
       const modal = this.view.getModal(e);  // Получаем узел модального окна
       const tankID = this.view.getElementID(modal, 'input[name="order-supple-tank-name"]'); // Получаем значение поля value у узла
       const tankNumber = this.modelApp.getTank(tankID).tank.code;  // Получаем номер емкости
@@ -921,10 +961,17 @@ export class OrderSupplyModalContoller {
           );
           this.updatingWarehouse(objectUpdateWarehouse);
           this.view.close();
-          // console.log(supply);
+
+          // Деактивируем прелод
+          this.preloader.deactivatePreload(e.target);
+
           return { 'data': supply, 'id': docObject.id };
         }
       }
+
+      // Деактивируем прелод
+      this.preloader.deactivatePreload(e.target);
+
     }
   }
 

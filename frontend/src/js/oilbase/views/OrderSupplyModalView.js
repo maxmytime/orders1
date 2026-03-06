@@ -616,6 +616,7 @@ export class OrderSupplyModalView extends AppView {
   // Получаем ID Базис
   getTankID(supplyOrderID) {
     const supplyOrderElement = document.querySelector(`div[data-id="${supplyOrderID}"]`);
+    // console.log(supplyOrderID, supplyOrderElement);
     return supplyOrderElement.closest('.tank').dataset.id;
   }
 

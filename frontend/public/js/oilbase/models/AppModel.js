@@ -18,8 +18,8 @@ export class AppModel { // Выполняет инициализацию при�
     const listSuplOrders = suplOrders;
     this.listPartsOriginal = structuredClone(listParts);
     this.listSuplOrders = suplOrders;
-    console.log(listSuplOrders);
-    console.log(listTanks);
+    // console.log(listSuplOrders);
+    // console.log(listTanks);
 
     // Добавляем к базисам недоставющие поля
     this.#listBasiss.forEach(basis => {
@@ -368,6 +368,21 @@ export class AppModel { // Выполняет инициализацию при�
             // 'tankID': tank.id
           };
         }
+      }
+    }
+    return null;
+  }
+
+  // Получить ID емкости по номеру
+  getTankIDByNumber(code) {
+    for (const basis of this.#listBasiss) {
+
+      if (basis.listOfTanks) {
+        const tank = basis.listOfTanks.find(app => app.code === code);
+
+        if (tank) {
+          return tank.id;
+        };
       }
     }
     return null;

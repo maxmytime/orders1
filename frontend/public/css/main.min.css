@@ -23659,6 +23659,28 @@ select.border-radius-left-none {
   border-radius: 100%;
 }
 
+.part-number-by {
+  display: inline-block;
+  width: 23px;
+  height: 23px;
+  border: solid 2px #FAEB0A;
+  border-radius: 100%;
+}
+
+.part-namber {
+  display: inline-block;
+  width: 23px;
+  height: 23px;
+  border: solid 2px #71d809;
+  border-radius: 100%;
+}
+.part-namber-bg {
+  border: solid 2px #71d809;
+}
+.part-namber-bb {
+  border: solid 2px #08bdf6;
+}
+
 .app-oilbase .table-stayle {
   border-top: solid 3px #eeeff3;
 }

@@ -47,7 +47,8 @@ export class Helpers {
   parseDate = (string) => {
     // Проверка формата dd.mm.yyyy
       if (!/^\d{2}\.\d{2}\.\d{4}$/.test(string)) {
-        console.warn('parseDate: Формат даты не соответствует dd.mm.yyyy');
+        console.log(string);
+        console.warn(`parseDate: Формат даты не соответствует dd.mm.yyyy`);
         return;
       }
 

@@ -11,6 +11,15 @@ export class UpdatingView {
     const $ = (selector, root = tank) => root.querySelector(selector);
     const $$ = (selector, root = tank) => root.querySelectorAll(selector);
 
+    // --- Подсвечиваем отрицательный остаток красным ---
+    const _highlightingDanger = (balance, element) => {
+      if (balance < 0) {
+        element.classList.add('has-text-danger');
+      } else {
+        element.classList.remove('has-text-danger');
+      }
+    }
+
     let mainCurrentBalance = Number($('.current-balance').textContent);
     const mainPlannedBalance = $('.planned-balance');
     const ordersSupply = $$('.order-supply');
@@ -21,7 +30,6 @@ export class UpdatingView {
     }
 
     ordersSupply.forEach(orderSupply => {
-      // const type = orderSupply.dataset.type;
       const ElVolumeDistributed = $('.volume-distributed', orderSupply);
       if (!orderSupply) {
         console.warn('tankСalculationPlannedBalance: элемент распределенный объем не найден');
@@ -39,12 +47,15 @@ export class UpdatingView {
       }
 
 
-      $('.planned-balance', orderSupply).textContent = mainCurrentBalance;
+      const plannedBalance = $('.planned-balance', orderSupply);
+      plannedBalance.textContent = mainCurrentBalance;
+      _highlightingDanger(mainCurrentBalance, plannedBalance);
 
 
     })
 
     mainPlannedBalance.textContent = mainCurrentBalance;
+    _highlightingDanger(mainCurrentBalance, mainPlannedBalance);
   }
 
   /**
@@ -102,9 +113,11 @@ export class UpdatingView {
   // Добавляем элемент свой склад который приходует объем
   addElementWarehouse(id) {
     const warehous = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
-    const tank = warehous.closest('.tank');
-    this.tankСalculationPlannedBalance(tank);
-    this.updateOrderNumbers(tank);
+    if (warehous) {
+      const tank = warehous.closest('.tank');
+      this.tankСalculationPlannedBalance(tank);
+      this.updateOrderNumbers(tank);
+    }
   }
 
 }

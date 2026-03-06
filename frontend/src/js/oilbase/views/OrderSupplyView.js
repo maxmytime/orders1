@@ -81,6 +81,14 @@ export class OrderSupplyView extends AppView {
     }
     // Устанавливаем тип заявки
     template.dataset.type = data.type_suplorder || '';
+    // Выделяем цыетом тип заявки .part-number-bb .part-number-bg
+    if (data.warehouse_part) {
+      template.querySelector('.part-number').classList.add('part-number-bg');
+    } else if (data.type_suplorder === 2) {
+      template.querySelector('.part-number').classList.add('part-number-bb');
+    } else if (data.type_suplorder === 1) {
+      template.querySelector('.part-number').classList.add('part-number-by');
+    }
     // Дата
     template.querySelector('.date_dispatch').textContent = data.date_income;
     // Продукт
