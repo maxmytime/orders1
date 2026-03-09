@@ -113,7 +113,7 @@ export class OrderSupplyModalContoller {
     const tankID = this.modelApp.getTankIDByNumber(supplyOrder.code_tank)
     const { tank, basisID } = this.modelApp.getTank(tankID);
     const partsList = this.modelApp.getListUndistributedParts(basisID);
-    
+
 
 
     // Тип ЗС - под клиента
@@ -269,6 +269,7 @@ export class OrderSupplyModalContoller {
   // Создание списка своих складов
   createWarehouseList(supplyOrder) {
     let warehouseList = [];
+    console.log(supplyOrder.array_sections);
     supplyOrder.array_sections.forEach(section => {
       section.array_tanks.forEach(tank => {
         warehouseList.push({
@@ -977,20 +978,41 @@ export class OrderSupplyModalContoller {
 
   // Загрузка заявки снабжения
   async shippingOrderSupply(e) {
+    // --- Процесс обновления объема в емкости ---
+    const _processUpdatingVolumeInTank = (tankCode, supplyOrderID) => {
+      // Получаем идетнификатор емкости в которой произошла отгрузка.
+      const tankID = this.modelApp.getTankIDByNumber(tankCode);
+      // Обновляем обьем емкости после отгрузки
+      const tank = this.modelApp.shippingUpdateTank(tankID, supplyOrderID);
+      console.log(tank);
+      this.updatingView.updateTankFields(tank);
+
+      // Удаляем ЗС из модели и страницы
+      this.modelApp.deleteOrderSupply(supplyOrderID);     // Удаляем заявку снабжения из модели.
+      this.updatingView.deleteElementByID(supplyOrderID); // Удаляем заявку снабжения из интерфейса.
+
+      // Пересчитываем остаток в емкости в которой прозошла отгрузка.
+      const tankNode = document.querySelector(`.oilbasis div[data-id="${tankID}"]`);
+      if (!tankNode) {
+        console.warn(`Емкость не отображается на странице`);
+        return;
+      }
+      this.updatingView.tankСalculationPlannedBalance(tankNode);
+      this.updatingView.updateOrderNumbers(tankNode);
+    }
+
     if (e.target.classList.contains('btn-order-supply-shipping')) {
-
-
       // Валидация ЗС перед отгрузкой: false - не пройдена, true - пройдена.
-      const statusValidation = this.validation.validationDistributedVolume(e.target.closest('.modal-order-supply'));
+      const statusValidation = this.validation
+        .validationDistributedVolume(e.target.closest('.modal-order-supply'));
       if (statusValidation) {
         console.warn('Валидация перед отгрузкой не пройдена, отгрузка отменена');
         return;
       }
-      // _validationSection(section, '.order-supply-warehous-shipping input[name="os-volume_fact"]');
 
-      // console.log('shippingOrderSupply(e)');
       // Определяем тип ЗС: true - на свой склад, false - под клиента
       const typeOrderSupplyWarehous = this.view.modalOrderSupply.querySelector('.warehous') ? true : false;
+      // Переменноая в которую будет записан объект ЗС
       let supply = null;
 
       if (!typeOrderSupplyWarehous) {
@@ -1002,25 +1024,28 @@ export class OrderSupplyModalContoller {
       // Устанавливаем тип действия 3 - отгрузить заявку
       // supply.type_action_suplorder = 3;
 
-      console.log(supply);
       // Отправляем данные для обновления заявки снабжения
       const status = await this.api.fetchPostData('/postupdatesuplorder', supply.data);
-      console.log(status);
 
+      // Если status === 'OK' то выполняем обновление модели и страницы
       if (status.Status === 'OK') {
-        const id = supply.id;                    // Получаем ID заявки снабжения.
-        console.log(id);
-        this.modelApp.deleteOrderSupply(id);     // Удаляем заявку снабжения из модели.
-        this.updatingView.deleteElementByID(id); // Удаляем загруженную ЗС из интерфейса.
+        // Получаем ID заявки снабжения.
+        const supplyOrderID = supply.id;
+        // Обновляем объем в емкости в которой произошла отгрузка
+        _processUpdatingVolumeInTank(supply.data.code_tank, supplyOrderID);
+
+        // Если заявка была с типом "На свой склад" то обновляем емкост в которых есть свои склады приход
+        if (typeOrderSupplyWarehous) {
+          this.warehouseList.forEach(warehouse => {
+            console.log(warehouse.code_tank, warehouse.id_warehouse);
+            _processUpdatingVolumeInTank(warehouse.code_tank, warehouse.id_warehouse);
+          });
+        }
+
       }
 
     }
   }
-
-
-
-
-
 
   // Валидация поля Загрузка
   validationUploadField(e) {

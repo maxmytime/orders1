@@ -676,19 +676,19 @@ export class AppModel { // Выполняет инициализацию при�
     return array;
   }
 
+  // --------------------------------------
   // Получаем заявку снабжения по ID
   getSupplyOrder(id) {
     for (const basis of this.basiss) {
       for (const tank of basis.listOfTanks) {
         for (const orderSupply of tank.listOfOrderSupply) {
-          if (orderSupply.id === id) return orderSupply;
+          if (orderSupply.id === id || orderSupply.id_warehouse === id) return orderSupply;
         }
       }
     }
     return false;
   }
 
-  // --------------------------------------
   // Метод поддержания списка ЗС в отсортерованном виде
   sortOrderSupply(listOfOrderSupply, docObject) {
     if (listOfOrderSupply.length === 0) {
@@ -728,8 +728,7 @@ export class AppModel { // Выполняет инициализацию при�
 
     return false;
   }
-  // --------------------------------------
-
+  
   // Обновить новую заявку снабжения в емкости
   updateOrderSupply(docObject) {
     for (const basis of this.basiss) {
@@ -767,6 +766,34 @@ export class AppModel { // Выполняет инициализацию при�
 
     return false;
   }
+
+  // --------------------------------------
+  shippingUpdateTank(idTank, idSupplyOrder) {
+    
+    const supplyOrder = this.getSupplyOrder(idSupplyOrder);
+    const tank = this.getTank(idTank).tank;
+
+    // Проверяем наличие обязательных объектов
+    if (!supplyOrder || !tank) {
+      console.warn(`shippingUdateTank: Обязательные обьекты не найдены ${Boolean(supplyOrder)} ${Boolean(tank)}`);
+      return;
+    }
+
+    // Проверяем является заявка приходом или расходом
+    console.log(supplyOrder);
+    if (supplyOrder.warehouse_part) {
+      tank.volume += supplyOrder.volume_dispatch;
+      tank.weight = (tank.volume * tank.density / 1000).toFixed(3);
+    } else {
+      tank.volume -= supplyOrder.volume_fact;
+      tank.weight = (tank.volume * tank.density / 1000).toFixed(3);
+    }
+
+    return tank;
+      
+  }
+
+  // --------------------------------------
 
   // Методы обработки своих складов в заявке снабжения
   deleteWarehouse(id) {

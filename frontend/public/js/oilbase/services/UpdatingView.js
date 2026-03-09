@@ -2,7 +2,16 @@ export class UpdatingView {
 
   // Удаляет элемент со странице по ID
   deleteElementByID(id) {
-    document.querySelector(`div[data-id="${id}"]`).remove();
+    console.log(id);
+    let element = document.querySelector(`div[data-id="${id}"]`);
+
+    if (!element) {
+      element = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
+      element.remove();
+      return;
+    }
+
+    element.remove();
   }
 
   // Делает расчет планового остатка
@@ -25,7 +34,7 @@ export class UpdatingView {
     const ordersSupply = $$('.order-supply');
 
     if (ordersSupply.length === 0) {
-      mainPlannedBalance.textContent = mainCurrentBalance;
+      mainPlannedBalance.textContent = mainCurrentBalance.toFixed(3);
       return;
     }
 
@@ -48,13 +57,13 @@ export class UpdatingView {
 
 
       const plannedBalance = $('.planned-balance', orderSupply);
-      plannedBalance.textContent = mainCurrentBalance;
+      plannedBalance.textContent = mainCurrentBalance.toFixed(3);
       _highlightingDanger(mainCurrentBalance, plannedBalance);
 
 
     })
 
-    mainPlannedBalance.textContent = mainCurrentBalance;
+    mainPlannedBalance.textContent = mainCurrentBalance.toFixed(3);
     _highlightingDanger(mainCurrentBalance, mainPlannedBalance);
   }
 
@@ -118,6 +127,30 @@ export class UpdatingView {
       this.tankСalculationPlannedBalance(tank);
       this.updateOrderNumbers(tank);
     }
+  }
+
+  // Обновляем поля "Масса, текущая (т)", "Объем, текущий (л)" у емкости
+  updateTankFields(tank) {
+    const tankID = tank.id;
+    const volume = tank.volume;
+    const weight = tank.weight;
+
+    if (!tankID || !volume || !weight) {
+      console.warn(`updateTankFields: Не найдены необходимые данные`);
+      return;
+    }
+
+    // --- Обновляем поля на странице ---
+    const currentBalanceField = document.querySelector(`.tank[data-id="${tankID}"] .current-balance`);
+    const weightField = document.querySelector(`.tank[data-id="${tankID}"] .weight`);
+
+    if (!currentBalanceField || !weightField) {
+      console.warn(`updateTankFields: Не найдены необходимые поля для обновления`);
+      return;
+    }
+
+    currentBalanceField.textContent = Number(volume).toFixed(3);
+    weightField.textContent = Number(weight).toFixed(3);
   }
 
 }
