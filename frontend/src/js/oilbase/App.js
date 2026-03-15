@@ -35,7 +35,7 @@ export class App {
         this.tankControllerFactory = new TankControllerFactory(this.helpers);
         this.archiveControllerFactory = new ArchiveControllerFactory(this.helpers);
         this.basisControllerFactory = new BasisControllerFactory();
-        this.orderSupplyControllerFactory = new OrderSupplyControllerFactory();
+        this.orderSupplyControllerFactory = new OrderSupplyControllerFactory(this.helpers);
 
 
 

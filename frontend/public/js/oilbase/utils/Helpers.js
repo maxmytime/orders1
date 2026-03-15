@@ -46,11 +46,11 @@ export class Helpers {
   // Парсинг даты из строки
   parseDate = (string) => {
     // Проверка формата dd.mm.yyyy
-      if (!/^\d{2}\.\d{2}\.\d{4}$/.test(string)) {
-        console.log(string);
-        console.warn(`parseDate: Формат даты не соответствует dd.mm.yyyy`);
-        return;
-      }
+    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(string)) {
+      console.log(string);
+      console.warn(`parseDate: Формат даты не соответствует dd.mm.yyyy`);
+      return;
+    }
 
     const [day, month, year] = string.split('.').map(Number);
     return new Date(year, month - 1, day);
@@ -119,5 +119,13 @@ export class Helpers {
     }
 
     return userRights;
+  }
+
+  getDateShipment(dateStart, dateEnd) {
+    const start = dateStart.split('-');
+    const end = dateEnd.split('-');
+    return dateStart === dateEnd ?
+      `${start[2]}.${start[1]}` :
+      `${start[2]}.${start[1]} - ${end[2]}.${end[1]}`;
   }
 }

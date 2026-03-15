@@ -3,22 +3,22 @@ import { AppView } from '/js/oilbase/views/AppView.js'
 export class OrderSupplyView extends AppView {
   constructor(helpers) {
     super();
-    this.container = document.querySelector('.app-oilbase');        // Контейнер приложения. На текущий момент на него вешаются все события
-    this.templateOrderSupply = this.getTemplate('order-supply');    // Шаблон Заявки снабжения в базисе
+    this.container = document.querySelector('.app-oilbase');       // Контейнер приложения. На текущий момент на него вешаются все события
+    this.templateOrderSupply = this.getTemplate('order-supply');   // Шаблон Заявки снабжения в базисе
+    this.templateDetailDistributed = this.getTemplate('detail-distributed');    // Шаблон детальной записии распределенного блока
+    this.templateDetailOwnWarehouse = this.getTemplate('detail-own-warehouse'); // Шаблон детальной записии своего склада
 
     this.helpers = helpers;
-
-    // console.log('OrderSupplyView');
   }
 
-  render(data) {
+  render(data, detalis) {
     // if (!data.array_sections) console.log(data);
     const order = this.templateOrderSupply.cloneNode(true);
-    this.templateFfilling(order, data);
+    this.templateFfilling(order, data, detalis);
     return order;
   }
 
-  renderNewOrderSupply(data, tankID, index) {
+  renderNewOrderSupply(data, tankID, index, detalis) {
     console.log(data, tankID, index);
     // Находим контейнер
     const container = document.querySelector(`div[data-id="${tankID}"] .order-supply-container`);
@@ -26,7 +26,7 @@ export class OrderSupplyView extends AppView {
 
     // Создаем новый элемент заявки снабжения и наполняем его данными
     const order = this.templateOrderSupply.cloneNode(true);
-    this.templateFfilling(order, data);
+    this.templateFfilling(order, data, detalis);
 
     // Получаем все дочерние элементы с классом "item" в виде массива
     const items = [...container.children].filter(child => child.classList.contains('order-supply'));
@@ -45,9 +45,9 @@ export class OrderSupplyView extends AppView {
   };
 
 
-  updateOrderSupply(data) {
+  updateOrderSupply(data, detalis) {
     const orderSupplyNode = document.querySelector(`div[data-id="${data.id}"]`);
-    this.templateFfilling(orderSupplyNode, data);
+    this.templateFfilling(orderSupplyNode, data, detalis);
   }
 
   // --- Вспомогательные методы ---
@@ -69,7 +69,75 @@ export class OrderSupplyView extends AppView {
   }
 
   // --- Заполнение шаблона данными ---
-  templateFfilling(template, data) {
+  templateFfilling(template, data, detalis) {
+
+    // Внутренняя функция для формирования детальных записей
+    const _createDetails = (detalis) => {
+
+      // Создание деталей для распределенного блока
+      const _createDetailsDistributed = (details, detailsFragment) => {
+        if (Array.isArray(details) && details.length > 0) {
+
+          details.forEach(item => {
+
+            const tplDetail = this.templateDetailDistributed.cloneNode(true);
+            console.log(this.helpers);
+            tplDetail.querySelector('.part-date').textContent =
+              this.helpers.getDateShipment(item.basisDateStart, item.basisDateEnd);
+            tplDetail.querySelector('.part-partner').textContent = item.client.name_client;
+            tplDetail.querySelector('.conteragent').textContent = item.counteragent;
+            tplDetail.querySelector('.part-product').textContent = item.product.name_product;
+            tplDetail.querySelector('.part-remainder').textContent = item.volume_dispatch;
+
+            detailsFragment.appendChild(tplDetail);
+          })
+        };
+      }
+
+      // Создание деталей для своего склада
+      const _createDetailsOwnWarehouse = (detalis, detailsFragment) => {
+        if (Array.isArray(detalis) && detalis.length > 0) {
+          detalis.forEach(item => {
+            const tplDetail = this.templateDetailOwnWarehouse.cloneNode(true);
+
+            tplDetail.querySelector('.os-warehous-basis').textContent = item.name_basis;
+            tplDetail.querySelector('.warehouse-tank-name').textContent = item.tank;
+            tplDetail.querySelector('.warehouse_volume').textContent = item.volume_dispatch;
+            tplDetail.querySelector('.warehouse_date_dispatch').textContent = item.date_income;
+
+            detailsFragment.appendChild(tplDetail);
+          })
+        }
+      }
+
+      if (!detalis || !detalis.data) {
+        console.warn(`_createDetails: Объект data не передан или имеет не верный формат`);
+        return;
+      }
+
+      const TYPE = {
+        OWN_WAREHOUSE: 1, // Свой склад
+        DISTRIBUTED: 2    // Распределенный
+      }
+
+      // Тип заявки
+      const type = detalis.type_suplorder;
+      // Фрагмент для деталей
+      const detailsFragment = document.createDocumentFragment();
+
+      if (Array.isArray(detalis.data) && detalis.data.length > 0) {
+
+        if (type === TYPE.OWN_WAREHOUSE) {
+          _createDetailsOwnWarehouse(detalis.data, detailsFragment);
+        } else if (type === TYPE.DISTRIBUTED) {
+          _createDetailsDistributed(detalis.data, detailsFragment);
+        }
+
+      }
+
+      return detailsFragment;
+    }
+
     // Устанавливаем ID
     template.dataset.id = data.id || '';
     // Устанавливаем parntID
@@ -101,6 +169,15 @@ export class OrderSupplyView extends AppView {
     template.querySelector('.planned-balance').textContent = '-';
     // Комментарий
     template.querySelector('.comment').textContent = data.commentary;
+    // Детали
+    if (!data.warehouse_part) {
+      template.querySelector('.details').append(_createDetails(detalis));
+    }
+    // Если ЗС является блоком прихода disabled = true
+    if (data.warehouse_part) {
+      template.querySelector('.bnt-show-details').classList.add('disabled');
+    }
+
   }
 
 

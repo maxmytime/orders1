@@ -26,6 +26,8 @@ export class BasisController {
     this.view.getContainer().addEventListener('click', this.editTank.bind(this));
     // Показаты скрыть таблицу распределенных частей заявок к емкости
     this.view.getContainer().addEventListener('click', this.toggleSubTable.bind(this));
+    // Показать скрыть таблицу деталий заявки снабжения
+    this.view.getContainer().addEventListener('click', this.toggleSubTableOrderSupply.bind(this));
     // Контроллер подписывается на событие начала перетаскивания элемента
     this.view.getContainer().addEventListener('dragstart', this.eventDragstart.bind(this));
     // Контроллер подписывается на событие наведения на перетаскиваемый элемент
@@ -92,9 +94,13 @@ export class BasisController {
     }
   }
 
+
+  // Показать скрыть таблицу заявок снабжения
   toggleSubTable(e) {
     if (e.target.classList.contains('toggle-subtable')) {
+      console.log('toggleSubTable');
       const subtable = e.target.closest('.tank').querySelector('.subtable');
+      console.log(subtable);
       const tableContent = e.target.closest('.tank').querySelector('.table-content');
       const parts = subtable.querySelectorAll('.subtable-row');
       if (1) {
@@ -103,6 +109,27 @@ export class BasisController {
         subtable.classList.toggle('is-hidden');
       }
 
+    }
+  }
+
+  // Показать скрыть таблицу деталий заявки снабжения
+  toggleSubTableOrderSupply(e) {
+    if (e.target.classList.contains('bnt-show-details') && !e.target.classList.contains('disabled')) {
+      const btnShowDetails = e.target;
+
+      const orderSupplyNode = btnShowDetails.closest('.order-supply');
+      if (!orderSupplyNode) {
+        console.warn(`toggleSubTableOrderSupply: Не найден родительский элемент order-supply`);
+        return;
+      }
+
+      const details = orderSupplyNode.querySelector('.details');
+      if (!details) {
+        console.warn(`toggleSubTableOrderSupply: Не найден элемент subtable`);
+        return;
+      }
+
+      details.classList.toggle('is-hidden');
     }
   }
 
@@ -336,7 +363,7 @@ export class BasisController {
             // console.log(container);
             tank.listOfOrderSupply.forEach((OrderSupply) => {
               const orderSupplyController = this.orderSupplyControllerFactory.create();
-              fragmentOrderSupply.appendChild(orderSupplyController.render(OrderSupply));
+              fragmentOrderSupply.appendChild(orderSupplyController.render(OrderSupply, this.model));
             })
             container.appendChild(fragmentOrderSupply);
           }

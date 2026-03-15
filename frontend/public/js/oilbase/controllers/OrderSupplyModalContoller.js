@@ -625,7 +625,7 @@ export class OrderSupplyModalContoller {
         // Рисуем новую заявку снабжения в емкости
         if (tankID) {
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-          orderSupplyController.renderNewOrderSupply(docObject, tankID, index);
+          orderSupplyController.renderNewOrderSupply(docObject, tankID, index, this.modelApp);
           const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
           // Делает расчет планового остатка
           this.updatingView.tankСalculationPlannedBalance(tankNode);
@@ -804,7 +804,7 @@ export class OrderSupplyModalContoller {
         if (tankID) {
           this.updatingView.deleteElementByID(docObject.id);
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-          orderSupplyController.renderNewOrderSupply(docObject, tankID, index);
+          orderSupplyController.renderNewOrderSupply(docObject, tankID, index, this.modelApp);
           // orderSupplyController.updateOrderSupply(docObject, tankID);
           const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
           // Делает расчет планового остатка
@@ -870,7 +870,7 @@ export class OrderSupplyModalContoller {
         // Рисуем новую заявку снабжения в емкости
         if (tankID) {
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-          orderSupplyController.renderNewOrderSupply(docObject, tankID, index);
+          orderSupplyController.renderNewOrderSupply(docObject, tankID, index, this.modelApp);
           const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
           // Делает расчет планового остатка
           this.updatingView.tankСalculationPlannedBalance(tankNode);
@@ -949,7 +949,7 @@ export class OrderSupplyModalContoller {
         if (tankID) {
           this.updatingView.deleteElementByID(docObject.id);
           const orderSupplyController = this.orderSupplyControllerFactory.create(docObject);
-          orderSupplyController.renderNewOrderSupply(docObject, tankID, index);
+          orderSupplyController.renderNewOrderSupply(docObject, tankID, index, this.modelApp);
           const tankNode = document.querySelector(`div[data-id="${tankID}"]`);
           // Делает расчет планового остатка
           this.updatingView.tankСalculationPlannedBalance(tankNode);

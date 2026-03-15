@@ -18,7 +18,7 @@ export class AppModel { // Выполняет инициализацию при�
     const listSuplOrders = suplOrders;
     this.listPartsOriginal = structuredClone(listParts);
     this.listSuplOrders = suplOrders;
-    // console.log(listSuplOrders);
+    console.log(listParts);
     // console.log(listTanks);
 
     // Добавляем к базисам недоставющие поля
@@ -128,6 +128,8 @@ export class AppModel { // Выполняет инициализацию при�
         );
       })
     })
+
+    // console.log(this.#listBasiss);
 
   }
 

@@ -626,7 +626,8 @@
   <!-- Шаблон кнопки распределеить -->
   <template id="btn-shipping-distribution-container">
     <div class="column btn-shipping-distribution-container is-flex is-align-items-end">
-      <button class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-shipping-distribution">Распределить</button>
+      <button
+        class="button is-info is-uppercase has-text-weight-bold btn-orders btn-brand btn-shipping-distribution">Распределить</button>
     </div>
   </template>
 
@@ -786,10 +787,8 @@
           <label class="label">Базис</label>
           <div class="control">
             <div class="droplist-wrapper">
-              <input type="text" name="os-warehous-basis" 
-                class="input input-order border-radius-right-none block-shipping" 
-                value=""
-                autocomplete="off">
+              <input type="text" name="os-warehous-basis"
+                class="input input-order border-radius-right-none block-shipping" value="" autocomplete="off">
               <div class="droplist is-hidden"></div>
             </div>
           </div>
@@ -814,11 +813,8 @@
         <div class="field">
           <label class="label">Остаток плановый</label>
           <div class="control">
-            <input type="text" name="" 
-              class="input input-order border-left-none border-radius-none block-shipping" 
-              value=""
-              autocomplete="off"
-              disabled>
+            <input type="text" name="" class="input input-order border-left-none border-radius-none block-shipping"
+              value="" autocomplete="off" disabled>
           </div>
         </div>
       </div>
@@ -827,10 +823,8 @@
         <div class="field">
           <label class="label">Объем</label>
           <div class="control">
-            <input type="text" name="warehouse_volume" 
-              class="input input-order border-left-none border-radius-none block-shipping"
-              value="" 
-              autocomplete="off">
+            <input type="text" name="warehouse_volume"
+              class="input input-order border-left-none border-radius-none block-shipping" value="" autocomplete="off">
           </div>
         </div>
       </div>
@@ -1459,6 +1453,7 @@
     </div>
   </template>
 
+  <!-- ============================================= -->
   <!-- Шаблон заявки снабжения в базисе -->
   <template id="order-supply">
     <div class="columns color-border-b-dark subtable-row order-supply is-flex-wrap-wrap is-mobile" draggable="true">
@@ -1466,6 +1461,10 @@
         <div class="columns is-mobile">
           <div class="column">
             <span class="part-number has-text-centered">1</span>
+          </div>
+          <div class="column">
+            <i class="fa fa-lg fa-info icon-hover subtable-row-edit is-clickable bnt-show-details px-2"
+              aria-hidden="true"></i>
           </div>
           <div class="column">
             <i class="fa fa-lg fa-external-link icon-hover subtable-row-edit is-clickable bnt-edit-order-supply"
@@ -1488,10 +1487,37 @@
       <div class="column volume">10000</div>
       <div class="column volume-distributed">4000</div>
       <div class="column planned-balance">6000</div>
-
       <div class="column is-3 comment">Lorem ipsum dolor sit amet.</div>
+
+      <!-- Детали -->
+      <div class="column is-12 details is-hidden">
+
+      </div>
     </div>
   </template>
+
+  <!-- Шаблон детальной записии распределенного блока -->
+  <template id="detail-distributed">
+    <div class="columns detail-distributed is-justify-content-center">
+      <span class="column is-1 has-text-weight-bold part-date">---</span>
+      <span class="column is-2 has-text-weight-bold part-partner">---</span>
+      <span class="column is-2 has-text-weight-bold conteragent">---</span>
+      <span class="column is-2 has-text-weight-bold part-product">---</span>
+      <span class="column is-1 has-text-weight-bold part-remainder">---</span>
+    </div>
+  </template>
+
+  <!-- Шаблон детальной записии своего склада -->
+  <template id="detail-own-warehouse">
+    <div class="columns detail-own-warehouse is-justify-content-center">
+      <span class="column is-1 has-text-weight-bold os-warehous-basis">---</span>
+      <span class="column is-2 has-text-weight-bold warehouse-tank-name">---</span>
+      <span class="column is-2 has-text-weight-bold warehouse_volume">---</span>
+      <span class="column is-2 has-text-weight-bold warehouse_date_dispatch">---</span>
+    </div>
+  </template>
+
+  <!-- ============================================= -->
 
   <!-- Шаблон емкости -->
   <template id="tank">

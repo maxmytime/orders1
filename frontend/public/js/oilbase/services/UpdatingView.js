@@ -3,8 +3,12 @@ export class UpdatingView {
   // Удаляет элемент со странице по ID
   deleteElementByID(id) {
     console.log(id);
-    let element = document.querySelector(`div[data-id="${id}"]`);
-
+    let element = document.querySelector(`div[data-id="${id}"]`); 
+        if (!element) {
+      element = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
+      element.remove();
+      return;
+    }
     if (!element) {
       element = document.querySelector(`.oilbasis div[data-id-warehouse="${id}"]`);
       element.remove();
@@ -13,6 +17,7 @@ export class UpdatingView {
 
     element.remove();
   }
+
 
   // Делает расчет планового остатка
   tankСalculationPlannedBalance(tank) {
