@@ -24,6 +24,7 @@
     "@creativebulma/bulma-divider": "^1.1.0",
     "bulma-switch-control": "^1.2.2",
     "socket.io-client": "^4.8.1",
+    "sortablejs": "^1.15.7",
     "uuid": "^11.1.0"
   }
 }

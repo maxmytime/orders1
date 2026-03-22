@@ -27,12 +27,16 @@ export class OrderSupplyController {
 
           if (Array.isArray(section.array_tanks) && section.array_tanks.length > 0) {
             section.array_tanks.forEach((tank) => {
+              // console.log(tank);
               const tankID = model.getTankIDByNumber(tank.code_tank);
-              const tankName = model.getTank(tankID).tank.name;
-              detalis.data.push({
-                'tank': tankName,
-                ...tank,
-              });
+              // console.log(tankID);
+              if (tankID) {
+                const tankName = model.getTank(tankID).tank.name;
+                detalis.data.push({
+                  'tank': tankName,
+                  ...tank,
+                });
+              }
             });
           }
 

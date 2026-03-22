@@ -2,6 +2,8 @@ import settings from '/js/config.js';
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 import { UpdatingModel } from '/js/oilbase/services/UpdatingModel.js';
 import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
+// import Sortable from './../../../../node_modules/sortablejs/modular/sortable.complete.esm.js';
+
 
 export class BasisController {
   constructor(model, view, modalController, orderSupplyModalContoller, partControllerFactory, tankControllerFactory, orderSupplyControllerFactory, helpers, socket) {
@@ -17,8 +19,7 @@ export class BasisController {
     this.socket = socket.socket;
     this.updatingModel = new UpdatingModel(model, partControllerFactory, tankControllerFactory, this.api, this.helpers, this);
     this.updatingView = new UpdatingView();
-
-
+    this.sortableInstances = [];
 
     // Контроллер подписывается на нажатие кнопки редактировать часть заявки
     this.view.getContainer().addEventListener('click', this.editPart.bind(this));
@@ -29,11 +30,11 @@ export class BasisController {
     // Показать скрыть таблицу деталий заявки снабжения
     this.view.getContainer().addEventListener('click', this.toggleSubTableOrderSupply.bind(this));
     // Контроллер подписывается на событие начала перетаскивания элемента
-    this.view.getContainer().addEventListener('dragstart', this.eventDragstart.bind(this));
+    // this.view.getContainer().addEventListener('dragstart', this.eventDragstart.bind(this));
     // Контроллер подписывается на событие наведения на перетаскиваемый элемент
-    this.view.getContainer().addEventListener('dragover', this.eventDragover.bind(this));
+    // this.view.getContainer().addEventListener('dragover', this.eventDragover.bind(this));
     // Контроллер подписывается на событие конец перетаскивания элемента
-    this.view.getContainer().addEventListener('dragend', this.eventDragend.bind(this));
+    // this.view.getContainer().addEventListener('dragend', this.eventDragend.bind(this));
     // Контроллер подписывается на событие открыть уведомление
     this.view.getContainer().addEventListener('click', this.deleteTankNotification.bind(this));
     // Контроллер подписывается на событие открытя модального окна для создания новой заявки снабжения
@@ -156,25 +157,27 @@ export class BasisController {
   }
 
   // ОБЪЯСНЕНИЕ: Используем делегирование на document для обработки ВСЕХ списков
-  eventDragstart(e) {
-    // ОБЪЯСНЕНИЕ: Проверяем, что перетаскиваем элемент LI внутри любого списка
-    if (e.target.classList.contains('distributed') && e.target.closest('.subtable-rows')) {
-      console.log('eventDragstart');
-      const draggedItem = e.target;
 
-      // Сохраняем данные о перетаскиваемом элементе
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', draggedItem.outerHTML);
+  // eventDragstart(e) {
+  //   // ОБЪЯСНЕНИЕ: Проверяем, что перетаскиваем элемент LI внутри любого списка
+  //   if (e.target.classList.contains('distributed') && e.target.closest('.subtable-rows')) {
+  //     console.log('eventDragstart');
+  //     const draggedItem = e.target;
 
-      // Добавляем класс для визуального эффекта
-      draggedItem.classList.add('dragging');
+  //     // Сохраняем данные о перетаскиваемом элементе
+  //     e.dataTransfer.effectAllowed = 'move';
+  //     e.dataTransfer.setData('text/html', draggedItem.outerHTML);
 
-      // ОБЪЯСНЕНИЕ: Сохраняем ссылку на исходный список
-      draggedItem.setAttribute('data-original-parent', draggedItem.parentNode.id);
-    }
-  }
+  //     // Добавляем класс для визуального эффекта
+  //     draggedItem.classList.add('dragging');
+
+  //     // ОБЪЯСНЕНИЕ: Сохраняем ссылку на исходный список
+  //     draggedItem.setAttribute('data-original-parent', draggedItem.parentNode.id);
+  //   }
+  // }
 
   // ОБЪЯСНЕНИЕ: Обработчик для всей страницы - будет работать с любым списком
+
   // eventDragover(e) {
   //     // console.log(e.target);
   //     if (e.target.closest('.distributed') && e.target.closest('.subtable-rows')) {
@@ -239,77 +242,176 @@ export class BasisController {
 
   // };
 
-  eventDragover(e) {
-    if (e.target.closest('.distributed') && e.target.closest('.subtable-rows')) {
-      e.preventDefault();
-      const targetList = e.target.closest('.subtable-rows');
-      const targetItem = e.target.closest('.distributed');
-      const draggingItem = document.querySelector('.dragging');
+  // eventDragover(e) {
+  //   if (e.target.closest('.distributed') && e.target.closest('.subtable-rows')) {
+  //     e.preventDefault();
+  //     const targetList = e.target.closest('.subtable-rows');
+  //     const targetItem = e.target.closest('.distributed');
+  //     const draggingItem = document.querySelector('.dragging');
 
-      // Удаляем все существующие тени
-      targetList.querySelectorAll('.shadow').forEach(el => el.remove());
+  //     // Удаляем все существующие тени
+  //     targetList.querySelectorAll('.shadow').forEach(el => el.remove());
 
-      if (!draggingItem || !targetItem) return;
+  //     if (!draggingItem || !targetItem) return;
 
-      const targetItemID = targetItem.dataset.id;
-      const draggingItemID = draggingItem.dataset.id;
-      const targetItemDate = this.model.getPart(targetItemID).part.date_dispatch;
-      const draggedItemDate = this.model.getPart(draggingItemID).part.date_dispatch;
+  //     const targetItemID = targetItem.dataset.id;
+  //     const draggingItemID = draggingItem.dataset.id;
+  //     const targetItemDate = this.model.getPart(targetItemID).part.date_dispatch;
+  //     const draggedItemDate = this.model.getPart(draggingItemID).part.date_dispatch;
 
-      if (targetItemDate === draggedItemDate) {
-        draggingItem.classList.remove('dragging-err');
+  //     if (targetItemDate === draggedItemDate) {
+  //       draggingItem.classList.remove('dragging-err');
 
-        // Основное изменение: разрешаем вставку перед первым элементом
-        const rect = targetItem.getBoundingClientRect();
-        const nextSibling = (e.clientY - rect.top > rect.height / 2)
-          ? targetItem.nextElementSibling
-          : targetItem;
+  //       // Основное изменение: разрешаем вставку перед первым элементом
+  //       const rect = targetItem.getBoundingClientRect();
+  //       const nextSibling = (e.clientY - rect.top > rect.height / 2)
+  //         ? targetItem.nextElementSibling
+  //         : targetItem;
 
-        const shadow = document.createElement('div');
-        shadow.classList.add('column', 'is-12', 'shadow', 'color-bg-gray', 'is-gapless');
+  //       const shadow = document.createElement('div');
+  //       shadow.classList.add('column', 'is-12', 'shadow', 'color-bg-gray', 'is-gapless');
 
-        // Всегда вставляем тень, даже если это первая позиция
-        targetList.insertBefore(shadow, nextSibling);
+  //       // Всегда вставляем тень, даже если это первая позиция
+  //       targetList.insertBefore(shadow, nextSibling);
 
-      } else {
-        console.log('Даты не равны', targetItemDate, draggedItemDate);
-        draggingItem.classList.add('dragging-err');
-      }
-    }
-  }
+  //     } else {
+  //       console.log('Даты не равны', targetItemDate, draggedItemDate);
+  //       draggingItem.classList.add('dragging-err');
+  //     }
+  //   }
+  // }
 
   // ОБЪЯСНЕНИЕ: Завершение перетаскивания для любого элемента
-  async eventDragend(e) {
-    if (e.target.classList.contains('distributed')) {
-      const idPart = document.querySelector('.dragging').dataset.id;
-      const idTank = this.model.getPart(idPart).tankID;
-      const tank = this.model.getTank(idTank).tank;
-      const containerTank = document.querySelector(`div[data-id="${idTank}"]`);
-      const tankController = this.tankControllerFactory.create(tank, containerTank);
-      const targetList = e.target.closest('.subtable-rows');
-      const shadow = document.querySelector('.shadow');
-      if (shadow) {
-        targetList.insertBefore(e.target, shadow);
-        shadow.remove();
-      }
 
-      let objectUpdateSort = tankController.updateSort();
-      const statusUpdate = await this.api.fetchPostData('/postdispatchsort', objectUpdateSort);
+  // async eventDragend(e) {
+  //   if (e.target.classList.contains('distributed')) {
+  //     const idPart = document.querySelector('.dragging').dataset.id;
+  //     const idTank = this.model.getPart(idPart).tankID;
+  //     const tank = this.model.getTank(idTank).tank;
+  //     const containerTank = document.querySelector(`div[data-id="${idTank}"]`);
+  //     const tankController = this.tankControllerFactory.create(tank, containerTank);
+  //     const targetList = e.target.closest('.subtable-rows');
+  //     const shadow = document.querySelector('.shadow');
+  //     if (shadow) {
+  //       targetList.insertBefore(e.target, shadow);
+  //       shadow.remove();
+  //     }
 
-      tankController.volumeСalculation();
+  //     let objectUpdateSort = tankController.updateSort();
+  //     const statusUpdate = await this.api.fetchPostData('/postdispatchsort', objectUpdateSort);
 
-      // shadow.remove();
+  //     tankController.volumeСalculation();
 
-      // Убираем визуальные эффекты со всех элементов
-      document.querySelectorAll('.distributed').forEach(item => {
-        item.classList.remove('dragging');
+  //     // shadow.remove();
+
+  //     // Убираем визуальные эффекты со всех элементов
+  //     document.querySelectorAll('.distributed').forEach(item => {
+  //       item.classList.remove('dragging');
+  //     });
+
+  //     document.querySelectorAll('.dragging-err').forEach(item => {
+  //       item.classList.remove('dragging-err');
+  //     });
+  //   }
+  // };
+
+  /**
+   * Инициализация Drag & Drop с помощью SortableJS
+   * Вызывать после того, как все DOM-элементы списков (.subtable-rows) созданы
+   */
+  initDragAndDrop() {
+    // Уничтожаем предыдущие экземпляры
+    this.destroyDragAndDrop();
+
+    // --- Для заявок снабжения (order-supply) ---
+    const orderSupplyContainers = document.querySelectorAll('.order-supply-container');
+    orderSupplyContainers.forEach(container => {
+      const sortable = new Sortable(container, {
+        group: 'shared',
+        animation: 150,
+        ghostClass: 'dragging',
+        dragClass: 'dragging',
+        placeholderClass: 'shadow color-bg-gray is-gapless',
+
+        onMove: (evt) => {
+          const { dragged, related } = evt;
+
+          // Если список пуст или вставка в начало – разрешаем, убираем красный класс
+          if (!related) {
+            dragged.classList.remove('dragging-err');
+            return true;
+          }
+
+          // Получаем ID перетаскиваемого элемента
+          const draggedId = dragged.dataset.id || dragged.dataset.idWarehouse;
+
+          // Находим ближайший элемент заявки (может быть сам related или его родитель)
+          const targetElement = related.closest('.order-supply') || related;
+          const relatedId = targetElement.dataset.id || targetElement.dataset.idWarehouse;
+
+          console.log(draggedId, relatedId);
+
+          // Если не удалось получить ID у целевого элемента – разрешаем (например, контейнер)
+          if (!relatedId) {
+            dragged.classList.remove('dragging-err');
+            return true;
+          }
+
+          // Если перетаскиваемый элемент возвращается на своё место (draggedId === relatedId)
+          if (draggedId === relatedId) {
+            dragged.classList.remove('dragging-err');
+            return true;
+          }
+
+          // Если ID одного из элементов отсутствует – безопаснее разрешить
+          if (!draggedId || !relatedId) {
+            dragged.classList.remove('dragging-err');
+            return true;
+          }
+
+          // Получаем данные заявок из модели
+          const orderSupplyDragged = this.model.getSupplyOrder(draggedId);
+          const orderSupplyRelated = this.model.getSupplyOrder(relatedId);
+
+          // Сравниваем даты
+          if (orderSupplyDragged.date_income === orderSupplyRelated.date_income) {
+            dragged.classList.remove('dragging-err');
+            return true;
+          } else {
+            dragged.classList.add('dragging-err');
+            return false;
+          }
+        },
+
+        onEnd: async (evt) => {
+          const { item, to, from, oldIndex, newIndex } = evt;
+          const orderSupplyId = item.dataset.id;
+
+          console.log('Перемещена заявка снабжения', orderSupplyId, 'новый индекс', newIndex);
+
+          const tankElement = to.closest('.tank');
+          if (tankElement) {
+            const tankId = tankElement.dataset.id;
+            // Здесь можно вызвать метод обновления сортировки заявок снабжения для этого танка
+            // Например: this.updateOrderSupplySort(tankId, orderSupplyId, newIndex);
+          }
+
+          // Убираем классы ошибок, если они были
+          document.querySelectorAll('.dragging-err').forEach(el => el.classList.remove('dragging-err'));
+        }
       });
 
-      document.querySelectorAll('.dragging-err').forEach(item => {
-        item.classList.remove('dragging-err');
-      });
-    }
-  };
+      this.sortableInstances.push(sortable);
+    });
+  }
+
+  /**
+   * Уничтожает все экземпляры Sortable (полезно при перерисовке списков)
+   */
+  destroyDragAndDrop() {
+    this.sortableInstances.forEach(sortable => sortable.destroy());
+    this.sortableInstances = [];
+  }
 
   // Метод инициализации
   init(basisData) {
@@ -373,9 +475,9 @@ export class BasisController {
           this.updatingView.tankСalculationPlannedBalance(tankContainer);
           // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
           this.updatingView.updateOrderNumbers(tankContainer);
-          
+
           fragmentTsnks.appendChild(tankContainer);
-          
+
           // console.log(tankContainer);
         })
         containers.tanksContainer.appendChild(fragmentTsnks);
@@ -394,6 +496,7 @@ export class BasisController {
 
     });
 
+    this.initDragAndDrop();
     // console.log(basiss);
   }
 }

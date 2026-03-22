@@ -1,9 +1,12 @@
+import { ApiClient } from '/js/oilbase/models/ApiClient.js';
+
 export class AppModel { // Выполняет инициализацию приложения и формирует список базисов
   #listBasiss = [];   // Список базисов
   listPartsOriginal = [] // Список оригинальный частей заявок
 
   constructor(parts, tanks, basiss, helpers, distributeParts, suplOrders) {
     this.helpers = helpers;
+    this.api = new ApiClient();
     this.#initBasiss(parts, tanks, basiss, distributeParts, suplOrders);
   }
 
@@ -38,14 +41,28 @@ export class AppModel { // Выполняет инициализацию при�
       }
     })
 
+    // --- !!! ЭТО времянный костыль, нужно его будет удалить ---
+    // Проверяем заполнен ли параметр guid_dispatch_suplorder, если пустая строка то генерируем новый guid
+    // listSuplOrders.forEach(supplyOrder => {
+    //   if (supplyOrder.type_suplorder === 1) {
+    //     supplyOrder.array_sections.forEach(section => {
+    //       section.array_tanks.forEach(async (tank) => {
+    //         console.log(`guid_dispatch_suplorder: ${tank.guid_dispatch_suplorder || 'Необходимо сгенерировать'}`);
+    //         const guid = await this.api.fetchGetData(`/getnewguid`);
+    //         console.log(guid.Data);
+    //         tank.guid_dispatch_suplorder = guid.Data;
+    //       });
+    //     })
+    //   }
+    // })
+    // ---------------------------------------------------------
+
     // Добавляем в список частей заявок распределенный объем
     listSuplOrders.forEach(suplOrder => {
       suplOrder.array_sections.forEach(section => {
         section.array_dispatch?.forEach(block => {
           listParts.forEach(part => {
             if (block.guid_orderblock === part.guid) {
-              // console.log(part.guid);
-              // console.log(block.guid_orderblock);
               part.volume_distributed = part.volume_distributed + Number(block.volume_dispatch);
             }
           })
@@ -99,7 +116,7 @@ export class AppModel { // Выполняет инициализацию при�
         listSuplOrders.forEach(order => {
           if (order.code_tank === tank.code) {
             order.id = this.helpers.getID();
-
+            // Заявка является блоком заявки снабжения с типом приход на свой склад
             if (order.type_suplorder === 1) {
               order.array_sections.forEach(section => {
                 section.array_tanks.forEach(tank => {
@@ -112,6 +129,8 @@ export class AppModel { // Выполняет инициализацию при�
                     "product": order.product,
                     "volume_dispatch": tank.volume_dispatch,
                     "warehouse_part": true,
+                    "guid_dispatch_suplorder": tank.guid_dispatch_suplorder,
+                    "order_dispatch_suplorder": tank.order_dispatch_suplorder,
                   }
 
                   this.addOrderSupply(orderWarehouse);
@@ -119,6 +138,13 @@ export class AppModel { // Выполняет инициализацию при�
               })
             };
 
+            // --- !!! Времянный блок кода, в дальнеишем с сервера должны прийти данные с нужным полем ---
+            // if (!order.order_dispatch_suplorder) {
+            //   order.order_dispatch_suplorder = order.sort_number;
+            // }
+            // --------------------------------------------------------------------------------------------
+
+            // Заявка является заявокй снабжения
             tank.listOfOrderSupply.push(order);
           }
         });
@@ -730,7 +756,7 @@ export class AppModel { // Выполняет инициализацию при�
 
     return false;
   }
-  
+
   // Обновить новую заявку снабжения в емкости
   updateOrderSupply(docObject) {
     for (const basis of this.basiss) {
@@ -771,7 +797,7 @@ export class AppModel { // Выполняет инициализацию при�
 
   // --------------------------------------
   shippingUpdateTank(idTank, idSupplyOrder) {
-    
+
     const supplyOrder = this.getSupplyOrder(idSupplyOrder);
     const tank = this.getTank(idTank).tank;
 
@@ -792,7 +818,7 @@ export class AppModel { // Выполняет инициализацию при�
     }
 
     return tank;
-      
+
   }
 
   // --------------------------------------
@@ -829,7 +855,7 @@ export class AppModel { // Выполняет инициализацию при�
       "warehouse_part": warehouse.warehouse_part,
     }
     const status = this.addOrderSupply(orderWarehouse);
-    
+
     if (status) return status;
   }
 

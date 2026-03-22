@@ -23085,6 +23085,10 @@ select.border-radius-left-none {
   margin-bottom: 20px;
 }
 
+.dragging-err {
+  background-color: rgba(255, 0, 0, 0.2) !important;
+}
+
 @media (max-width: 940px) {
   .order-header {
     width: 100%;

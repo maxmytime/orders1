@@ -2,6 +2,7 @@
 import settings from '/js/config.js';
 import { App } from '/js/oilbase/App.js';
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
+import suplOrderList from '../SupleOrderListTEST.js';
 
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -24,7 +25,9 @@ window.addEventListener('DOMContentLoaded', () => {
         const dataTankList = await api.fetchGetData(`/gettanklist`);
         const dataDispatchList = await api.fetchGetData(`/getdispatchlist`);
         const dataSuplOrderList = await api.fetchGetData(`/getsuplorderlist`);
-        // console.log(dataOrders);
+        // const dataSuplOrderList = suplOrderList;
+
+        console.log(dataSuplOrderList);
         // console.log(dataDispatchList);
 
         const undistributeParts = dataOrders.Data.OrdersList;
@@ -32,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const tanks = dataTankList.Data.OrdersList;
         const basiss = dataAllBases.Data;
         const suplOrders = dataSuplOrderList.Data.SuplOrderList;
-        console.log(tanks);
+        // console.log(tanks);
 
         const app = new App(undistributeParts,
                             tanks,

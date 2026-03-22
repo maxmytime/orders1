@@ -646,7 +646,7 @@ export class OrderSupplyModalContoller {
     // this.view.close();
   }
 
-  // Редактироваnm заявкe снабжения
+  // Редактирование заявки снабжения
   async editOrderSupply(e, status = false) {
     if (e.target.classList.contains('btn-edit-order-supply') || status) {
       // Активируем прелод

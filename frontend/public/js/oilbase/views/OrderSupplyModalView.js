@@ -1,5 +1,6 @@
 import { AppView } from '/js/oilbase/views/AppView.js';
 import { Helpers } from '/js/oilbase/utils/Helpers.js';
+import { ApiClient } from '/js/oilbase/models/ApiClient.js';
 
 export class OrderSupplyModalView extends AppView {
   constructor() {
@@ -13,6 +14,7 @@ export class OrderSupplyModalView extends AppView {
     this.shipping = this.getTemplate('order-supply-shipping');          // Шаблон отгрузки
     this.btnShippingDistribution = this.getTemplate('btn-shipping-distribution-container');      // Шаблон кнопки распределить
     this.helpers = new Helpers();
+    this.api = new ApiClient();
     // console.log('OrderSupplyModalView');
 
 
@@ -480,11 +482,13 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Кнопка добавить свой склад
-  handleAddWarehouse(e) {
+  async handleAddWarehouse(e) {
     const container = e.target.closest('.order-supply-section')
       .querySelector('.order-supply-warehouses');
     const tplWarehous = this.warehous.cloneNode(true);
     tplWarehous.dataset.idWarehous = this.helpers.getID();
+    const guid = await this.api.fetchGetData(`/getnewguid`);
+    tplWarehous.dataset.guid = guid.Data,
     tplWarehous.querySelector('input[name="os-density_fact"]').value = this.modalOrderSupply.querySelector('input[name="os-density_fact"]').value;
 
     container.append(tplWarehous);
@@ -703,6 +707,8 @@ export class OrderSupplyModalView extends AppView {
           "volume_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-volume_fact"]').value),
           "weight_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-weight_fact"]').value),
           "density_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-density_fact"]').value),
+          "guid_dispatch_suplorder": warehouse.dataset.guid || '',
+          "order_dispatch_suplorder": index + 1,
         });
       })
     })

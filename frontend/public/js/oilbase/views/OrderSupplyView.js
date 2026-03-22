@@ -7,7 +7,6 @@ export class OrderSupplyView extends AppView {
     this.templateOrderSupply = this.getTemplate('order-supply');   // Шаблон Заявки снабжения в базисе
     this.templateDetailDistributed = this.getTemplate('detail-distributed');    // Шаблон детальной записии распределенного блока
     this.templateDetailOwnWarehouse = this.getTemplate('detail-own-warehouse'); // Шаблон детальной записии своего склада
-
     this.helpers = helpers;
   }
 
@@ -81,7 +80,6 @@ export class OrderSupplyView extends AppView {
           details.forEach(item => {
 
             const tplDetail = this.templateDetailDistributed.cloneNode(true);
-            console.log(this.helpers);
             tplDetail.querySelector('.part-date').textContent =
               this.helpers.getDateShipment(item.basisDateStart, item.basisDateEnd);
             tplDetail.querySelector('.part-partner').textContent = item.client.name_client;
