@@ -324,6 +324,8 @@ export class OrderSupplyModalView extends AppView {
         const tplWarehous = this.warehous.cloneNode(true);
         // .id_warehouse
         tplWarehous.dataset.idWarehous = block.id_warehouse;
+        // guid
+        tplWarehous.dataset.guid = block.guid_dispatch_suplorder;
         console.log(block);
         // Базис
         tplWarehous.querySelector('input[name="os-warehous-basis"]').value = block.name_basis;
@@ -754,6 +756,8 @@ export class OrderSupplyModalView extends AppView {
             "density_dispatch_fact": Number(warehouse.querySelector('.order-supply-warehous-shipping input[name="os-density_fact"]').value),
             "volume_dispatch": Number(warehouse.querySelector('input[name="warehouse_volume"]').value),
             "id_warehouse": warehouse.dataset.idWarehous,
+            "guid_dispatch_suplorder": warehouse.dataset.guid || '',
+            "order_dispatch_suplorder": index + 1,
           }
         })
       }

@@ -3,6 +3,7 @@ import { UpdatingView } from '/js/oilbase/services/UpdatingView.js';
 import { CalculatorsOrderSupply } from '/js/oilbase/services/CalculatorsOrderSupply.js';
 import { Validation } from '/js/oilbase/services/Validation.js';
 import { Preloader } from '/js/oilbase/services/Preloader.js';
+import { SortUpdate } from '/js/oilbase/services/SortUpdate.js';
 
 export class OrderSupplyModalContoller {
   constructor(modelApp,
@@ -26,6 +27,7 @@ export class OrderSupplyModalContoller {
     this.calculatorsOrderSupply = new CalculatorsOrderSupply();
     this.validation = new Validation();
     this.preloader = new Preloader();
+    this.sortUpdate = new SortUpdate(modelApp);
 
     // console.log('OrderSupplyModalContoller');
     // Контроллер подписывается на событие ввода данных в поле Базис,
@@ -927,6 +929,7 @@ export class OrderSupplyModalContoller {
         "weight_fact": docObject.weight_fact,
         "density_fact": docObject.density_fact,
         "commentary": docObject.commentary,
+        "sort_number": 2,
         "array_sections": docObject.array_sections
       }
 
@@ -962,6 +965,9 @@ export class OrderSupplyModalContoller {
           );
           this.updatingWarehouse(objectUpdateWarehouse);
           this.view.close();
+
+          // Обновляем порядок сортировки
+          this.sortUpdate.update(tankID);
 
           // Деактивируем прелод
           this.preloader.deactivatePreload(e.target);
