@@ -10,6 +10,7 @@ export class OrderSupplyModalView extends AppView {
     this.orderSupplySection = this.getTemplate('order-supply-section'); // Шаблон секции
     this.undistributedPart = this.getTemplate('order-supply-undistributed-part');  // Шаблон не распределенной части заявки
     this.distributedPart = this.getTemplate('order-supply-distributed-part');      // Шаблон распределенной части заявки
+    this.orderSupplyBlock = this.getTemplate('order-supply-block');     // Шаблон произвольной отгрузки
     this.warehous = this.getTemplate('order-supply-warehous');          // Шаблон собственного склада
     this.shipping = this.getTemplate('order-supply-shipping');          // Шаблон отгрузки
     this.btnShippingDistribution = this.getTemplate('btn-shipping-distribution-container');      // Шаблон кнопки распределить
@@ -136,9 +137,9 @@ export class OrderSupplyModalView extends AppView {
     // Объем (л)
     // this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.volume;
     this.modalOrderSupply.querySelector('input[name="supply-volume"]').value = supplyOrder.array_sections
-                                                                                  .reduce((total, section) => {
-                                                                                    return total + Number(section.volume_section);
-                                                                                  }, 0);
+      .reduce((total, section) => {
+        return total + Number(section.volume_section);
+      }, 0);
 
     // Загрузка/Приход
     this.modalOrderSupply.
@@ -152,11 +153,11 @@ export class OrderSupplyModalView extends AppView {
     this.modalOrderSupply.querySelector('input[name="density"]').value = tank.density;
 
     // Факт
-    this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-volume_fact"]').value 
+    this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-volume_fact"]').value
       = supplyOrder.volume_fact ? supplyOrder.volume_fact : supplyOrder.array_sections
-                                                              .reduce((total, section) => {
-                                                                return total + Number(section.volume_section);
-                                                              }, 0);
+        .reduce((total, section) => {
+          return total + Number(section.volume_section);
+        }, 0);
 
     this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-density_fact"]').value = supplyOrder.density_fact || supplyOrder.density;
     this.modalOrderSupply.querySelector('.order-supply-shipping input[name="os-weight_fact"]').value = supplyOrder.weight_fact ||
@@ -491,9 +492,17 @@ export class OrderSupplyModalView extends AppView {
     tplWarehous.dataset.idWarehous = this.helpers.getID();
     const guid = await this.api.fetchGetData(`/getnewguid`);
     tplWarehous.dataset.guid = guid.Data,
-    tplWarehous.querySelector('input[name="os-density_fact"]').value = this.modalOrderSupply.querySelector('input[name="os-density_fact"]').value;
+      tplWarehous.querySelector('input[name="os-density_fact"]').value = this.modalOrderSupply.querySelector('input[name="os-density_fact"]').value;
 
     container.append(tplWarehous);
+  }
+
+  // Кнопка добавить блок отгрузки
+  handleAddBlock(e) {
+    const container = e.target.closest('.order-supply-section')
+      .querySelector('.order-supply-parts');
+    const tplDistributedPart = this.orderSupplyBlock.cloneNode(true);
+    container.append(tplDistributedPart);
   }
 
   // Кнопка удалить свой склад
@@ -687,7 +696,7 @@ export class OrderSupplyModalView extends AppView {
     return section;
   }
 
-  // Получаем секции из ЗС с типом - отгрузка на свой склад для создания/обновления заявки на сервере
+  // Получаем секции из ЗС с типом - отгрузка на свой склад для создания / обновления заявки на сервере
   getSectionsWarehouse(modal) {
     let section = [];
     const sectionsNode = [...modal.querySelectorAll('.order-supply-section')];

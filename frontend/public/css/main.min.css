@@ -23012,6 +23012,9 @@ body {
 .order-supple-sections.warehous .order-supply-parts {
   display: none;
 }
+.order-supple-sections.warehous .btn-add-block-wrapper {
+  display: none;
+}
 
 .order-supply-shipping {
   display: none;

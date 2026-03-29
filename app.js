@@ -666,6 +666,27 @@ app.post('/postupdatedispatch', jsonParser, function (request, response) {
         response.end(commits);
     });
 });
+// Порядок сортировки ЗС
+app.post('/PostSuplorderSort', jsonParser, function (request, response) {
+
+    const lp = testMode ? pass : request.cookies.token;
+    const part = request.body;
+    const url = 'http://vpn.glados.ru/base/hs/siteapi/PostSuplorderSort' + '?' + `${testMode}`;
+    let result;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${lp}`,
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(part)
+    }).then(res => res.text())
+      .then(commits => {
+        console.log(commits);
+        response.end(commits);
+    });
+});
 // Порядок сортировки распределенных заявок
 app.post('/postdispatchsort', jsonParser, function (request, response) {
 

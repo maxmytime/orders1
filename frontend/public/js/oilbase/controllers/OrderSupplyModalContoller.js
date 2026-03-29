@@ -74,6 +74,8 @@ export class OrderSupplyModalContoller {
     this.view.getContainer().addEventListener('change', this.handleToYourWarehouse.bind(this));
     // Контроллер подписывается на событие нажата кнопка добавить свой слад
     this.view.getContainer().addEventListener('click', this.handleAddWarehouse.bind(this));
+    // Контроллер подписывается на событие нажата кнопка добавить блок отгрузки
+    this.view.getContainer().addEventListener('click', this.handleAddBlock.bind(this));
     // Контроллер подписывается на событие нажата кнопка удалить свой слад
     this.view.getContainer().addEventListener('click', this.handleDeleteWarehouse.bind(this));
     // Контроллер подписывается на событие нажата кнопка начало отгрузки
@@ -284,6 +286,9 @@ export class OrderSupplyModalContoller {
           'parent_id': supplyOrder.id,
           'product': supplyOrder.product,
           "warehouse_part": true,
+          "guid_dispatch_suplorder": tank.guid_dispatch_suplorder,
+          "order_dispatch_suplorder": tank.order_dispatch_suplorder,
+          "number": supplyOrder.number,
         })
       })
     })
@@ -514,6 +519,13 @@ export class OrderSupplyModalContoller {
     }
   }
 
+  // Кнопка добавить блок отгрузки
+  handleAddBlock(e) {
+    if (e.target.classList.contains('btn-add-block')) {
+      this.view.handleAddBlock(e);
+    }
+  }
+
   // Ввод объема отгрузки факт
   // volumeInputFact(e) {
   //   if (e.target.name === 'os-volume_fact') {
@@ -635,6 +647,8 @@ export class OrderSupplyModalContoller {
           this.updatingView.updateOrderNumbers(tankNode);
           // Обновление распределенного объема в заявках в model и view
           this.updatingDistributedVolume(objectUpdate);
+          // Обновляем порядок сортировки
+          this.sortUpdate.update(tankID);
           this.view.close();
           // Деактивируем прелоад
           this.preloader.deactivatePreload(e.target);
@@ -817,6 +831,8 @@ export class OrderSupplyModalContoller {
           this.updatingDistributedVolume(objectUpdate);
           // Закрываем модальное окно
           this.view.close();
+          // Обновляем порядок сортировки
+          this.sortUpdate.update(tankID);
           // Деактивируем прелод
           this.preloader.deactivatePreload(e.target);
 
@@ -885,6 +901,9 @@ export class OrderSupplyModalContoller {
           );
           this.updatingWarehouse(objectUpdateWarehouse);
           this.view.close();
+
+          // Обновляем порядок сортировки
+          this.sortUpdate.update(tankID);
 
           // Деактивируем прелод
           this.preloader.deactivatePreload(e.target);
@@ -1028,7 +1047,7 @@ export class OrderSupplyModalContoller {
       }
 
       // Устанавливаем тип действия 3 - отгрузить заявку
-      // supply.type_action_suplorder = 3;
+      supply.type_action_suplorder = 3;
 
       // Отправляем данные для обновления заявки снабжения
       const status = await this.api.fetchPostData('/postupdatesuplorder', supply.data);

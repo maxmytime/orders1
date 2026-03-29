@@ -131,6 +131,7 @@ export class AppModel { // Выполняет инициализацию при�
                     "warehouse_part": true,
                     "guid_dispatch_suplorder": tank.guid_dispatch_suplorder,
                     "order_dispatch_suplorder": tank.order_dispatch_suplorder,
+                    "number": order.number,
                   }
 
                   this.addOrderSupply(orderWarehouse);
@@ -148,10 +149,20 @@ export class AppModel { // Выполняет инициализацию при�
             tank.listOfOrderSupply.push(order);
           }
         });
+        // tank.listOfOrderSupply.sort((a, b) => {
+        //   return this.helpers.parseDate(a.date_income) - this.helpers.parseDate(b.date_income);
+        // });
         tank.listOfOrderSupply.sort((a, b) => {
-          return this.helpers.parseDate(a.date_income) - this.helpers.parseDate(b.date_income);
-        }
-        );
+          if (a.hasOwnProperty('sort_number') && b.hasOwnProperty('sort_number')) {
+            return a.sort_number - b.sort_number;
+          } else if (a.hasOwnProperty('order_dispatch_suplorder') && b.hasOwnProperty('order_dispatch_suplorder')) {
+            return a.order_dispatch_suplorder - b.order_dispatch_suplorder;
+          } else if (a.hasOwnProperty('sort_number') && b.hasOwnProperty('order_dispatch_suplorder')) {
+            return a.sort_number - b.order_dispatch_suplorder;
+          } else if (a.hasOwnProperty('order_dispatch_suplorder') && b.hasOwnProperty('sort_number')) {
+            return a.order_dispatch_suplorder - b.sort_number;
+          }
+        });
       })
     })
 
@@ -853,6 +864,9 @@ export class AppModel { // Выполняет инициализацию при�
       "product": warehouse.product,
       "volume_dispatch": warehouse.volume_dispatch,
       "warehouse_part": warehouse.warehouse_part,
+      "guid_dispatch_suplorder": tank.guid_dispatch_suplorder,
+      "order_dispatch_suplorder": tank.order_dispatch_suplorder,
+      "number": order.number,
     }
     const status = this.addOrderSupply(orderWarehouse);
 

@@ -2,7 +2,7 @@
 import settings from '/js/config.js';
 import { App } from '/js/oilbase/App.js';
 import { ApiClient } from '/js/oilbase/models/ApiClient.js';
-import suplOrderList from '../SupleOrderListTEST.js';
+
 
 window.addEventListener('DOMContentLoaded', () => {
 

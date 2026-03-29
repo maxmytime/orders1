@@ -777,6 +777,13 @@
           </span>
         </button>
       </div>
+      <div class="column is-12 has-text-right btn-add-block-wrapper">
+        <button type="button" class="button btn-orders btn-brand has-background-white btn-add-block">
+          <span class="icon btn-add-block">
+            <i class="fa fa-plus btn-add-block" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
     </div>
   </template>
 
@@ -862,6 +869,78 @@
         <i class="fa fa-lg fa-trash icon-hover btn-del-block" aria-hidden="true"></i>
       </span>
       <div class="column is-11 is-offset-1 order-supply-distributed-part-shipping">
+
+      </div>
+    </div>
+  </template>
+
+  <!-- Шаблон произвольной отгрузки -->
+  <template id="order-supply-block">
+    <div class="order-supply-block columns is-align-items-center is-gapless is-flex-wrap-wrap">
+      <!-- Дата -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Дата</label>
+          <div class="control">
+            <input type="date" name="part-date" class="input input-order border-radius-right-none block-shipping"
+              value="" autocomplete="off">
+            <div class="droplist is-hidden"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Партнер -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label lable-tank">Партнер</label>
+          <div class="control">
+            <div class="droplist-wrapper">
+              <input type="data" name="part-partner" class="input input-order border-radius-right-none block-shipping"
+                value="" autocomplete="off">
+              <div class="droplist is-hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Контрагент -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Контрагент</label>
+          <div class="control">
+            <div class="droplist-wrapper">
+              <input type="data" name="contaragent" class="input input-order border-radius-right-none block-shipping"
+                value="" autocomplete="off">
+              <div class="droplist is-hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Продукт -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Продукт</label>
+          <div class="control">
+            <div class="droplist-wrapper">
+              <input type="data" name="part-product" class="input input-order border-radius-right-none block-shipping"
+                value="" autocomplete="off">
+              <div class="droplist is-hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Объем -->
+      <div class="column is-2">
+        <div class="field">
+          <label class="label">Объем</label>
+          <div class="control">
+            <input type="text" name="part-remainder"
+              class="input input-order border-radius-left-none border-left-none block-shipping">
+          </div>
+        </div>
+      </div>
+      <span class="column is-clickable has-text-right">
+        <i class="fa fa-lg fa-trash icon-hover btn-del-block ml-2 mt-5" aria-hidden="true"></i>
+      </span>
+      <div class="column is-11 order-supply-warehous-shipping">
 
       </div>
     </div>
