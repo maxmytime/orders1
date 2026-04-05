@@ -696,8 +696,10 @@ export class OrderSupplyModalContoller {
       for (const [index, section] of docObject.array_sections.entries()) {
         for (const block of section.array_dispatch) {
 
+          console.log(block);
+
           // Если поле number_dispatch === '', то новыйблок
-          if (block.number_dispatch === '') {
+          if (block.hasOwnProperty("guid_orderblock") && block.number_dispatch === '') {
 
             const dispatch = {
               'number': '',                //только для изменений, номер распределенной части, присваивается при создании
@@ -728,15 +730,15 @@ export class OrderSupplyModalContoller {
 
           // Если поле number_dispatch !== '' && такой блок есть в списке на редактирование
           // то это заявка на редактирование
-          if (block.number_dispatch !== '' && objectUpdate.edit.filter(dispatch => dispatch.number_dispatch === block.number_dispatch)) {
+          if (block.hasOwnProperty("guid_orderblock") && block.number_dispatch !== '' && objectUpdate.edit.filter(dispatch => dispatch.number_dispatch === block.number_dispatch)) {
 
             const dispatch = {
-              'number': block.number_dispatch, //только для изменений, номер распределенной части, присваивается при создании
-              'type_action_dispatch': 2,   //аналогично type_action_order (1 - новая, 2 - обновить данные, 3 - отгрузить)
-              'type_dispatch': 2,          //тип заявки, 1 - приход, 2 - расход
-              'code_tank': '',             //код емкости docObject.code_tank
-              'date_income': "01010001",             //дата загрузки
-              'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
+              'number': block.number_dispatch,     //только для изменений, номер распределенной части, присваивается при создании
+              'type_action_dispatch': 2,           //аналогично type_action_order (1 - новая, 2 - обновить данные, 3 - отгрузить)
+              'type_dispatch': 2,                  //тип заявки, 1 - приход, 2 - расход
+              'code_tank': '',                     //код емкости docObject.code_tank
+              'date_income': "01010001",           //дата загрузки
+              'date_dispatch': '28.01.2026',       //дата отгрузки part.date_dispatch
               'code_client': this.modelApp.getPartGuid(block.guid_orderblock).part.client.code_client,   //код клиента
               'code_product': docObject.product.code_product,    //код продукта
               'id_order': this.modelApp.getPartGuid(block.guid_orderblock).part.id_order,         //номер заказа менеджера
@@ -754,6 +756,40 @@ export class OrderSupplyModalContoller {
             }
 
             const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
+          }
+
+          // Это произвольная отгрузка
+          if (!block.hasOwnProperty("guid_orderblock")) {
+
+            const dispatch = {
+              'number': '',                //только для изменений, номер распределенной части, присваивается при создании
+              'type_action_dispatch': 1,   //аналогично type_action_order (1 - новая, 2 - обновить данные, 3 - отгрузить)
+              'type_dispatch': 2,          //тип заявки, 1 - приход, 2 - расход
+              'code_tank': '',             //код емкости docObject.code_tank
+              'date_income': "01010001",             //дата загрузки
+              'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
+              'code_client': '',   // код клиента
+              'code_product': docObject.product.code_product,    //код продукта
+              'id_order': '',         // номер заказа менеджера
+              'num_address': '',      // номер адреса в заявке
+              'num_basis': '',        // номер базиса в заявке
+              'volume': block.volume_dispatch,                   //объем
+              'weight': docObject.weight,                        //вес
+              'density': docObject.density,                      //плотность
+              'commentary': docObject.commentary,
+              'sort_number': index,
+              'guid_orderblock': block.guid_orderblock,
+              "volume_fact": block.volume_dispatch_fact,
+              "weight_fact": block.weight_dispatch_fact,
+              "density_fact": block.density_dispatch_fact,
+              "name_section": block.name_section,
+              "volume_section": block.volume_section,
+              "volume_dispatch": block.volume_dispatch,
+            }
+            console.log(dispatch);
+            const status = await this.api.fetchPostData('/postupdatedispatch', dispatch);
+            console.log(status);
+            block.number_dispatch = status.Data;
           }
 
 
@@ -1083,6 +1119,7 @@ export class OrderSupplyModalContoller {
 
   // Выбор элемента из выпадающего списка
   selectAnItem(e) {
+    console.log(e.target);
     if (e.target.classList.contains('droplist-item') && e.target.closest('.undistributed-parts-wrapper')) {
       console.log('OK');
       const partList = this.modelApp.getBasis(e.target.textContent).listOfUndistributedApplications;
@@ -1092,10 +1129,12 @@ export class OrderSupplyModalContoller {
     if (e.target.classList.contains('droplist-item') && e.target.closest('.order-supply-warehouses')) {
       console.log('OK');
       const tanksList = this.modelApp.getBasis(e.target.textContent).listOfTanks;
+      console.log(tanksList);
       this.view.updateListOfTanks(e, tanksList);
       // console.log(tanksList);
     }
   }
+
 
   // Ввод данных в поля объем или вес - расчитывается плотность
   calculatorsDensity(e) {

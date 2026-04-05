@@ -190,36 +190,51 @@ export class OrderSupplyModalView extends AppView {
         );
 
 
+
       // Блоки заявки
       const divBlocks = tplSection.querySelector('.order-supply-parts');
       for (const block of section.array_dispatch) {
-        const tplBlock = this.distributedPart.cloneNode(true);
-        const part = partsList.find(part => part.guid === block.guid_orderblock);
-        console.log(part);
-        // guid
-        tplBlock.dataset.guid = block.guid_orderblock;
-        // number_dispatch
-        tplBlock.dataset.numberDispatch = block.number_dispatch;
-        // Дата
-        tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
-        // Клиент
-        tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
-        // Контрагент
-        tplBlock.querySelector('.contaragent').textContent = part.counteragent;
-        // Продукт
-        tplBlock.querySelector('.part-product').textContent = part.product.name_product;
-        // Распределенный объем
-        tplBlock.querySelector('.part-remainder').textContent = block.volume_dispatch;
-        // Факт
-        tplBlock.querySelector('input[name="os-volume_fact"]').value = block.volume_dispatch_fact || block.volume_dispatch;
-        tplBlock.querySelector('input[name="os-density_fact"]').value = block.density_dispatch_fact || supplyOrder.density;
-        tplBlock.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(
-          tplBlock.querySelector('input[name="os-volume_fact"]').value,
-          tplBlock.querySelector('input[name="os-density_fact"]').value
-        );
+
+        console.log(block.guid_orderblock);
+        if (block.guid_orderblock) {
+          const tplBlock = this.distributedPart.cloneNode(true);
+          const part = partsList.find(part => part.guid === block.guid_orderblock);
+          console.log(part);
+          // guid
+          tplBlock.dataset.guid = block.guid_orderblock;
+          // number_dispatch
+          tplBlock.dataset.numberDispatch = block.number_dispatch;
+          // Дата
+          tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
+          // Клиент
+          tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
+          // Контрагент
+          tplBlock.querySelector('.contaragent').textContent = part.counteragent;
+          // Продукт
+          tplBlock.querySelector('.part-product').textContent = part.product.name_product;
+          // Распределенный объем
+          tplBlock.querySelector('.part-remainder').textContent = block.volume_dispatch;
+          // Факт
+          tplBlock.querySelector('input[name="os-volume_fact"]').value = block.volume_dispatch_fact || block.volume_dispatch;
+          tplBlock.querySelector('input[name="os-density_fact"]').value = block.density_dispatch_fact || supplyOrder.density;
+          tplBlock.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(
+            tplBlock.querySelector('input[name="os-volume_fact"]').value,
+            tplBlock.querySelector('input[name="os-density_fact"]').value
+          );
 
 
-        divBlocks.append(tplBlock);
+          divBlocks.append(tplBlock);
+        } else {
+          console.log(block);
+          const tplBlock = this.warehous.cloneNode(true);
+          // Объем
+          tplBlock.querySelector('input[name="warehouse_volume"]').value = block.volume_dispatch;
+          // Дата
+          // tplBlock.querySelector('input[name="warehouse_date_dispatch"]').value = this.helpers.convertDateToInput(block.date_income);
+          divBlocks.append(tplBlock);
+        }
+
+
       }
 
       //Распределено
@@ -498,10 +513,12 @@ export class OrderSupplyModalView extends AppView {
   }
 
   // Кнопка добавить блок отгрузки
-  handleAddBlock(e) {
+  async handleAddBlock(e) {
     const container = e.target.closest('.order-supply-section')
       .querySelector('.order-supply-parts');
-    const tplDistributedPart = this.orderSupplyBlock.cloneNode(true);
+    const guid = await this.api.fetchGetData(`/getnewguid`);
+    const tplDistributedPart = this.warehous.cloneNode(true);
+    tplDistributedPart.dataset.guid = guid.Data;
     container.append(tplDistributedPart);
   }
 
@@ -575,7 +592,7 @@ export class OrderSupplyModalView extends AppView {
   // Обновляем список емкостей
   updateListOfTanks(e, tanksList) {
     console.log(e, tanksList);
-    const warehous = e.target.closest('.order-supply-warehous');
+    const warehous = e.target.closest('.order-supply-warehous, ');
     const product = e.target.closest('.modal-order-supply').querySelector('input[name="product"]').value;
     const selectTank = warehous.querySelector('select[name="warehouse-tank-name"]');
     selectTank.textContent = '';
@@ -680,21 +697,42 @@ export class OrderSupplyModalView extends AppView {
         "volume_section_fact": Number(sectionNode.querySelector('.order-supply-section-shipping input[name="os-volume_fact"]').value),
         "weight_section_fact": Number(sectionNode.querySelector('.order-supply-section-shipping input[name="os-weight_fact"]').value),
         "density_section_fact": Number(sectionNode.querySelector('.order-supply-section-shipping input[name="os-density_fact"]').value),
-        "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-distributed-part')].map(part => {
-          return {
-            "number_dispatch": part.dataset.numberDispatch || '',
-            "volume_dispatch": Number(part.querySelector('.part-remainder').textContent),
-            "guid_orderblock": part.dataset.guid,
-            "volume_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-volume_fact"]').value),
-            "weight_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-weight_fact"]').value),
-            "density_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-density_fact"]').value),
+        "array_dispatch": [...sectionNode.querySelectorAll('.order-supply-distributed-part, .order-supply-warehous')].map(part => {
+          console.log(part);
+          if (part.classList.contains('order-supply-distributed-part')) { // Распределенный блок
+            return {
+              "number_dispatch": part.dataset.numberDispatch || '',
+              "volume_dispatch": Number(part.querySelector('.part-remainder').textContent),
+              "guid_orderblock": part.dataset.guid,
+              "volume_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-volume_fact"]').value),
+              "weight_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-weight_fact"]').value),
+              "density_dispatch_fact": Number(part.querySelector('.order-supply-distributed-part-shipping input[name="os-density_fact"]').value),
+            }
+          } else if (part.classList.contains('order-supply-warehous')) {     // Произвольны блок
+            return {
+              "sort_number": 1,
+              "name_section": sectionNode.querySelector('.title').textContent,
+              "volume_section": Number(sectionNode.querySelector('input[name="order-supply-volume"]').value),
+              "number_dispatch": "",
+              "date_income": this.helpers.convertDateTo1С(part.querySelector('input[name="warehouse_date_dispatch"]').value),
+              "volume_dispatch": Number(part.querySelector('input[name="warehouse_volume"]').value),
+              "volume_dispatch_fact": Number(part.querySelector('.order-supply-warehous-shipping input[name="os-volume_fact"]').value),
+              "weight_dispatch_fact": Number(part.querySelector('.order-supply-warehous-shipping input[name="os-weight_fact"]').value),
+              "density_dispatch_fact": Number(part.querySelector('.order-supply-warehous-shipping input[name="os-density_fact"]').value),
+            }
           }
+
         })
       }
     });
     console.log(section);
     return section;
   }
+
+  // Получаем секции с произвольной отгрузкой
+  // getSectionsArbitrary(modal) {
+
+  // }
 
   // Получаем секции из ЗС с типом - отгрузка на свой склад для создания / обновления заявки на сервере
   getSectionsWarehouse(modal) {

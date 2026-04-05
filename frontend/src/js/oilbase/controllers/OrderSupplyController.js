@@ -45,18 +45,21 @@ export class OrderSupplyController {
           if (Array.isArray(section.array_dispatch) && section.array_dispatch.length > 0) {
             section.array_dispatch.forEach((dispatch) => {
               const guidOrderBlock = dispatch.guid_orderblock;
-              const part = model.getPartGuid(guidOrderBlock).part;
+              console.log(model.getPartGuid(guidOrderBlock));
+              if (model.getPartGuid(guidOrderBlock)) {
+                const part = model.getPartGuid(guidOrderBlock).part;
 
-              detalis.data.push({
-                'dispatch': dispatch.volume_dispatch,
-                'basisDateEnd': part.basisDateEnd,
-                'basisDateStart': part.basisDateStart,
-                'dateEnd': part.dateEnd,
-                'dateStart': part.dateStart,
-                'client': part.client,
-                'counteragent': part.counteragent,
-                'product': part.product,
-              });
+                detalis.data.push({
+                  'dispatch': dispatch.volume_dispatch,
+                  'basisDateEnd': part.basisDateEnd,
+                  'basisDateStart': part.basisDateStart,
+                  'dateEnd': part.dateEnd,
+                  'dateStart': part.dateStart,
+                  'client': part.client,
+                  'counteragent': part.counteragent,
+                  'product': part.product,
+                });
+              }
             });
           }
 
