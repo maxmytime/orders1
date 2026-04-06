@@ -227,6 +227,14 @@ export class OrderSupplyModalView extends AppView {
         } else {
           console.log(block);
           const tplBlock = this.warehous.cloneNode(true);
+          tplBlock.querySelector('input[name="os-warehous-basis"]').closest('.column').classList.add('is-hidden'); // Скрыть базис
+          tplBlock.querySelector('select[name="warehouse-tank-name"]').closest('.column').classList.add('is-hidden'); // Скрыть имя емкости
+          tplBlock.querySelector('input[name="ostatok"]').closest('.column').classList.add('is-hidden'); // Скрыть остаток
+          tplBlock.querySelector('input[name="warehouse_date_dispatch"]').closest('.column').classList.add('is-hidden'); // Скрыть дату
+          tplBlock.querySelector('input[name="warehouse_volume"]').classList.remove('border-radius-none');
+          tplBlock.querySelector('input[name="warehouse_volume"]').classList.remove('border-left-none');
+          tplBlock.querySelector('.is-clickable').classList.add('is-1');
+          tplBlock.classList.add('is-justify-content-end');
           // Объем
           tplBlock.querySelector('input[name="warehouse_volume"]').value = block.volume_dispatch;
           // Дата
@@ -518,6 +526,14 @@ export class OrderSupplyModalView extends AppView {
       .querySelector('.order-supply-parts');
     const guid = await this.api.fetchGetData(`/getnewguid`);
     const tplDistributedPart = this.warehous.cloneNode(true);
+    tplDistributedPart.querySelector('input[name="os-warehous-basis"]').closest('.column').classList.add('is-hidden'); // Скрыть базис
+    tplDistributedPart.querySelector('select[name="warehouse-tank-name"]').closest('.column').classList.add('is-hidden'); // Скрыть имя емкости
+    tplDistributedPart.querySelector('input[name="ostatok"]').closest('.column').classList.add('is-hidden'); // Скрыть остаток
+    tplDistributedPart.querySelector('input[name="warehouse_date_dispatch"]').closest('.column').classList.add('is-hidden'); // Скрыть дату
+    tplDistributedPart.querySelector('input[name="warehouse_volume"]').classList.remove('border-radius-none');
+    tplDistributedPart.querySelector('input[name="warehouse_volume"]').classList.remove('border-left-none');
+    tplDistributedPart.querySelector('.is-clickable').classList.add('is-1');
+    tplDistributedPart.classList.add('is-justify-content-end');
     tplDistributedPart.dataset.guid = guid.Data;
     container.append(tplDistributedPart);
   }
