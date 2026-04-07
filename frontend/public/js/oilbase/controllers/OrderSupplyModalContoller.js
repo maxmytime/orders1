@@ -568,11 +568,11 @@ export class OrderSupplyModalContoller {
             'code_tank': docObject.code_tank,      //код емкости docObject.code_tank
             'date_income': "01010001",             //дата загрузки
             'date_dispatch': '28.01.2026',         //дата отгрузки part.date_dispatch
-            'code_client': this.modelApp.getPartGuid(block.guid_orderblock).part.client.code_client,   //код клиента
+            'code_client': this.modelApp.getPartGuid(block.guid_orderblock)?.part.client.code_client || '',   //код клиента
             'code_product': docObject.product.code_product,    //код продукта
-            'id_order': this.modelApp.getPartGuid(block.guid_orderblock).part.id_order,         //номер заказа менеджера
-            'num_address': this.modelApp.getPartGuid(block.guid_orderblock).part.num_address,   //номер адреса в заявке
-            'num_basis': this.modelApp.getPartGuid(block.guid_orderblock).part.num_basis,       //номер базиса в заявке
+            'id_order': this.modelApp.getPartGuid(block.guid_orderblock)?.part.id_order  || '',         //номер заказа менеджера
+            'num_address': this.modelApp.getPartGuid(block.guid_orderblock)?.part.num_address || '',   //номер адреса в заявке
+            'num_basis': this.modelApp.getPartGuid(block.guid_orderblock)?.part.num_basis || '',       //номер базиса в заявке
             'volume': block.volume_dispatch,                   //объем
             'weight': docObject.weight,                        //вес
             'density': docObject.density,                      //плотность
