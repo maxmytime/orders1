@@ -72,7 +72,7 @@ export class Validation {
       } else {
         // --- Блоки ---
         // --- Получаем поля для валидации ---
-        const [blocks, sectionVolume, sectionWeight] = _getFields('.order-supply-distributed-part-shipping', section);
+        const [blocks, sectionVolume, sectionWeight] = _getFields('.order-supply-distributed-part-shipping, .order-supply-warehous-shipping', section);
         // Валидация объема в секции
         _processValidation('input[name="os-volume_fact"]', blocks, sectionVolume);
         // Валидация веса в секции

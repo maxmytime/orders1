@@ -31,7 +31,7 @@ export class CalculatorsOrderSupply {
         console.log('_processVolumeDistributionInTheSection: Не найдены основные поля');
         return;
       }
-
+      console.log(volumeDistributed.value);
       volumeFact.value = volumeDistributed.value || volumeDistributed.textContent;
       weightFact.value = this.calculationWeight(volumeFact.value, densityFact.value);
     }
@@ -69,18 +69,25 @@ export class CalculatorsOrderSupply {
         const warehouses = $$('.order-supply-warehous', section);
         warehouses.forEach(warehouse => {
           _processVolumeDistribution(warehouse, 'input[name="warehouse_volume"]');
-          
+
         })
 
       } else {
-        // Свой склад
         const blocks = $$('.order-supply-distributed-part', section);
         blocks.forEach(block => {
+          console.log(block);
           _processVolumeDistribution(block, '.part-remainder');
         })
 
+        // Свой склад
+        const warehouses = $$('.order-supply-warehous', section);
+        warehouses.forEach(warehouse => {
+          _processVolumeDistribution(warehouse, 'input[name="warehouse_volume"]');
+
+        })
+
       }
-      
+
 
     })
   }

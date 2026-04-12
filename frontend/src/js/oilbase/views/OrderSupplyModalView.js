@@ -239,6 +239,14 @@ export class OrderSupplyModalView extends AppView {
           tplBlock.querySelector('input[name="warehouse_volume"]').value = block.volume_dispatch;
           // Дата
           // tplBlock.querySelector('input[name="warehouse_date_dispatch"]').value = this.helpers.convertDateToInput(block.date_income);
+          // Факт
+          tplBlock.querySelector('input[name="os-volume_fact"]').value = block.volume_dispatch_fact || block.volume_dispatch;
+          tplBlock.querySelector('input[name="os-density_fact"]').value = block.density_dispatch_fact || supplyOrder.density;
+          tplBlock.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(
+            tplBlock.querySelector('input[name="os-volume_fact"]').value,
+            tplBlock.querySelector('input[name="os-density_fact"]').value
+          );
+
           divBlocks.append(tplBlock);
         }
 
@@ -247,9 +255,8 @@ export class OrderSupplyModalView extends AppView {
 
       //Распределено
       const inputSupplytplDistributed = tplSection.querySelector('input[name="order-supply-distributed"]');
-      divBlocks.querySelectorAll('.part-remainder').forEach(remainder => {
-        // console.log(remainder);
-        inputSupplytplDistributed.value = Number(inputSupplytplDistributed.value) + Number(remainder.textContent);
+      divBlocks.querySelectorAll('.part-remainder, input[name="warehouse_volume"]').forEach(remainder => {
+        inputSupplytplDistributed.value = Number(inputSupplytplDistributed.value) + (Number(remainder.textContent) || Number(remainder.value));
       })
 
       // Остаток

@@ -760,6 +760,7 @@ export class OrderSupplyModalContoller {
 
           // Это произвольная отгрузка
           if (!block.hasOwnProperty("guid_orderblock")) {
+            console.log(block);
 
             const dispatch = {
               'number': '',                //только для изменений, номер распределенной части, присваивается при создании
