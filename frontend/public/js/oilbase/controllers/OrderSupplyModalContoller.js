@@ -1084,7 +1084,7 @@ export class OrderSupplyModalContoller {
       }
 
       // Устанавливаем тип действия 3 - отгрузить заявку
-      supply.type_action_suplorder = 3;
+      supply.data.type_action_suplorder = 3;
 
       // Отправляем данные для обновления заявки снабжения
       const status = await this.api.fetchPostData('/postupdatesuplorder', supply.data);
