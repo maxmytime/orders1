@@ -45,7 +45,7 @@ export class OrderSupplyController {
           if (Array.isArray(section.array_dispatch) && section.array_dispatch.length > 0) {
             section.array_dispatch.forEach((dispatch) => {
               const guidOrderBlock = dispatch.guid_orderblock;
-              console.log(model.getPartGuid(guidOrderBlock));
+              // console.log(model.getPartGuid(guidOrderBlock));
               if (model.getPartGuid(guidOrderBlock)) {
                 const part = model.getPartGuid(guidOrderBlock).part;
 

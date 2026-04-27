@@ -200,30 +200,34 @@ export class OrderSupplyModalView extends AppView {
           const tplBlock = this.distributedPart.cloneNode(true);
           const part = partsList.find(part => part.guid === block.guid_orderblock);
           console.log(part);
-          // guid
-          tplBlock.dataset.guid = block.guid_orderblock;
-          // number_dispatch
-          tplBlock.dataset.numberDispatch = block.number_dispatch;
-          // Дата
-          tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
-          // Клиент
-          tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
-          // Контрагент
-          tplBlock.querySelector('.contaragent').textContent = part.counteragent;
-          // Продукт
-          tplBlock.querySelector('.part-product').textContent = part.product.name_product;
-          // Распределенный объем
-          tplBlock.querySelector('.part-remainder').textContent = block.volume_dispatch;
-          // Факт
-          tplBlock.querySelector('input[name="os-volume_fact"]').value = block.volume_dispatch_fact || block.volume_dispatch;
-          tplBlock.querySelector('input[name="os-density_fact"]').value = block.density_dispatch_fact || supplyOrder.density;
-          tplBlock.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(
-            tplBlock.querySelector('input[name="os-volume_fact"]').value,
-            tplBlock.querySelector('input[name="os-density_fact"]').value
-          );
+
+          if (part) {
+            // guid
+            tplBlock.dataset.guid = block.guid_orderblock;
+            // number_dispatch
+            tplBlock.dataset.numberDispatch = block.number_dispatch;
+            // Дата
+            tplBlock.querySelector('.part-date').textContent = this.getDateShipment(part.dateStart, part.dateEnd);
+            // Клиент
+            tplBlock.querySelector('.part-partner').textContent = part.client.name_client;
+            // Контрагент
+            tplBlock.querySelector('.contaragent').textContent = part.counteragent;
+            // Продукт
+            tplBlock.querySelector('.part-product').textContent = part.product.name_product;
+            // Распределенный объем
+            tplBlock.querySelector('.part-remainder').textContent = block.volume_dispatch;
+            // Факт
+            tplBlock.querySelector('input[name="os-volume_fact"]').value = block.volume_dispatch_fact || block.volume_dispatch;
+            tplBlock.querySelector('input[name="os-density_fact"]').value = block.density_dispatch_fact || supplyOrder.density;
+            tplBlock.querySelector('input[name="os-weight_fact"]').value = this.weightCalculation(
+              tplBlock.querySelector('input[name="os-volume_fact"]').value,
+              tplBlock.querySelector('input[name="os-density_fact"]').value
+            );
 
 
-          divBlocks.append(tplBlock);
+            divBlocks.append(tplBlock);
+          }
+
         } else {
           console.log(block);
           const tplBlock = this.warehous.cloneNode(true);

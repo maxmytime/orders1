@@ -356,7 +356,10 @@ export class AppModel { // Выполняет инициализацию при�
   // Получаем список емкостей в базисе по ID базиса
   getListUndistributedParts(basisID) {
     for (const basis of this.#listBasiss) {
-      if (basis.id === basisID) return basis.listOfUndistributedApplications;
+      if (basis.id === basisID)  {
+        console.log(basis);
+        return basis.listOfUndistributedApplications;
+      }
     }
     return null;
   }
