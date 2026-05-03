@@ -23608,13 +23608,13 @@ select.border-radius-left-none {
   background-color: #eeeff3;
 }
 
-.toggle-subtable, .icon-hover, .delete-tank {
+.toggle-subtable, .icon-hover, .delete-tank, .delete-supply-order {
   padding: 3px;
-  border: 2px solid #ffffff;
+  border: 2px solid transparent;
   border-radius: 4px;
   transition: 0.3s;
 }
-.toggle-subtable:hover, .icon-hover:hover, .delete-tank:hover {
+.toggle-subtable:hover, .icon-hover:hover, .delete-tank:hover, .delete-supply-order:hover {
   border-color: #B4B4B4;
 }
 

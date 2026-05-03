@@ -86,4 +86,8 @@ export class OrderSupplyController {
     this.view.updateOrderSupply(docObject, detalis);
   }
 
+  notification(id) {
+    this.view.notification(id);
+  }
+
 }

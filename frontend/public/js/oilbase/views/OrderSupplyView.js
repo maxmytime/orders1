@@ -7,6 +7,7 @@ export class OrderSupplyView extends AppView {
     this.templateOrderSupply = this.getTemplate('order-supply');   // Шаблон Заявки снабжения в базисе
     this.templateDetailDistributed = this.getTemplate('detail-distributed');    // Шаблон детальной записии распределенного блока
     this.templateDetailOwnWarehouse = this.getTemplate('detail-own-warehouse'); // Шаблон детальной записии своего склада
+    this.templateNotification = this.getTemplate('modal-notification'); // Шаблон окна уведомления
     this.helpers = helpers;
   }
 
@@ -47,6 +48,23 @@ export class OrderSupplyView extends AppView {
   updateOrderSupply(data, detalis) {
     const orderSupplyNode = document.querySelector(`div[data-id="${data.id}"]`);
     this.templateFfilling(orderSupplyNode, data, detalis);
+  }
+
+  notification(id) {
+    console.log('notification');
+    console.log(this.templateNotification);
+    const modal = this.templateNotification.cloneNode(true);
+    modal.querySelector('.modal-card-body p').textContent = 'Удалить заявку снабжения?';
+    const cancellation = modal.querySelector('.cancellation');
+    cancellation.classList.remove('cancellation');
+    cancellation.classList.add('cancellation-order-supply');
+    const deleteBtn = modal.querySelector('.tank-del');
+    deleteBtn.classList.remove('tank-del');
+    deleteBtn.classList.add('order-supply-del');
+    modal.dataset.id = id;
+
+    modal.classList.add('is-active');
+    this.container.appendChild(modal);
   }
 
   // --- Вспомогательные методы ---

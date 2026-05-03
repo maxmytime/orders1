@@ -39,7 +39,7 @@ export class UpdatingView {
     const ordersSupply = $$('.order-supply');
 
     if (ordersSupply.length === 0) {
-      mainPlannedBalance.textContent = mainCurrentBalance.toFixed(3);
+      mainPlannedBalance.textContent = mainCurrentBalance.toFixed(0);
       return;
     }
 
@@ -62,13 +62,14 @@ export class UpdatingView {
 
 
       const plannedBalance = $('.planned-balance', orderSupply);
-      plannedBalance.textContent = mainCurrentBalance.toFixed(3);
+      console.log(mainCurrentBalance);
+      plannedBalance.textContent = mainCurrentBalance.toFixed(0);
       _highlightingDanger(mainCurrentBalance, plannedBalance);
 
 
     })
 
-    mainPlannedBalance.textContent = mainCurrentBalance.toFixed(3);
+    mainPlannedBalance.textContent = mainCurrentBalance.toFixed(0);
     _highlightingDanger(mainCurrentBalance, mainPlannedBalance);
   }
 

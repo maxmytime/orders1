@@ -36,8 +36,14 @@ export class BasisController {
     // this.view.getContainer().addEventListener('dragover', this.eventDragover.bind(this));
     // Контроллер подписывается на событие конец перетаскивания элемента
     // this.view.getContainer().addEventListener('dragend', this.eventDragend.bind(this));
-    // Контроллер подписывается на событие открыть уведомление
+    // Контроллер подписывается на событие открыть уведомление (Удалить емкость)
     this.view.getContainer().addEventListener('click', this.deleteTankNotification.bind(this));
+    // Контроллер подписывается на событие открыть уведомление (Удалить ЗС)
+    this.view.getContainer().addEventListener('click', this.deleteSupplyOrderNotification.bind(this));
+    // Закрыть окно уведомлений
+    this.view.getContainer().addEventListener('click', this.cancellationBtn.bind(this));
+    // Удалить ЗС
+    this.view.getContainer().addEventListener('click', this.orderSupplyDelBtn.bind(this));
     // Контроллер подписывается на событие открытя модального окна для создания новой заявки снабжения
     this.view.getContainer().addEventListener('click', this.openModalAddNewOrderSupply.bind(this));
     // Контроллер подписывается на событие открытя модального окна для редактирования заявки-снабжения
@@ -138,6 +144,39 @@ export class BasisController {
   deleteTankNotification(e) {
     if (e.target.classList.contains('delete-tank')) {
       this.modalController.notification(e);
+    }
+  }
+
+  // Удаалить заявку снабжения
+  deleteSupplyOrderNotification(e) {
+    if (e.target.classList.contains('delete-supply-order')) {
+      const id = e.target.closest('.order-supply').dataset.id;
+      const data = this.model.getSupplyOrder(id);
+      const orderSupplyController = this.orderSupplyControllerFactory.create(data);
+      orderSupplyController.notification(id);
+    }
+  }
+
+  cancellationBtn(e) {
+    if (e.target.classList.contains('cancellation-order-supply')) {
+      e.target.closest('.modal').remove();
+    }
+  }
+
+  async orderSupplyDelBtn(e) {
+    if (e.target.classList.contains('order-supply-del')) {
+      const id = e.target.closest('.modal').dataset.id;
+      console.log(id);
+
+      const data = this.model.getSupplyOrder(id);
+
+      // Формируем объект для создания заявки снабжения
+      const supply = {
+          'number': data.number, 
+          'type_action_suplorder': 4,   
+        }
+      const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
+      console.log(status);
     }
   }
 
