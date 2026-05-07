@@ -619,7 +619,7 @@ export class OrderSupplyModalView extends AppView {
   // Обновляем список емкостей
   updateListOfTanks(e, tanksList) {
     console.log(e, tanksList);
-    const warehous = e.target.closest('.order-supply-warehous, ');
+    const warehous = e.target.closest('.order-supply-warehous');
     const product = e.target.closest('.modal-order-supply').querySelector('input[name="product"]').value;
     const selectTank = warehous.querySelector('select[name="warehouse-tank-name"]');
     selectTank.textContent = '';

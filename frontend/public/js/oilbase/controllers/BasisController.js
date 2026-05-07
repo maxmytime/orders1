@@ -177,6 +177,19 @@ export class BasisController {
         }
       const status = await this.api.fetchPostData('/postupdatesuplorder', supply);
       console.log(status);
+      // if (status.Status === 'OK') {
+        this.model.deleteOrderSupply(id);
+        const supplyOrderNode = document.querySelector(`[data-id="${id}"]`);  // Получаем узел заявки снабжения
+        const tankNode = supplyOrderNode.closest('.tank');                    // Получаем узел емкости
+        supplyOrderNode.remove();                                             // Удаляем заявку снабжения из DOM
+        // Делает расчет планового остатка
+        this.updatingView.tankСalculationPlannedBalance(tankNode);
+        // Обновляет порядковые номера внутри блоков заявок в указанном контейнере
+        this.updatingView.updateOrderNumbers(tankNode);
+        console.log(tankNode);
+        e.target.closest('.modal').remove();
+      // }
+      
     }
   }
 
