@@ -869,7 +869,7 @@ export class AppModel { // Выполняет инициализацию при�
       "warehouse_part": warehouse.warehouse_part,
       "guid_dispatch_suplorder": tank.guid_dispatch_suplorder,
       "order_dispatch_suplorder": tank.order_dispatch_suplorder,
-      "number": order.number,
+      "number": warehouse.number,
     }
     const status = this.addOrderSupply(orderWarehouse);
 

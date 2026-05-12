@@ -100,7 +100,7 @@ export class TankView extends AppView {
         this.setValue('price-offer', item.model.cost_price_tonn, template);
         this.setValue('price-offer-l', (Number(item.model.cost_price_tonn) * ( Number(item.model.density) || 1 ) / 1000).toFixed(2), template);
         // Масса, текущая
-        this.setValue('weight', item.model.weight, template);
+        this.setValue('weight', (Number(item.model.weight)).toFixed(3), template);
         // Остаток, текущий
         this.setValue('current-balance', Number(item.model.volume).toFixed(0), template);
         // Остаток, плановый
